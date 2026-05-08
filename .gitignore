@@ -1,3 +1,16 @@
 # --- BACKEND ---
 /gaia-gacha-backend/node_modules/
 /gaia-gacha-backend/.env
+
+# --- UNITY FRONTEND ---
+# This ignores the heavy temporary folders Unity generates
+/gaia-gacha-frontend/[Ll]ibrary/
+/gaia-gacha-frontend/[Tt]emp/
+/gaia-gacha-frontend/[Oo]bj/
+/gaia-gacha-frontend/[Bb]uilds/
+/gaia-gacha-frontend/[Ll]ogs/
+/gaia-gacha-frontend/[Uu]serSettings/
+
+# --- SYSTEM JUNK ---
+.DS_Store
+Thumbs.db
