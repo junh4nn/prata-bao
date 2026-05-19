@@ -53,13 +53,13 @@ app.post('/pull', async (req, res) => {
     }
 
     // 4. Update Database (Subtract coins & Add item)
-    // We update the coins first
+    // Update the coins first
     await supabase
       .from('profiles')
       .update({ coins: player.coins - GACHA_COST })
       .eq('id', userId);
 
-    // Then we record the new item in an 'inventory' table
+    // Then record the new item in an 'inventory' table
     const { error: invError } = await supabase
       .from('inventory')
       .insert([{ user_id: userId, item_name: selectedItem.name }]);
