@@ -8,7 +8,7 @@ using TMPro;
 public class GachaManager : MonoBehaviour
 {
     [Header("Backend Configuration")]
-    [SerializeField] private string backendUrl = "http://localhost:3000/pull";
+    [SerializeField] private string backendUrl = "http://localhost:3000/api/gacha/pull";
     [SerializeField] private string testUserId = "5102101b-7c13-4c06-b9f3-940afbdb46d1";
 
     [Header("UI References")]
