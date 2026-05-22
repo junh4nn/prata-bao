@@ -1,9 +1,12 @@
-# --- BACKEND ---
+# =====================================
+# Node.js Backend (gaia-gacha-backend)
+# =====================================
 /gaia-gacha-backend/node_modules/
 /gaia-gacha-backend/.env
 
-# --- UNITY FRONTEND ---
-# This ignores the heavy temporary folders Unity generates
+# =====================================
+# Unity Frontend (gaia-gacha-frontend)
+# =====================================
 /gaia-gacha-frontend/[Ll]ibrary/
 /gaia-gacha-frontend/[Tt]emp/
 /gaia-gacha-frontend/[Oo]bj/
@@ -11,6 +14,17 @@
 /gaia-gacha-frontend/[Ll]ogs/
 /gaia-gacha-frontend/[Uu]serSettings/
 
-# --- SYSTEM JUNK ---
-.DS_Store
-Thumbs.db
+# --- IDE & VISUAL STUDIO JUNK ---
+**/*.csproj
+**/*.sln
+**/*.slnx
+**/.vs/
+
+# Ignore local VS Code workspaces, but DO NOT ignore team settings files
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- TEXTMESH PRO LOCAL CONFIGS ---
+/gaia-gacha-frontend/Assets/TextMesh Pro.meta
