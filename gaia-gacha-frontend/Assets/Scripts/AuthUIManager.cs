@@ -50,9 +50,7 @@ public class AuthUIManager : MonoBehaviour
         if (ValidateInputs(email, password))
         {
             statusText.text = "<color=yellow>Logging in...</color>";
-            authManager.Login(email, password); // We pass a callback method down to the network manager
-
-            // SwapToGachaPage();
+            authManager.Login(email, password, SwapToGachaPage); // We pass a callback method down to the network manager
         }
     }
 

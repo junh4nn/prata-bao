@@ -9,7 +9,12 @@ public class GachaManager : MonoBehaviour
 {
     [Header("Backend Configuration")]
     [SerializeField] private string backendUrl = "http://localhost:3000/api/gacha/pull";
-    [SerializeField] private string testUserId = "5102101b-7c13-4c06-b9f3-940afbdb46d1";
+
+    // DEVELOPMENT TEST FIELD
+    // Leave this completely blank to use normal login details. 
+    // Paste an explicit Supabase UUID here to bypass authentication entirely for local testing!
+    [Tooltip("Bypass login by pasting a specific UUID here for database lookup testing.")]
+    [SerializeField] private string testUserId = "";
 
     [Header("UI References")]
     [SerializeField] private Button pullButton;
@@ -20,11 +25,9 @@ public class GachaManager : MonoBehaviour
 
     void Start()
     {
-        // Clear any placeholder text at startup
         if (resultText != null) resultText.text = "Ready to discover your ecosystem!";
         if (balanceText != null) balanceText.text = "Eco-Coins:";
         
-        // Explicitly hook up the button listener via code
         if (pullButton != null)
         {
             pullButton.onClick.AddListener(OnPullButtonClicked);
@@ -35,13 +38,37 @@ public class GachaManager : MonoBehaviour
         }
     }
 
-    // Public method triggered by the UI Button component.
     public void OnPullButtonClicked()
     {
-        // Guard clause: Prevent spamming while waiting for the server authoritative response
         if (isPulling) return;
 
-        StartCoroutine(SendPullRequest(testUserId));
+        // 1. Either use the true logged-in user UUID or the test user UUID
+        string activeUserId = "";
+
+        if (!string.IsNullOrEmpty(testUserId))
+        {
+            activeUserId = testUserId.Trim();
+            Debug.Log($"[GachaManager] Inspector Test ID detected. Bypassing Auth. Target UUID: {activeUserId}");
+        }
+        else
+        {
+            activeUserId = AuthManager.UserId;
+            Debug.Log($"[GachaManager] No Test ID. Fetching regular login credentials. Active UUID: {activeUserId}");
+        }
+
+        // 2. Clear Guard Clause: If they aren't logged in, block the request completely
+        if (string.IsNullOrEmpty(activeUserId))
+        {
+            Debug.LogError("[GachaManager] Pull blocked! No player is currently logged in.");
+            if (resultText != null) 
+            {
+                resultText.text = "<color=red>Error: Please log in first!</color>";
+            }
+            return;
+        }
+
+        // 3. Fire the request with the true account ID
+        StartCoroutine(SendPullRequest(activeUserId));
     }
 
     private IEnumerator SendPullRequest(string userId)
@@ -65,15 +92,20 @@ public class GachaManager : MonoBehaviour
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError($"Error pulling from backend: {request.error}");
-                if (resultText != null) resultText.text = "<color=red>Connection failed. Try again.</color>";
+                // Read exact error message body returned by your Express server
+                string serverError = request.downloadHandler != null ? request.downloadHandler.text : request.error;
+                Debug.LogError($"Backend Error: {serverError}");
+                
+                if (resultText != null) 
+                {
+                    resultText.text = "<color=red>Pull failed. Check server logs.</color>";
+                }
             }
             else
             {
                 string jsonResponse = request.downloadHandler.text;
                 PullResponse responseData = JsonUtility.FromJson<PullResponse>(jsonResponse);
 
-                // Update UI elements with the backend's authoritative response data
                 UpdateGachaUI(responseData);
             }
         }
@@ -86,14 +118,12 @@ public class GachaManager : MonoBehaviour
     {
         if (response == null || response.item == null) return;
 
-        // Display reward with custom rich text formatting based on environmental theme rarities
         if (resultText != null)
         {
             resultText.text = $"<b>Discovered:</b> {response.item.name}\n" +
                               $"<size=80%>Rarity: {response.item.rarity}</size>";
         }
 
-        // Update the global wallet balance
         if (balanceText != null)
         {
             balanceText.text = $"Eco-Coins: {response.newBalance}";
@@ -102,7 +132,6 @@ public class GachaManager : MonoBehaviour
 
     private void SetUIInteractivity(bool isInteractable)
     {
-        // Disables the button visually and functionally while the coroutine runs
         if (pullButton != null)
         {
             pullButton.interactable = isInteractable;

@@ -224,8 +224,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -559,7 +559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GachaManager
   backendUrl: http://localhost:3000/api/gacha/pull
-  testUserId: 5102101b-7c13-4c06-b9f3-940afbdb46d1
+  testUserId: b802edeb-2e2c-4a9a-860d-49150c26672d
   pullButton: {fileID: 274200197}
   resultText: {fileID: 686649982}
   balanceText: {fileID: 771115079}
@@ -683,8 +683,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1250,7 +1250,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 200}
-  m_SizeDelta: {x: 2000, y: 100}
+  m_SizeDelta: {x: 1500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &686649981
 CanvasRenderer:
@@ -1436,8 +1436,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1623,8 +1623,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -900, y: -440.00003}
-  m_SizeDelta: {x: 2000, y: 0}
+  m_AnchoredPosition: {x: -890, y: -440}
+  m_SizeDelta: {x: 1000, y: 10}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &857333187
 GameObject:
@@ -1661,7 +1661,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 500, y: 50}
+  m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &857333189
 MonoBehaviour:
@@ -1897,7 +1897,7 @@ MonoBehaviour:
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue: 
-  m_GlobalPointSize: 14
+  m_GlobalPointSize: 30
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -2063,8 +2063,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2384,6 +2384,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1271595731}
   - component: {fileID: 1271595732}
+  - component: {fileID: 1271595733}
   m_Layer: 0
   m_Name: _AuthManager
   m_TagString: Untagged
@@ -2418,7 +2419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9807a8ade12b5fc4db1c97b51997328d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AuthUIManager
-  authManager: {fileID: 0}
+  authManager: {fileID: 1271595733}
   authPanel: {fileID: 1844998932}
   gachaPanel: {fileID: 944720682}
   emailInputField: {fileID: 1943533916}
@@ -2426,6 +2427,20 @@ MonoBehaviour:
   loginButton: {fileID: 663280491}
   registerButton: {fileID: 1229759576}
   statusText: {fileID: 857333189}
+--- !u!114 &1271595733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271595730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7d1eb1263c3b24d89877f826c4d036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AuthManager
+  registerUrl: http://localhost:3000/api/auth/register
+  loginUrl: http://localhost:3000/api/auth/login
 --- !u!1 &1287781771
 GameObject:
   m_ObjectHideFlags: 0
@@ -2855,7 +2870,7 @@ MonoBehaviour:
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 7
   m_RegexValue: 
-  m_GlobalPointSize: 14
+  m_GlobalPointSize: 30
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:

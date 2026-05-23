@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
@@ -18,16 +19,16 @@ public class AuthManager : MonoBehaviour
     // Registers a new user account on the Express backend.
     public void Register(string email, string password)
     {
-        StartCoroutine(SendAuthRequest(registerUrl, email, password, isLogin: false));
+        StartCoroutine(SendAuthRequest(registerUrl, email, password, isLogin: false, null));
     }
 
     // Logs in an existing user and captures their JWT session key.
-    public void Login(string email, string password)
+    public void Login(string email, string password, Action onSuccess)
     {
-        StartCoroutine(SendAuthRequest(loginUrl, email, password, isLogin: true));
+        StartCoroutine(SendAuthRequest(loginUrl, email, password, isLogin: true, onSuccess));
     }
 
-    private IEnumerator SendAuthRequest(string url, string email, string password, bool isLogin)
+    private IEnumerator SendAuthRequest(string url, string email, string password, bool isLogin, Action onSuccess)
     {
         // 1. Pack data into JSON string
         string jsonPayload = isLogin 
@@ -68,6 +69,8 @@ public class AuthManager : MonoBehaviour
                         UserId = responseData.userId;
 
                         Debug.Log($"[AuthManager] JWT Passport Captured! User UUID: {UserId}");
+
+                        onSuccess?.Invoke();
                     }
                 }
                 else
