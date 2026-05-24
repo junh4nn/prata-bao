@@ -559,7 +559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GachaManager
   backendUrl: http://localhost:3000/api/gacha/pull
-  testUserId: b802edeb-2e2c-4a9a-860d-49150c26672d
+  testUserId: 
   pullButton: {fileID: 274200197}
   resultText: {fileID: 686649982}
   balanceText: {fileID: 771115079}
