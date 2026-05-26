@@ -130,12 +130,12 @@ public static class SceneBuilder
         formCard.rectTransform.anchoredPosition = new Vector2(0, 80);
 
         var emailInput = MakeInputField(formCard.transform, "EmailInput", "Email address", false);
-        SetAnchored(emailInput.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        emailInput.rectTransform.anchoredPosition = new Vector2(0, -40);
+        SetAnchored(emailInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
+        emailInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -40);
 
         var passwordInput = MakeInputField(formCard.transform, "PasswordInput", "Password", true);
-        SetAnchored(passwordInput.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        passwordInput.rectTransform.anchoredPosition = new Vector2(0, -108);
+        SetAnchored(passwordInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
+        passwordInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -108);
 
         var (actionBtnGo, _) = MakeButton(formCard.transform, "ActionButton", "Sign In");
         SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
