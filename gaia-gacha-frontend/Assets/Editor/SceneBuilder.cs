@@ -73,6 +73,9 @@ public static class SceneBuilder
         authSO.FindProperty("toggleModeText").objectReferenceValue     = Find<TextMeshProUGUI>(authPanel.transform, "FormCard/ToggleModeButton/Text");
         authSO.FindProperty("statusText").objectReferenceValue         = Find<TextMeshProUGUI>(authPanel.transform, "StatusText");
         authSO.ApplyModifiedProperties();
+        WarnIfUnwired(authSO, "authManager", "authPanel", "gachaPanel", "emailInputField",
+            "passwordInputField", "actionButton", "actionButtonText",
+            "toggleModeButton", "toggleModeText", "statusText");
 
         // Wire GachaManager
         var gachaSO = new SerializedObject(gachaMgr);
@@ -86,6 +89,9 @@ public static class SceneBuilder
         gachaSO.FindProperty("defaultCardState").objectReferenceValue  = Find<Transform>(gachaPanel.transform, "ItemCard/DefaultState")?.gameObject;
         gachaSO.FindProperty("revealedCardState").objectReferenceValue = Find<Transform>(gachaPanel.transform, "ItemCard/RevealedState")?.gameObject;
         gachaSO.ApplyModifiedProperties();
+        WarnIfUnwired(gachaSO, "pullButton", "statusText", "balanceText", "starsText",
+            "itemNameText", "rarityBadgeImage", "rarityBadgeText",
+            "defaultCardState", "revealedCardState");
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         Debug.Log("<color=green>[SceneBuilder] Scene rebuilt successfully! Press Play to test.</color>");
@@ -217,7 +223,7 @@ public static class SceneBuilder
         itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -60);
         itemNameTmp.alignment = TextAlignmentOptions.Center;
 
-        var rarityBadge = MakeImage(revealedState.transform, "RarityBadge", new Color(0.659f, 0.710f, 0.635f));
+        var rarityBadge = MakeImage(revealedState.transform, "RarityBadge", Hex("#A8B5A2"));
         SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(110, 26));
         rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -100);
 
@@ -313,7 +319,8 @@ public static class SceneBuilder
     static (GameObject go, TextMeshProUGUI label) MakeButton(Transform parent, string name, string text)
     {
         var bg  = MakeImage(parent, name, ColButton);
-        bg.gameObject.AddComponent<Button>();
+        var btn = bg.gameObject.AddComponent<Button>();
+        btn.targetGraphic = bg;
         var tmp = MakeTMP(bg.transform, "Text", text, 16, ColButtonText, FontStyles.Bold);
         SetAnchored(tmp.rectTransform, Vector2.zero, Vector2.one, Vector2.zero);
         tmp.alignment = TextAlignmentOptions.Center;
@@ -355,7 +362,18 @@ public static class SceneBuilder
 
     static Color Hex(string hex)
     {
-        ColorUtility.TryParseHtmlString(hex, out var c);
+        if (!ColorUtility.TryParseHtmlString(hex, out var c))
+            Debug.LogError($"[SceneBuilder] Invalid hex color: '{hex}'");
         return c;
+    }
+
+    static void WarnIfUnwired(SerializedObject so, params string[] props)
+    {
+        foreach (var prop in props)
+        {
+            var p = so.FindProperty(prop);
+            if (p == null || p.objectReferenceValue == null)
+                Debug.LogWarning($"[SceneBuilder] '{prop}' on {so.targetObject.name} was not wired.");
+        }
     }
 }
