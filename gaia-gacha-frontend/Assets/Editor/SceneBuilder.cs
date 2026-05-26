@@ -151,7 +151,7 @@ public static class SceneBuilder
         SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 40));
         statusTmp.rectTransform.anchoredPosition = new Vector2(0, 30);
         statusTmp.alignment = TextAlignmentOptions.Center;
-        statusTmp.enableWordWrapping = true;
+        statusTmp.textWrappingMode = TextWrappingModes.Normal;
 
         return panel.gameObject;
     }
@@ -181,66 +181,66 @@ public static class SceneBuilder
         // Banner label
         var bannerTmp = MakeTMP(panel.transform, "BannerLabel", "NATURE'S COLLECTION", 11, ColTextMuted, FontStyles.Normal);
         SetAnchored(bannerTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 30));
-        bannerTmp.rectTransform.anchoredPosition = new Vector2(0, -90);
+        bannerTmp.rectTransform.anchoredPosition = new Vector2(0, -80);
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
         // Item card
         var itemCard = MakeImage(panel.transform, "ItemCard", ColSurface);
-        SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 320));
-        itemCard.rectTransform.anchoredPosition = new Vector2(0, -280);
+        SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 240));
+        itemCard.rectTransform.anchoredPosition = new Vector2(0, -200);
 
         // Default card state
         var defaultState = MakeRect(itemCard.transform, "DefaultState");
         Stretch(defaultState);
 
-        var questionMark = MakeTMP(defaultState.transform, "QuestionMark", "?", 64, ColTextMuted, FontStyles.Bold);
-        SetAnchored(questionMark.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 80));
-        questionMark.rectTransform.anchoredPosition = new Vector2(0, 20);
+        var questionMark = MakeTMP(defaultState.transform, "QuestionMark", "?", 48, ColTextMuted, FontStyles.Bold);
+        SetAnchored(questionMark.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 60));
+        questionMark.rectTransform.anchoredPosition = new Vector2(0, 10);
         questionMark.alignment = TextAlignmentOptions.Center;
 
-        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 13, ColTextMuted, FontStyles.Normal);
+        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 12, ColTextMuted, FontStyles.Normal);
         SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 40));
-        readyTmp.rectTransform.anchoredPosition = new Vector2(0, -40);
+        readyTmp.rectTransform.anchoredPosition = new Vector2(0, -36);
         readyTmp.alignment = TextAlignmentOptions.Center;
-        readyTmp.enableWordWrapping = true;
+        readyTmp.textWrappingMode = TextWrappingModes.Normal;
 
         // Revealed card state
         var revealedState = MakeRect(itemCard.transform, "RevealedState");
         Stretch(revealedState);
         revealedState.gameObject.SetActive(false);
 
-        var starsTmp = MakeTMP(revealedState.transform, "StarsText", "★", 24, ColGold, FontStyles.Normal);
-        SetAnchored(starsTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(200, 40));
-        starsTmp.rectTransform.anchoredPosition = new Vector2(0, -30);
+        var starsTmp = MakeTMP(revealedState.transform, "StarsText", "★", 22, ColGold, FontStyles.Normal);
+        SetAnchored(starsTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(200, 36));
+        starsTmp.rectTransform.anchoredPosition = new Vector2(0, -20);
         starsTmp.alignment = TextAlignmentOptions.Center;
 
         var circle = MakeImage(revealedState.transform, "PlaceholderCircle", ColTextMuted);
-        SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100, 100));
-        circle.rectTransform.anchoredPosition = new Vector2(0, 20);
+        SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 80));
+        circle.rectTransform.anchoredPosition = new Vector2(0, 16);
 
-        var itemNameTmp = MakeTMP(revealedState.transform, "ItemNameText", "", 18, ColTextPrimary, FontStyles.Bold);
-        SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 30));
-        itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -60);
+        var itemNameTmp = MakeTMP(revealedState.transform, "ItemNameText", "", 16, ColTextPrimary, FontStyles.Bold);
+        SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 28));
+        itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -48);
         itemNameTmp.alignment = TextAlignmentOptions.Center;
 
         var rarityBadge = MakeImage(revealedState.transform, "RarityBadge", Hex("#A8B5A2"));
-        SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(110, 26));
-        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -100);
+        SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100, 24));
+        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -80);
 
-        var rarityTmp = MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 11, ColButtonText, FontStyles.Bold);
+        var rarityTmp = MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 10, ColButtonText, FontStyles.Bold);
         SetAnchored(rarityTmp.rectTransform, Vector2.zero, Vector2.one, new Vector2(0, 0));
         rarityTmp.alignment = TextAlignmentOptions.Center;
 
         // Pull button
         var (pullBtnGo, _) = MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins");
-        SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 56));
-        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -660);
+        SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
+        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -468);
 
         // Status text
-        var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
-        SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 36));
-        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -724);
+        var statusTmp = MakeTMP(panel.transform, "StatusText", "", 12, ColTextMuted, FontStyles.Normal);
+        SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 32));
+        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -530);
         statusTmp.alignment = TextAlignmentOptions.Center;
 
         return panel.gameObject;
