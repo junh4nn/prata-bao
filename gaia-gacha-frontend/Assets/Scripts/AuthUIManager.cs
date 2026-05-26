@@ -16,60 +16,71 @@ public class AuthUIManager : MonoBehaviour
     [SerializeField] private TMP_InputField passwordInputField;
 
     [Header("UI Interaction Buttons")]
-    [SerializeField] private Button loginButton;
-    [SerializeField] private Button registerButton;
+    [SerializeField] private Button actionButton;
+    [SerializeField] private TextMeshProUGUI actionButtonText;
+    [SerializeField] private Button toggleModeButton;
+    [SerializeField] private TextMeshProUGUI toggleModeText;
 
     [Header("Status Feedback")]
     [SerializeField] private TextMeshProUGUI statusText;
 
+    private bool isLoginMode = true;
+
     void Start()
     {
-        // Clear any placeholder error/status text at startup
-        if (statusText != null) statusText.text = "Welcome! Please log in or register.";
-
-        // Explicitly wire up our button click events via code
-        if (loginButton != null) loginButton.onClick.AddListener(OnLoginClicked);
-        if (registerButton != null) registerButton.onClick.AddListener(OnRegisterClicked);
-        
-        // Safety check to ensure we didn't forget the manager connection
         if (authManager == null)
-        {
             authManager = FindAnyObjectByType<AuthManager>();
-            if (authManager == null) Debug.LogError("AuthUIManager is missing a reference to AuthManager!");
-        }
+
+        if (actionButton != null) actionButton.onClick.AddListener(OnActionClicked);
+        if (toggleModeButton != null) toggleModeButton.onClick.AddListener(OnToggleModeClicked);
 
         if (authPanel != null) authPanel.SetActive(true);
         if (gachaPanel != null) gachaPanel.SetActive(false);
+
+        UpdateModeUI();
     }
 
-    private void OnLoginClicked()
+    private void OnActionClicked()
     {
-        string email = emailInputField.text.Trim();
-        string password = passwordInputField.text;
+        string email = emailInputField != null ? emailInputField.text.Trim() : "";
+        string password = passwordInputField != null ? passwordInputField.text : "";
 
-        if (ValidateInputs(email, password))
+        if (!ValidateInputs(email, password)) return;
+
+        if (isLoginMode)
         {
-            statusText.text = "<color=yellow>Logging in...</color>";
-            authManager.Login(email, password, SwapToGachaPage); // We pass a callback method down to the network manager
+            if (statusText != null) statusText.text = "<color=#E9C46A>Logging in...</color>";
+            authManager.Login(email, password, SwapToGachaPage);
         }
-    }
-
-    private void OnRegisterClicked()
-    {
-        string email = emailInputField.text.Trim();
-        string password = passwordInputField.text;
-
-        if (ValidateInputs(email, password))
+        else
         {
-            statusText.text = "<color=yellow>Creating account...</color>";
+            if (statusText != null) statusText.text = "<color=#E9C46A>Creating account...</color>";
             authManager.Register(email, password);
         }
     }
-    
+
+    private void OnToggleModeClicked()
+    {
+        isLoginMode = !isLoginMode;
+        if (statusText != null) statusText.text = "";
+        UpdateModeUI();
+    }
+
+    private void UpdateModeUI()
+    {
+        if (actionButtonText != null)
+            actionButtonText.text = isLoginMode ? "Sign In" : "Create Account";
+
+        if (toggleModeText != null)
+            toggleModeText.text = isLoginMode
+                ? "Don't have an account? <b>Register</b>"
+                : "Already have an account? <b>Sign In</b>";
+    }
+
     public void SwapToGachaPage()
     {
-        if (authPanel != null) authPanel.SetActive(false); // Hides login page
-        if (gachaPanel != null) gachaPanel.SetActive(true);  // Reveals pulling game interface
+        if (authPanel != null) authPanel.SetActive(false);
+        if (gachaPanel != null) gachaPanel.SetActive(true);
     }
 
     private bool ValidateInputs(string email, string password)
@@ -79,13 +90,11 @@ public class AuthUIManager : MonoBehaviour
             if (statusText != null) statusText.text = "<color=red>Fields cannot be empty!</color>";
             return false;
         }
-
         if (password.Length < 6)
         {
             if (statusText != null) statusText.text = "<color=red>Password must be at least 6 characters.</color>";
             return false;
         }
-
         return true;
     }
 }
