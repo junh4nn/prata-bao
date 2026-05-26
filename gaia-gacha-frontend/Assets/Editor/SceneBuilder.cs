@@ -188,7 +188,7 @@ public static class SceneBuilder
         // Item card
         var itemCard = MakeImage(panel.transform, "ItemCard", ColSurface);
         SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 240));
-        itemCard.rectTransform.anchoredPosition = new Vector2(0, -200);
+        itemCard.rectTransform.anchoredPosition = new Vector2(0, -300);
 
         // Default card state
         var defaultState = MakeRect(itemCard.transform, "DefaultState");
