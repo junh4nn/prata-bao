@@ -29,7 +29,10 @@ public class AuthUIManager : MonoBehaviour
     void Start()
     {
         if (authManager == null)
+        {
             authManager = FindAnyObjectByType<AuthManager>();
+            if (authManager == null) Debug.LogError("[AuthUIManager] AuthManager not found in scene!");
+        }
 
         if (actionButton != null) actionButton.onClick.AddListener(OnActionClicked);
         if (toggleModeButton != null) toggleModeButton.onClick.AddListener(OnToggleModeClicked);
