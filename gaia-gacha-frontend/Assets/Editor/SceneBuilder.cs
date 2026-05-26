@@ -3,6 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using TMPro;
 
 public static class SceneBuilder
@@ -31,7 +32,7 @@ public static class SceneBuilder
         // Event System
         var esGo = new GameObject("EventSystem");
         esGo.AddComponent<EventSystem>();
-        esGo.AddComponent<StandaloneInputModule>();
+        esGo.AddComponent<InputSystemUIInputModule>();
 
         // Canvas
         var canvasGo = new GameObject("Canvas");
