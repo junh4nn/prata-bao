@@ -188,7 +188,7 @@ public static class SceneBuilder
         // Item card
         var itemCard = MakeImage(panel.transform, "ItemCard", ColSurface);
         SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 320));
-        itemCard.rectTransform.anchoredPosition = new Vector2(0, -400);
+        itemCard.rectTransform.anchoredPosition = new Vector2(0, -380);
 
         // Default card state
         var defaultState = MakeRect(itemCard.transform, "DefaultState");
@@ -235,7 +235,7 @@ public static class SceneBuilder
         // Pull button
         var (pullBtnGo, _) = MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins");
         SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -550);
+        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -580);
 
         // Status text
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 12, ColTextMuted, FontStyles.Normal);
