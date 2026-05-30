@@ -16,10 +16,17 @@ public static class SceneBuilder
     static readonly Color ColTextMuted   = Hex("#95B8A0");
     static readonly Color ColGold        = Hex("#E9C46A");
 
+    static TMP_FontAsset s_Poppins;
+    static TMP_FontAsset s_Cinzel;
+
     [MenuItem("GaiaGacha/Build Scene")]
     static void Build()
     {
-        // Clear existing UI objects
+        s_Poppins = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
+        s_Cinzel  = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Cinzel-Regular SDF.asset");
+        if (s_Poppins == null) Debug.LogWarning("[SceneBuilder] Poppins font not found at Assets/Fonts/Poppins-SemiBold SDF.asset");
+        if (s_Cinzel  == null) Debug.LogWarning("[SceneBuilder] Cinzel font not found at Assets/Fonts/Cinzel-Regular SDF.asset");
+
         foreach (var c in Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None))
             Object.DestroyImmediate(c.gameObject);
         foreach (var e in Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None))
@@ -29,12 +36,10 @@ public static class SceneBuilder
         foreach (var g in Object.FindObjectsByType<GachaManager>(FindObjectsSortMode.None))
             Object.DestroyImmediate(g.gameObject);
 
-        // Event System
         var esGo = new GameObject("EventSystem");
         esGo.AddComponent<EventSystem>();
         esGo.AddComponent<InputSystemUIInputModule>();
 
-        // Canvas
         var canvasGo = new GameObject("Canvas");
         var canvas = canvasGo.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -44,16 +49,13 @@ public static class SceneBuilder
         scaler.matchWidthOrHeight = 0.5f;
         canvasGo.AddComponent<GraphicRaycaster>();
 
-        // Background
         var bgImg = MakeImage(canvasGo.transform, "Background", ColBg);
         Stretch(bgImg.rectTransform);
 
-        // Panels
         var authPanel  = BuildAuthPanel(canvasGo.transform);
         var gachaPanel = BuildGachaPanel(canvasGo.transform);
         gachaPanel.SetActive(false);
 
-        // Manager GameObjects
         var authMgrGo = new GameObject("_AuthManager");
         var authMgr   = authMgrGo.AddComponent<AuthManager>();
         var authUIMgr = authMgrGo.AddComponent<AuthUIManager>();
@@ -61,7 +63,6 @@ public static class SceneBuilder
         var gachaMgrGo = new GameObject("_GachaManager");
         var gachaMgr   = gachaMgrGo.AddComponent<GachaManager>();
 
-        // Wire AuthUIManager
         var authSO = new SerializedObject(authUIMgr);
         authSO.FindProperty("authManager").objectReferenceValue        = authMgr;
         authSO.FindProperty("authPanel").objectReferenceValue          = authPanel;
@@ -78,7 +79,6 @@ public static class SceneBuilder
             "passwordInputField", "actionButton", "actionButtonText",
             "toggleModeButton", "toggleModeText", "statusText");
 
-        // Wire GachaManager
         var gachaSO = new SerializedObject(gachaMgr);
         gachaSO.FindProperty("pullButton").objectReferenceValue        = Find<Button>(gachaPanel.transform, "PullButton");
         gachaSO.FindProperty("statusText").objectReferenceValue        = Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");
@@ -105,7 +105,6 @@ public static class SceneBuilder
         var panel = MakeRect(parent, "AuthPanel");
         SetAnchored(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(340, 580));
 
-        // Logo area
         var logoArea = MakeRect(panel.transform, "LogoArea");
         SetAnchored(logoArea, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(340, 160));
         logoArea.anchoredPosition = new Vector2(0, -80);
@@ -114,20 +113,19 @@ public static class SceneBuilder
         SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(72, 72));
         logoIcon.rectTransform.anchoredPosition = new Vector2(0, -20);
 
-        var titleTmp = MakeTMP(logoArea.transform, "TitleText", "GAIAGACHA", 32, ColTextPrimary, FontStyles.Bold);
-        SetAnchored(titleTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 44));
+        var titleTmp = MakeTMP(logoArea.transform, "TitleText", "GAIAGACHA", 42, ColTextPrimary, FontStyles.Bold, s_Cinzel);
+        SetAnchored(titleTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(320, 52));
         titleTmp.rectTransform.anchoredPosition = new Vector2(0, -108);
         titleTmp.alignment = TextAlignmentOptions.Center;
 
-        var subtitleTmp = MakeTMP(logoArea.transform, "SubtitleText", "DISCOVER  ·  PULL  ·  COLLECT", 11, ColTextMuted, FontStyles.Normal);
+        var subtitleTmp = MakeTMP(logoArea.transform, "SubtitleText", "DISCOVER  ·  PULL  ·  COLLECT", 13, ColTextMuted, FontStyles.Normal);
         SetAnchored(subtitleTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 24));
-        subtitleTmp.rectTransform.anchoredPosition = new Vector2(0, -148);
+        subtitleTmp.rectTransform.anchoredPosition = new Vector2(0, -156);
         subtitleTmp.alignment = TextAlignmentOptions.Center;
         subtitleTmp.characterSpacing = 4;
 
-        // Form card
         var formCard = MakeImage(panel.transform, "FormCard", ColSurface);
-        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 300));
+        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 310));
         formCard.rectTransform.anchoredPosition = new Vector2(0, 80);
 
         var emailInput = MakeInputField(formCard.transform, "EmailInput", "Email address", false);
@@ -138,15 +136,14 @@ public static class SceneBuilder
         SetAnchored(passwordInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
         passwordInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -108);
 
-        var (actionBtnGo, _) = MakeButton(formCard.transform, "ActionButton", "Sign In");
-        SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
+        var (actionBtnGo, _) = MakeButton(formCard.transform, "ActionButton", "Sign In", 20);
+        SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 62));
         actionBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -184);
 
-        var (toggleBtnGo, _) = MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account? <b>Register</b>");
+        var (toggleBtnGo, _) = MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account? <b>Register</b>", 14);
         SetAnchored(toggleBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 36));
-        toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -252);
+        toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -262);
 
-        // Status text
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
         SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 40));
         statusTmp.rectTransform.anchoredPosition = new Vector2(0, 30);
@@ -163,12 +160,11 @@ public static class SceneBuilder
         var panel = MakeRect(parent, "GachaPanel");
         Stretch(panel);
 
-        // Header bar
         var header = MakeImage(panel.transform, "HeaderBar", ColSurface);
         SetAnchored(header.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 64));
         header.rectTransform.anchoredPosition = new Vector2(0, -32);
 
-        var titleTmp = MakeTMP(header.transform, "TitleText", "GaiaGacha", 20, ColTextPrimary, FontStyles.Bold);
+        var titleTmp = MakeTMP(header.transform, "TitleText", "GaiaGacha", 24, ColTextPrimary, FontStyles.Bold, s_Cinzel);
         SetAnchored(titleTmp.rectTransform, new Vector2(0f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 40));
         titleTmp.rectTransform.anchoredPosition = new Vector2(20, 0);
         titleTmp.alignment = TextAlignmentOptions.MidlineLeft;
@@ -178,40 +174,36 @@ public static class SceneBuilder
         balanceTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         balanceTmp.alignment = TextAlignmentOptions.MidlineRight;
 
-        // Banner label
-        var bannerTmp = MakeTMP(panel.transform, "BannerLabel", "NATURE'S COLLECTION", 11, ColTextMuted, FontStyles.Normal);
+        var bannerTmp = MakeTMP(panel.transform, "BannerLabel", "NATURE'S COLLECTION", 14, ColTextMuted, FontStyles.Normal);
         SetAnchored(bannerTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 30));
         bannerTmp.rectTransform.anchoredPosition = new Vector2(0, -260);
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
-        // Item card
         var itemCard = MakeImage(panel.transform, "ItemCard", ColSurface);
         SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 320));
         itemCard.rectTransform.anchoredPosition = new Vector2(0, -380);
 
-        // Default card state
         var defaultState = MakeRect(itemCard.transform, "DefaultState");
         Stretch(defaultState);
 
-        var questionMark = MakeTMP(defaultState.transform, "QuestionMark", "?", 48, ColTextMuted, FontStyles.Bold);
-        SetAnchored(questionMark.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 60));
+        var questionMark = MakeTMP(defaultState.transform, "QuestionMark", "?", 52, ColTextPrimary, FontStyles.Bold);
+        SetAnchored(questionMark.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 70));
         questionMark.rectTransform.anchoredPosition = new Vector2(0, 10);
         questionMark.alignment = TextAlignmentOptions.Center;
 
-        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 12, ColTextMuted, FontStyles.Normal);
-        SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 40));
-        readyTmp.rectTransform.anchoredPosition = new Vector2(0, -36);
+        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 15, ColTextPrimary, FontStyles.Normal);
+        SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 44));
+        readyTmp.rectTransform.anchoredPosition = new Vector2(0, -40);
         readyTmp.alignment = TextAlignmentOptions.Center;
         readyTmp.textWrappingMode = TextWrappingModes.Normal;
 
-        // Revealed card state
         var revealedState = MakeRect(itemCard.transform, "RevealedState");
         Stretch(revealedState);
         revealedState.gameObject.SetActive(false);
 
-        var starsTmp = MakeTMP(revealedState.transform, "StarsText", "★", 22, ColGold, FontStyles.Normal);
-        SetAnchored(starsTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(200, 36));
+        var starsTmp = MakeTMP(revealedState.transform, "StarsText", "★", 24, ColGold, FontStyles.Normal);
+        SetAnchored(starsTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(200, 40));
         starsTmp.rectTransform.anchoredPosition = new Vector2(0, -20);
         starsTmp.alignment = TextAlignmentOptions.Center;
 
@@ -219,28 +211,26 @@ public static class SceneBuilder
         SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 80));
         circle.rectTransform.anchoredPosition = new Vector2(0, 16);
 
-        var itemNameTmp = MakeTMP(revealedState.transform, "ItemNameText", "", 16, ColTextPrimary, FontStyles.Bold);
-        SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 28));
+        var itemNameTmp = MakeTMP(revealedState.transform, "ItemNameText", "", 18, ColTextPrimary, FontStyles.Bold);
+        SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 32));
         itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -48);
         itemNameTmp.alignment = TextAlignmentOptions.Center;
 
         var rarityBadge = MakeImage(revealedState.transform, "RarityBadge", Hex("#A8B5A2"));
-        SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(100, 24));
-        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -80);
+        SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(110, 28));
+        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -84);
 
-        var rarityTmp = MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 10, ColButtonText, FontStyles.Bold);
+        var rarityTmp = MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 12, ColButtonText, FontStyles.Bold);
         SetAnchored(rarityTmp.rectTransform, Vector2.zero, Vector2.one, new Vector2(0, 0));
         rarityTmp.alignment = TextAlignmentOptions.Center;
 
-        // Pull button
-        var (pullBtnGo, _) = MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins");
-        SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
+        var (pullBtnGo, _) = MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins", 20);
+        SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 62));
         pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -580);
 
-        // Status text
-        var statusTmp = MakeTMP(panel.transform, "StatusText", "", 12, ColTextMuted, FontStyles.Normal);
+        var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
         SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 32));
-        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -655);
+        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -660);
         statusTmp.alignment = TextAlignmentOptions.Center;
 
         return panel.gameObject;
@@ -263,7 +253,7 @@ public static class SceneBuilder
         return img;
     }
 
-    static TextMeshProUGUI MakeTMP(Transform parent, string name, string text, float size, Color color, FontStyles style)
+    static TextMeshProUGUI MakeTMP(Transform parent, string name, string text, float size, Color color, FontStyles style, TMP_FontAsset font = null)
     {
         var rt = MakeRect(parent, name);
         var tmp = rt.gameObject.AddComponent<TextMeshProUGUI>();
@@ -271,6 +261,8 @@ public static class SceneBuilder
         tmp.fontSize = size;
         tmp.color = color;
         tmp.fontStyle = style;
+        var f = font ?? s_Poppins;
+        if (f != null) tmp.font = f;
         return tmp;
     }
 
@@ -298,6 +290,7 @@ public static class SceneBuilder
         phTmp.text = placeholder;
         phTmp.color = ColTextMuted;
         phTmp.fontSize = 15;
+        if (s_Poppins != null) phTmp.font = s_Poppins;
 
         var txtGo = new GameObject("Text");
         txtGo.transform.SetParent(textArea.transform, false);
@@ -308,6 +301,7 @@ public static class SceneBuilder
         var txtTmp = txtGo.AddComponent<TextMeshProUGUI>();
         txtTmp.color = ColTextPrimary;
         txtTmp.fontSize = 15;
+        if (s_Poppins != null) txtTmp.font = s_Poppins;
 
         input.textComponent = txtTmp;
         input.placeholder = phTmp;
@@ -317,25 +311,25 @@ public static class SceneBuilder
         return input;
     }
 
-    static (GameObject go, TextMeshProUGUI label) MakeButton(Transform parent, string name, string text)
+    static (GameObject go, TextMeshProUGUI label) MakeButton(Transform parent, string name, string text, float fontSize = 16)
     {
         var bg  = MakeImage(parent, name, ColButton);
         var btn = bg.gameObject.AddComponent<Button>();
         btn.targetGraphic = bg;
-        var tmp = MakeTMP(bg.transform, "Text", text, 16, ColButtonText, FontStyles.Bold);
+        var tmp = MakeTMP(bg.transform, "Text", text, fontSize, ColButtonText, FontStyles.Bold);
         SetAnchored(tmp.rectTransform, Vector2.zero, Vector2.one, Vector2.zero);
         tmp.alignment = TextAlignmentOptions.Center;
         return (bg.gameObject, tmp);
     }
 
-    static (GameObject go, TextMeshProUGUI label) MakeLinkButton(Transform parent, string name, string text)
+    static (GameObject go, TextMeshProUGUI label) MakeLinkButton(Transform parent, string name, string text, float fontSize = 13)
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
         go.AddComponent<RectTransform>();
         go.AddComponent<Image>().color = Color.clear;
         go.AddComponent<Button>();
-        var tmp = MakeTMP(go.transform, "Text", text, 13, ColTextMuted, FontStyles.Normal);
+        var tmp = MakeTMP(go.transform, "Text", text, fontSize, ColTextMuted, FontStyles.Normal);
         SetAnchored(tmp.rectTransform, Vector2.zero, Vector2.one, Vector2.zero);
         tmp.alignment = TextAlignmentOptions.Center;
         return (go, tmp);
