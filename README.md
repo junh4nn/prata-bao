@@ -250,13 +250,13 @@ The Main Hub, Quiz Screen, and Inventory Screen are planned for Milestone 2.
 | MS | Tasks | Description | In-Charge | Date |
 |----|-------|-------------|-----------|------|
 | 1 | Backend setup | Express server, Supabase integration, CORS | Matthew | 10–15 May |
-| 1 | Auth routes | `/api/auth/register` and `/api/auth/login` | Matthew | 15–18 May |
+| 1 | Auth routes | `/api/auth/register` and `/api/auth/login` | Jun Han | 15–18 May |
 | 1 | Gacha route | `/api/gacha/pull` with weighted random and coin deduction | Matthew | 18–22 May |
 | 1 | Unity project setup | Unity 6 project, URP, folder structure | Jun Han | 10–15 May |
 | 1 | Auth UI | Login/register panel, mode toggle, input validation | Jun Han | 15–22 May |
 | 1 | Gacha UI | Item card, rarity diamonds, badge, pull button | Jun Han | 22–28 May |
 | 1 | Unity–backend integration | `AuthManager`, `GachaManager`, UnityWebRequest | Matthew | 23–28 May |
-| 1 | Ecology UI redesign | Cinzel font, colour palette, ecology-themed layout | Jun Han | 28–31 May |
+| 1 | Ecology UI redesign | Cinzel font, colour palette, ecology-themed layout | Matthew | 28–31 May |
 
 **Evaluation Milestone 1:**
 - Working register and login flow (Unity → Express → Supabase)
