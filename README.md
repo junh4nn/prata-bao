@@ -316,4 +316,4 @@ https://youtu.be/fgu2apnHhzM
 
 ## Work Log
 
-*Work log spreadsheet link to be added.*
+https://docs.google.com/spreadsheets/d/1laB9u0eCk6dJM0JFLhfehZybj0WmniwXW8iZAgFjJ70/edit?usp=sharing
