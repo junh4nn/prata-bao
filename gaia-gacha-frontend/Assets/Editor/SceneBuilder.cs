@@ -83,14 +83,17 @@ public static class SceneBuilder
         gachaSO.FindProperty("pullButton").objectReferenceValue        = Find<Button>(gachaPanel.transform, "PullButton");
         gachaSO.FindProperty("statusText").objectReferenceValue        = Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");
         gachaSO.FindProperty("balanceText").objectReferenceValue       = Find<TextMeshProUGUI>(gachaPanel.transform, "HeaderBar/BalanceText");
-        gachaSO.FindProperty("starsText").objectReferenceValue         = Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/StarsText");
+        gachaSO.FindProperty("starImage1").objectReferenceValue         = Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star1");
+        gachaSO.FindProperty("starImage2").objectReferenceValue         = Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star2");
+        gachaSO.FindProperty("starImage3").objectReferenceValue         = Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star3");
         gachaSO.FindProperty("itemNameText").objectReferenceValue      = Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/ItemNameText");
         gachaSO.FindProperty("rarityBadgeImage").objectReferenceValue  = Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadge");
         gachaSO.FindProperty("rarityBadgeText").objectReferenceValue   = Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadge/RarityText");
         gachaSO.FindProperty("defaultCardState").objectReferenceValue  = Find<Transform>(gachaPanel.transform, "ItemCard/DefaultState")?.gameObject;
         gachaSO.FindProperty("revealedCardState").objectReferenceValue = Find<Transform>(gachaPanel.transform, "ItemCard/RevealedState")?.gameObject;
         gachaSO.ApplyModifiedProperties();
-        WarnIfUnwired(gachaSO, "pullButton", "statusText", "balanceText", "starsText",
+        WarnIfUnwired(gachaSO, "pullButton", "statusText", "balanceText",
+            "starImage1", "starImage2", "starImage3",
             "itemNameText", "rarityBadgeImage", "rarityBadgeText",
             "defaultCardState", "revealedCardState");
 
@@ -202,10 +205,21 @@ public static class SceneBuilder
         Stretch(revealedState);
         revealedState.gameObject.SetActive(false);
 
-        var starsTmp = MakeTMP(revealedState.transform, "StarsText", "★", 24, ColGold, FontStyles.Normal);
-        SetAnchored(starsTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(200, 40));
-        starsTmp.rectTransform.anchoredPosition = new Vector2(0, -20);
-        starsTmp.alignment = TextAlignmentOptions.Center;
+        var starsRow = MakeRect(revealedState.transform, "StarsRow");
+        SetAnchored(starsRow, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(80, 20));
+        starsRow.anchoredPosition = new Vector2(0, -24);
+
+        var star1 = MakeImage(starsRow.transform, "Star1", ColGold);
+        SetAnchored(star1.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        star1.rectTransform.anchoredPosition = new Vector2(-28, 0);
+
+        var star2 = MakeImage(starsRow.transform, "Star2", new Color(0.2f, 0.32f, 0.24f));
+        SetAnchored(star2.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        star2.rectTransform.anchoredPosition = new Vector2(0, 0);
+
+        var star3 = MakeImage(starsRow.transform, "Star3", new Color(0.2f, 0.32f, 0.24f));
+        SetAnchored(star3.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        star3.rectTransform.anchoredPosition = new Vector2(28, 0);
 
         var circle = MakeImage(revealedState.transform, "PlaceholderCircle", ColTextMuted);
         SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 80));

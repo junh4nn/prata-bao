@@ -18,7 +18,9 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI balanceText;
 
     [Header("UI - Item Card")]
-    [SerializeField] private TextMeshProUGUI starsText;
+    [SerializeField] private Image starImage1;
+    [SerializeField] private Image starImage2;
+    [SerializeField] private Image starImage3;
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image rarityBadgeImage;
     [SerializeField] private TextMeshProUGUI rarityBadgeText;
@@ -27,9 +29,11 @@ public class GachaManager : MonoBehaviour
 
     private bool isPulling = false;
 
-    static readonly Color ColCommon    = new Color(0.659f, 0.710f, 0.635f);
-    static readonly Color ColRare      = new Color(0.322f, 0.718f, 0.533f);
-    static readonly Color ColLegendary = new Color(0.914f, 0.769f, 0.404f);
+    static readonly Color ColCommon      = new Color(0.659f, 0.710f, 0.635f);
+    static readonly Color ColRare        = new Color(0.322f, 0.718f, 0.533f);
+    static readonly Color ColLegendary   = new Color(0.914f, 0.769f, 0.404f);
+    static readonly Color ColStarActive  = new Color(0.914f, 0.769f, 0.404f);
+    static readonly Color ColStarInactive = new Color(0.2f, 0.32f, 0.24f);
 
     void Start()
     {
@@ -101,13 +105,10 @@ public class GachaManager : MonoBehaviour
         if (defaultCardState != null) defaultCardState.SetActive(false);
         if (revealedCardState != null) revealedCardState.SetActive(true);
 
-        if (starsText != null)
-            starsText.text = response.item.rarity switch
-            {
-                "Legendary" => "★ ★ ★",
-                "Rare"      => "★ ★",
-                _           => "★"
-            };
+        int starCount = response.item.rarity switch { "Legendary" => 3, "Rare" => 2, _ => 1 };
+        if (starImage1 != null) starImage1.color = starCount >= 1 ? ColStarActive : ColStarInactive;
+        if (starImage2 != null) starImage2.color = starCount >= 2 ? ColStarActive : ColStarInactive;
+        if (starImage3 != null) starImage3.color = starCount >= 3 ? ColStarActive : ColStarInactive;
 
         if (itemNameText != null)
             itemNameText.text = response.item.name;
