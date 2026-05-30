@@ -312,7 +312,7 @@ The proof of concept demonstrates the full end-to-end flow of the core feature:
 
 This confirms that all three layers (Unity → Express → Supabase) are integrated and working together.
 
-*Video demonstration link to be added.*
+https://youtu.be/fgu2apnHhzM
 
 ## Work Log
 
