@@ -1,58 +1,77 @@
+// AuthUIManager.cs — controls what the login/register screen looks like and responds to.
+// Sits alongside AuthManager.cs on the same GameObject.
+// AuthManager handles the actual API calls; this script handles the UI reactions.
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class AuthUIManager : MonoBehaviour
 {
+    // ── Inspector references ─────────────────────────────────────────────────
+    // These are wired automatically by SceneBuilder.cs — no manual dragging needed.
+
     [Header("Dependencies")]
-    [SerializeField] private AuthManager authManager;
+    [SerializeField] private AuthManager authManager; // handles the actual login/register API calls
 
     [Header("UI Pages / Panels")]
-    [SerializeField] private GameObject authPanel;
-    [SerializeField] private GameObject gachaPanel;
+    [SerializeField] private GameObject authPanel;  // the login screen (shown at start)
+    [SerializeField] private GameObject gachaPanel; // the pull screen (shown after login)
 
     [Header("UI Input Fields")]
     [SerializeField] private TMP_InputField emailInputField;
     [SerializeField] private TMP_InputField passwordInputField;
 
     [Header("UI Interaction Buttons")]
-    [SerializeField] private Button actionButton;
-    [SerializeField] private TextMeshProUGUI actionButtonText;
-    [SerializeField] private Button toggleModeButton;
-    [SerializeField] private TextMeshProUGUI toggleModeText;
+    [SerializeField] private Button actionButton;             // the main "Sign In" / "Create Account" button
+    [SerializeField] private TextMeshProUGUI actionButtonText; // the label on that button
+    [SerializeField] private Button toggleModeButton;             // the "Don't have an account?" link
+    [SerializeField] private TextMeshProUGUI toggleModeText;      // the label on that link
 
     [Header("Status Feedback")]
-    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private TextMeshProUGUI statusText; // shows errors and progress messages
 
+    // Tracks whether we're in login mode (true) or register mode (false).
     private bool isLoginMode = true;
+
+    // ── Unity lifecycle ──────────────────────────────────────────────────────
 
     void Start()
     {
+        // If AuthManager wasn't wired, try to find it automatically in the scene.
         if (authManager == null)
         {
             authManager = FindAnyObjectByType<AuthManager>();
             if (authManager == null) Debug.LogError("[AuthUIManager] AuthManager not found in scene!");
         }
 
+        // Register button click listeners.
         if (actionButton != null) actionButton.onClick.AddListener(OnActionClicked);
         if (toggleModeButton != null) toggleModeButton.onClick.AddListener(OnToggleModeClicked);
 
+        // Start on the auth screen with the gacha panel hidden.
         if (authPanel != null) authPanel.SetActive(true);
         if (gachaPanel != null) gachaPanel.SetActive(false);
 
+        // Set the initial button/link text to match login mode.
         UpdateModeUI();
     }
 
+    // ── Button handlers ──────────────────────────────────────────────────────
+
+    // Called when the player taps the main action button ("Sign In" or "Create Account").
     private void OnActionClicked()
     {
-        string email = emailInputField != null ? emailInputField.text.Trim() : "";
-        string password = passwordInputField != null ? passwordInputField.text : "";
+        string email    = emailInputField    != null ? emailInputField.text.Trim() : "";
+        string password = passwordInputField != null ? passwordInputField.text     : "";
 
+        // Don't attempt an API call if the inputs are invalid.
         if (!ValidateInputs(email, password)) return;
 
         if (isLoginMode)
         {
             if (statusText != null) statusText.text = "<color=#E9C46A>Logging in...</color>";
+            // SwapToGachaPage is passed as a callback — AuthManager calls it on success.
             authManager.Login(email, password, SwapToGachaPage);
         }
         else
@@ -62,13 +81,18 @@ public class AuthUIManager : MonoBehaviour
         }
     }
 
+    // Called when the player taps the "Don't have an account? Register" link.
+    // Flips between login and register mode.
     private void OnToggleModeClicked()
     {
         isLoginMode = !isLoginMode;
-        if (statusText != null) statusText.text = "";
+        if (statusText != null) statusText.text = ""; // clear any previous error message
         UpdateModeUI();
     }
 
+    // ── UI state ─────────────────────────────────────────────────────────────
+
+    // Updates the button label and toggle link text to match the current mode.
     private void UpdateModeUI()
     {
         if (actionButtonText != null)
@@ -80,12 +104,17 @@ public class AuthUIManager : MonoBehaviour
                 : "Already have an account?\n<b>Sign In</b>";
     }
 
+    // Hides the auth screen and shows the gacha screen.
+    // Called by AuthManager after a successful login.
     public void SwapToGachaPage()
     {
-        if (authPanel != null) authPanel.SetActive(false);
+        if (authPanel  != null) authPanel.SetActive(false);
         if (gachaPanel != null) gachaPanel.SetActive(true);
     }
 
+    // ── Input validation ─────────────────────────────────────────────────────
+
+    // Returns true if the inputs are acceptable, false + shows an error if not.
     private bool ValidateInputs(string email, string password)
     {
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
