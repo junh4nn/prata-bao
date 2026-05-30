@@ -267,7 +267,7 @@ public static class SceneBuilder
         questionMark.rectTransform.anchoredPosition = new Vector2(0, 10);
         questionMark.alignment = TextAlignmentOptions.Center;
 
-        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 12, ColTextMuted, FontStyles.Italic);
+        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "What will nature reveal?", 12, ColTextMuted, FontStyles.Italic);
         SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 44));
         readyTmp.rectTransform.anchoredPosition = new Vector2(0, -40);
         readyTmp.alignment = TextAlignmentOptions.Center;
