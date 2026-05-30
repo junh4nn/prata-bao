@@ -156,8 +156,8 @@ public static class SceneBuilder
 
         // Logo image loaded from Assets/Sprites/GaiaGacha.jpg.
         var logoIcon = MakeImage(logoArea.transform, "LogoIcon", Color.white);
-        SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(120, 120));
-        logoIcon.rectTransform.anchoredPosition = new Vector2(0, -20);
+        SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(120, 150));
+        logoIcon.rectTransform.anchoredPosition = new Vector2(0, 20);
         var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/logo.png");
         if (logoSprite != null) logoIcon.sprite = logoSprite;
         else Debug.LogWarning("[SceneBuilder] Logo not found at Assets/Sprites/logo.png");
@@ -178,30 +178,40 @@ public static class SceneBuilder
         // Form card: the dark green box containing the inputs and button.
         // Centered on screen, slightly below the midpoint (y=-60).
         var formCard = MakeImage(panel.transform, "FormCard", ColSurface);
-        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 310));
+        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 340));
         formCard.rectTransform.anchoredPosition = new Vector2(0, -60);
 
+        // "Email address" label above the email input.
+        var emailLabel = MakeTMP(formCard.transform, "EmailLabel", "Email address", 12, ColTextMuted, FontStyles.Normal);
+        SetAnchored(emailLabel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 20));
+        emailLabel.rectTransform.anchoredPosition = new Vector2(0, -20);
+
         // Email input field — not a password field (isPassword = false).
-        var emailInput = MakeInputField(formCard.transform, "EmailInput", "Email address", false);
+        var emailInput = MakeInputField(formCard.transform, "EmailInput", "your@email.com", false);
         SetAnchored(emailInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        emailInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -40);
+        emailInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -60);
+
+        // "Password" label above the password input.
+        var passwordLabel = MakeTMP(formCard.transform, "PasswordLabel", "Password", 12, ColTextMuted, FontStyles.Normal);
+        SetAnchored(passwordLabel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 20));
+        passwordLabel.rectTransform.anchoredPosition = new Vector2(0, -106);
 
         // Password input field — characters are hidden (isPassword = true).
-        var passwordInput = MakeInputField(formCard.transform, "PasswordInput", "Password", true);
+        var passwordInput = MakeInputField(formCard.transform, "PasswordInput", "••••••••", true);
         SetAnchored(passwordInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        passwordInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -108);
+        passwordInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -146);
 
         // Primary action button — label is "Sign In" by default.
         // AuthUIManager.cs changes it to "Create Account" when toggled to register mode.
         var (actionBtnGo, _) = MakeButton(formCard.transform, "ActionButton", "Sign In", 20);
         SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 62));
-        actionBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -184);
+        actionBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -216);
 
         // Toggle link — tapping this switches between login and register mode.
         // Uses \n to put "Register" on its own line below the question text.
         var (toggleBtnGo, _) = MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account?\n<b>Register</b>", 14);
         SetAnchored(toggleBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 36));
-        toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -262);
+        toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -294);
 
         // Status text — shows login errors, "Logging in..." etc. Starts empty.
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
