@@ -203,7 +203,7 @@ public static class SceneBuilder
         // Status text — shows login errors, "Logging in..." etc. Starts empty.
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
         SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 40));
-        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -210);
+        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -300);
         statusTmp.alignment = TextAlignmentOptions.Center;
         statusTmp.textWrappingMode = TextWrappingModes.Normal;
 
@@ -267,7 +267,7 @@ public static class SceneBuilder
         questionMark.rectTransform.anchoredPosition = new Vector2(0, 10);
         questionMark.alignment = TextAlignmentOptions.Center;
 
-        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 15, ColTextPrimary, FontStyles.Normal);
+        var readyTmp = MakeTMP(defaultState.transform, "ReadyText", "Ready to discover your ecosystem", 12, ColTextMuted, FontStyles.Italic);
         SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 44));
         readyTmp.rectTransform.anchoredPosition = new Vector2(0, -40);
         readyTmp.alignment = TextAlignmentOptions.Center;
