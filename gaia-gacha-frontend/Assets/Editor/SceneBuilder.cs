@@ -210,16 +210,19 @@ public static class SceneBuilder
         starsRow.anchoredPosition = new Vector2(0, -24);
 
         var star1 = MakeImage(starsRow.transform, "Star1", ColGold);
-        SetAnchored(star1.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        SetAnchored(star1.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
         star1.rectTransform.anchoredPosition = new Vector2(-28, 0);
+        star1.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
         var star2 = MakeImage(starsRow.transform, "Star2", new Color(0.2f, 0.32f, 0.24f));
-        SetAnchored(star2.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        SetAnchored(star2.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
         star2.rectTransform.anchoredPosition = new Vector2(0, 0);
+        star2.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
         var star3 = MakeImage(starsRow.transform, "Star3", new Color(0.2f, 0.32f, 0.24f));
-        SetAnchored(star3.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(18, 18));
+        SetAnchored(star3.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
         star3.rectTransform.anchoredPosition = new Vector2(28, 0);
+        star3.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
         var circle = MakeImage(revealedState.transform, "PlaceholderCircle", ColTextMuted);
         SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 80));
