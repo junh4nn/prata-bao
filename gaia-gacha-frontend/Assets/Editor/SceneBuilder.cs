@@ -155,8 +155,8 @@ public static class SceneBuilder
         logoArea.anchoredPosition = new Vector2(0, 210);
 
         // Logo image loaded from Assets/Sprites/GaiaGacha.jpg.
-        var logoIcon = MakeImage(logoArea.transform, "LogoIcon", Color.white);
-        SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(72, 72));
+        var logoIcon = MakeImage(logoArea.transform, "LogoIcon", ColBg);
+        SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(120, 120));
         logoIcon.rectTransform.anchoredPosition = new Vector2(0, -20);
         var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/GaiaGacha.jpg");
         if (logoSprite != null) logoIcon.sprite = logoSprite;
