@@ -129,7 +129,7 @@ public static class SceneBuilder
 
         var formCard = MakeImage(panel.transform, "FormCard", ColSurface);
         SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 310));
-        formCard.rectTransform.anchoredPosition = new Vector2(0, -30);
+        formCard.rectTransform.anchoredPosition = new Vector2(0, -60);
 
         var emailInput = MakeInputField(formCard.transform, "EmailInput", "Email address", false);
         SetAnchored(emailInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
