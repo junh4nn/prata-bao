@@ -1,4 +1,9 @@
 # =====================================
+# Superpowers planning docs
+# =====================================
+/docs/
+
+# =====================================
 # Node.js Backend (gaia-gacha-backend)
 # =====================================
 /gaia-gacha-backend/node_modules/
