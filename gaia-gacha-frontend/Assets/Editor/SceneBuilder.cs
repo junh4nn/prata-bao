@@ -154,10 +154,13 @@ public static class SceneBuilder
         SetAnchored(logoArea, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(340, 160));
         logoArea.anchoredPosition = new Vector2(0, 210);
 
-        // Small decorative square acting as a logo placeholder.
-        var logoIcon = MakeImage(logoArea.transform, "LogoIcon", ColSurface);
+        // Logo image loaded from Assets/Sprites/GaiaGacha.jpg.
+        var logoIcon = MakeImage(logoArea.transform, "LogoIcon", Color.white);
         SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(72, 72));
         logoIcon.rectTransform.anchoredPosition = new Vector2(0, -20);
+        var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/GaiaGacha.jpg");
+        if (logoSprite != null) logoIcon.sprite = logoSprite;
+        else Debug.LogWarning("[SceneBuilder] Logo not found at Assets/Sprites/GaiaGacha.jpg");
 
         // Main game title in Cinzel (the decorative font).
         var titleTmp = MakeTMP(logoArea.transform, "TitleText", "GAIAGACHA", 42, ColTextPrimary, FontStyles.Bold, s_Cinzel);
@@ -303,19 +306,19 @@ public static class SceneBuilder
 
         // Circular placeholder for a future item sprite/image.
         var circle = MakeImage(revealedState.transform, "PlaceholderCircle", ColTextMuted);
-        SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 80));
+        SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 120));
         circle.rectTransform.anchoredPosition = new Vector2(0, 16);
 
         // Item name displayed in bold cream text after a pull.
         var itemNameTmp = MakeTMP(revealedState.transform, "ItemNameText", "", 18, ColTextPrimary, FontStyles.Bold);
         SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 32));
-        itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -48);
+        itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -80);
         itemNameTmp.alignment = TextAlignmentOptions.Center;
 
         // Rarity badge — pill-shaped background whose color is set by GachaManager.cs.
         var rarityBadge = MakeImage(revealedState.transform, "RarityBadge", Hex("#A8B5A2"));
         SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(110, 28));
-        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -84);
+        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -120);
 
         // Text inside the rarity badge ("COMMON", "RARE", or "LEGENDARY").
         var rarityTmp = MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 12, ColButtonText, FontStyles.Bold);
