@@ -181,14 +181,14 @@ public static class SceneBuilder
         // Banner label
         var bannerTmp = MakeTMP(panel.transform, "BannerLabel", "NATURE'S COLLECTION", 11, ColTextMuted, FontStyles.Normal);
         SetAnchored(bannerTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 30));
-        bannerTmp.rectTransform.anchoredPosition = new Vector2(0, -80);
+        bannerTmp.rectTransform.anchoredPosition = new Vector2(0, -260);
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
         // Item card
         var itemCard = MakeImage(panel.transform, "ItemCard", ColSurface);
         SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 320));
-        itemCard.rectTransform.anchoredPosition = new Vector2(0, -230);
+        itemCard.rectTransform.anchoredPosition = new Vector2(0, -400);
 
         // Default card state
         var defaultState = MakeRect(itemCard.transform, "DefaultState");
@@ -235,7 +235,7 @@ public static class SceneBuilder
         // Pull button
         var (pullBtnGo, _) = MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins");
         SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
-        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -590);
+        pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -550);
 
         // Status text
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 12, ColTextMuted, FontStyles.Normal);
