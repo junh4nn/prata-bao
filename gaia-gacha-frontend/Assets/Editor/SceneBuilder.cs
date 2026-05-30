@@ -106,11 +106,11 @@ public static class SceneBuilder
     static GameObject BuildAuthPanel(Transform parent)
     {
         var panel = MakeRect(parent, "AuthPanel");
-        SetAnchored(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(340, 580));
+        Stretch(panel);
 
         var logoArea = MakeRect(panel.transform, "LogoArea");
-        SetAnchored(logoArea, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(340, 160));
-        logoArea.anchoredPosition = new Vector2(0, -80);
+        SetAnchored(logoArea, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(340, 160));
+        logoArea.anchoredPosition = new Vector2(0, 210);
 
         var logoIcon = MakeImage(logoArea.transform, "LogoIcon", ColSurface);
         SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(72, 72));
@@ -118,18 +118,18 @@ public static class SceneBuilder
 
         var titleTmp = MakeTMP(logoArea.transform, "TitleText", "GAIAGACHA", 42, ColTextPrimary, FontStyles.Bold, s_Cinzel);
         SetAnchored(titleTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(320, 52));
-        titleTmp.rectTransform.anchoredPosition = new Vector2(0, -108);
+        titleTmp.rectTransform.anchoredPosition = new Vector2(0, -88);
         titleTmp.alignment = TextAlignmentOptions.Center;
 
         var subtitleTmp = MakeTMP(logoArea.transform, "SubtitleText", "DISCOVER  ·  PULL  ·  COLLECT", 13, ColTextMuted, FontStyles.Normal);
         SetAnchored(subtitleTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 24));
-        subtitleTmp.rectTransform.anchoredPosition = new Vector2(0, -156);
+        subtitleTmp.rectTransform.anchoredPosition = new Vector2(0, -136);
         subtitleTmp.alignment = TextAlignmentOptions.Center;
         subtitleTmp.characterSpacing = 4;
 
         var formCard = MakeImage(panel.transform, "FormCard", ColSurface);
-        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 310));
-        formCard.rectTransform.anchoredPosition = new Vector2(0, 80);
+        SetAnchored(formCard.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 310));
+        formCard.rectTransform.anchoredPosition = new Vector2(0, -30);
 
         var emailInput = MakeInputField(formCard.transform, "EmailInput", "Email address", false);
         SetAnchored(emailInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
@@ -148,8 +148,8 @@ public static class SceneBuilder
         toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -262);
 
         var statusTmp = MakeTMP(panel.transform, "StatusText", "", 13, ColTextMuted, FontStyles.Normal);
-        SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(320, 40));
-        statusTmp.rectTransform.anchoredPosition = new Vector2(0, 30);
+        SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 40));
+        statusTmp.rectTransform.anchoredPosition = new Vector2(0, -210);
         statusTmp.alignment = TextAlignmentOptions.Center;
         statusTmp.textWrappingMode = TextWrappingModes.Normal;
 
