@@ -158,9 +158,9 @@ public static class SceneBuilder
         var logoIcon = MakeImage(logoArea.transform, "LogoIcon", ColBg);
         SetAnchored(logoIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(120, 120));
         logoIcon.rectTransform.anchoredPosition = new Vector2(0, -20);
-        var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/GaiaGacha.jpg");
+        var logoSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/logo.png");
         if (logoSprite != null) logoIcon.sprite = logoSprite;
-        else Debug.LogWarning("[SceneBuilder] Logo not found at Assets/Sprites/GaiaGacha.jpg");
+        else Debug.LogWarning("[SceneBuilder] Logo not found at Assets/Sprites/logo.png");
 
         // Main game title in Cinzel (the decorative font).
         var titleTmp = MakeTMP(logoArea.transform, "TitleText", "GAIAGACHA", 42, ColTextPrimary, FontStyles.Bold, s_Cinzel);
