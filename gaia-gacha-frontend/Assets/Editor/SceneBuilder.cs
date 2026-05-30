@@ -46,7 +46,7 @@ public static class SceneBuilder
         var scaler = canvasGo.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(390, 844);
-        scaler.matchWidthOrHeight = 0.5f;
+        scaler.matchWidthOrHeight = 1f;
         canvasGo.AddComponent<GraphicRaycaster>();
 
         var bgImg = MakeImage(canvasGo.transform, "Background", ColBg);
@@ -143,7 +143,7 @@ public static class SceneBuilder
         SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 62));
         actionBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -184);
 
-        var (toggleBtnGo, _) = MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account? <b>Register</b>", 14);
+        var (toggleBtnGo, _) = MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account?\n<b>Register</b>", 14);
         SetAnchored(toggleBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 36));
         toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -262);
 

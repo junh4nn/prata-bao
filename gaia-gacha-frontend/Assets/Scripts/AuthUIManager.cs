@@ -76,8 +76,8 @@ public class AuthUIManager : MonoBehaviour
 
         if (toggleModeText != null)
             toggleModeText.text = isLoginMode
-                ? "Don't have an account? <b>Register</b>"
-                : "Already have an account? <b>Sign In</b>";
+                ? "Don't have an account?\n<b>Register</b>"
+                : "Already have an account?\n<b>Sign In</b>";
     }
 
     public void SwapToGachaPage()
