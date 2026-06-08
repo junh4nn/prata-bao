@@ -10,11 +10,19 @@ public class AuthManager : MonoBehaviour
     [SerializeField] private string registerUrl = "http://localhost:3000/api/auth/register";
     [SerializeField] private string loginUrl = "http://localhost:3000/api/auth/login";
 
-    // Static properties allows any other script in your game 
+    // Static properties allows any other script in your game
     // to read the current player's token instantly without manual linking.
     public static string Token { get; private set; }
     public static string UserId { get; private set; }
+    public static int    Coins    { get; set; }
     public static bool IsLoggedIn => !string.IsNullOrEmpty(Token);
+
+    public static void ClearSession()
+    {
+        Token  = null;
+        UserId = null;
+        Coins  = 0;
+    }
 
     // Registers a new user account on the Express backend.
     public void Register(string email, string password, Action onSuccess, Action<string> onError = null)
@@ -66,7 +74,8 @@ public class AuthManager : MonoBehaviour
                 {
                     Token  = responseData.token;
                     UserId = responseData.userId;
-                    Debug.Log($"[AuthManager] JWT captured. UserId: {UserId}");
+                    Coins  = responseData.coins;
+                    Debug.Log($"[AuthManager] JWT captured. UserId: {UserId}, Coins: {Coins}");
                 }
 
                 onSuccess?.Invoke();
