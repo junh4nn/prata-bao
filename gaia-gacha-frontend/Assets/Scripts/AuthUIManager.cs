@@ -15,8 +15,8 @@ public class AuthUIManager : MonoBehaviour
     [SerializeField] private AuthManager authManager; // handles the actual login/register API calls
 
     [Header("UI Pages / Panels")]
-    [SerializeField] private GameObject authPanel;  // the login screen (shown at start)
-    [SerializeField] private GameObject gachaPanel; // the pull screen (shown after login)
+    [SerializeField] private GameObject authPanel; // the login screen (shown at start)
+    [SerializeField] private GameObject hubPanel;  // the hub screen (shown after login)
 
     [Header("UI Input Fields")]
     [SerializeField] private TMP_InputField emailInputField;
@@ -49,9 +49,9 @@ public class AuthUIManager : MonoBehaviour
         if (actionButton != null) actionButton.onClick.AddListener(OnActionClicked);
         if (toggleModeButton != null) toggleModeButton.onClick.AddListener(OnToggleModeClicked);
 
-        // Start on the auth screen with the gacha panel hidden.
+        // Start on the auth screen with the hub panel hidden.
         if (authPanel != null) authPanel.SetActive(true);
-        if (gachaPanel != null) gachaPanel.SetActive(false);
+        if (hubPanel  != null) hubPanel.SetActive(false);
 
         // Set the initial button/link text to match login mode.
         UpdateModeUI();
@@ -71,7 +71,7 @@ public class AuthUIManager : MonoBehaviour
         if (isLoginMode)
         {
             if (statusText != null) statusText.text = "<color=#E9C46A>Logging in...</color>";
-            authManager.Login(email, password, SwapToGachaPage);
+            authManager.Login(email, password, SwapToHubPage);
         }
         else
         {
@@ -111,12 +111,20 @@ public class AuthUIManager : MonoBehaviour
         if (statusText != null) statusText.text = "<color=#57C278>Account created! Please sign in.</color>";
     }
 
-    // Hides the auth screen and shows the gacha screen.
-    // Called by AuthManager after a successful login.
-    public void SwapToGachaPage()
+    // Clears the form fields and status text — called on logout.
+    public void ClearForm()
     {
-        if (authPanel  != null) authPanel.SetActive(false);
-        if (gachaPanel != null) gachaPanel.SetActive(true);
+        if (emailInputField    != null) emailInputField.text    = "";
+        if (passwordInputField != null) passwordInputField.text = "";
+        if (statusText         != null) statusText.text         = "";
+    }
+
+    // Hides the auth screen and shows the hub screen.
+    // Called by AuthManager after a successful login.
+    public void SwapToHubPage()
+    {
+        if (authPanel != null) authPanel.SetActive(false);
+        if (hubPanel  != null) hubPanel.SetActive(true);
     }
 
     // ── Input validation ─────────────────────────────────────────────────────

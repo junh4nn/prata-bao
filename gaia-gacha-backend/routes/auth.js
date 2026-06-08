@@ -48,11 +48,19 @@ export default function (supabase) {
 
       if (error) throw error;
 
+      // Fetch player's coin balance from profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('coins')
+        .eq('id', data.user.id)
+        .single();
+
       // If successful, hand the secure session Token (JWT) back to Unity
       return res.status(200).json({
         message: 'Login successful!',
         token: data.session.access_token, // The digital key Unity must save
-        userId: data.user.id              // The player's unique ID
+        userId: data.user.id,             // The player's unique ID
+        coins: profile?.coins ?? 0        // The player's Eco-Coins balance
       });
 
     } catch (error) {

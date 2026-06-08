@@ -34,6 +34,11 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private GameObject defaultCardState;  // the "?" state shown before any pull
     [SerializeField] private GameObject revealedCardState; // the item reveal state shown after a pull
 
+    [Header("Navigation")]
+    [SerializeField] private GameObject gachaPanel;  // this panel — needed to hide on back
+    [SerializeField] private GameObject hubPanel;     // shown when back button tapped
+    [SerializeField] private Button     backButton;
+
     // Prevents the player from spamming the pull button mid-request.
     private bool isPulling = false;
 
@@ -53,7 +58,7 @@ public class GachaManager : MonoBehaviour
     {
         // Set initial UI state.
         if (statusText    != null) statusText.text    = "";
-        if (balanceText   != null) balanceText.text   = "Eco-Coins: --";
+        if (balanceText   != null) balanceText.text   = $"Eco-Coins: {AuthManager.Coins}";
         if (defaultCardState  != null) defaultCardState.SetActive(true);   // show the "?" card
         if (revealedCardState != null) revealedCardState.SetActive(false);  // hide the item reveal
 
@@ -62,6 +67,11 @@ public class GachaManager : MonoBehaviour
             pullButton.onClick.AddListener(OnPullButtonClicked);
         else
             Debug.LogError("[GachaManager] Pull Button reference is missing.");
+
+        if (backButton != null)
+            backButton.onClick.AddListener(OnBackClicked);
+        else
+            Debug.LogWarning("[GachaManager] Back Button reference is missing.");
     }
 
     // ── Pull logic ───────────────────────────────────────────────────────────
@@ -159,6 +169,7 @@ public class GachaManager : MonoBehaviour
             };
 
         // Update the coin balance shown in the header.
+        AuthManager.Coins = response.newBalance;
         if (balanceText != null)
             balanceText.text = $"Eco-Coins: {response.newBalance}";
 
@@ -170,5 +181,12 @@ public class GachaManager : MonoBehaviour
     private void SetUIInteractivity(bool isInteractable)
     {
         if (pullButton != null) pullButton.interactable = isInteractable;
+    }
+
+    // Handles the back button click — returns to the hub panel.
+    private void OnBackClicked()
+    {
+        if (gachaPanel != null) gachaPanel.SetActive(false);
+        if (hubPanel   != null) hubPanel.SetActive(true);
     }
 }

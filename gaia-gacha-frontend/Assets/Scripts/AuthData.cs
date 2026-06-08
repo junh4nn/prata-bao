@@ -28,5 +28,6 @@ public class AuthResponse
     public string message;
     public string token;   // Captures JWT passport string
     public string userId;  // Captures the player's unique UUID
+    public int coins;      // Captures the player's coin balance
     public string error;   // Captures error messages if status is 400/500
 }

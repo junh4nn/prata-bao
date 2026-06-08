@@ -55,7 +55,7 @@ public static class GachaLayoutBuilder {
 
         // Eco-Coins balance on the right side of the header, in gold text.
         // GachaManager.cs updates this after each pull.
-        var balanceTmp = UIConstants.MakeTMP(header.transform, "BalanceText", "Eco-Coins: --", 16, UIConstants.ColGold, FontStyles.Bold, s_Poppins);
+        var balanceTmp = UIConstants.MakeTMP(header.transform, "BalanceText", "Eco-Coins: --", 16, UIConstants.ColGold, FontStyles.Bold, s_Cinzel);
         UIConstants.SetAnchored(balanceTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0, 40));
         balanceTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         balanceTmp.alignment = TextAlignmentOptions.MidlineRight;
@@ -148,6 +148,15 @@ public static class GachaLayoutBuilder {
         UIConstants.SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 32));
         statusTmp.rectTransform.anchoredPosition = new Vector2(0, -660);
         statusTmp.alignment = TextAlignmentOptions.Center;
+
+        // Footer bar pinned to the bottom of the screen.
+        var footer = UIConstants.MakeImage(panel.transform, "FooterBar", null, UIConstants.ColSurface);
+        UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
+        footer.rectTransform.anchoredPosition = new Vector2(0, 28);
+
+        var (backBtnGo, _) = UIConstants.MakeLinkButton(footer.transform, "BackButton", "← Back", 13, s_Poppins);
+        UIConstants.SetAnchored(backBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(90, 36));
+        backBtnGo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
         return panel.gameObject;
     }

@@ -26,6 +26,8 @@ public static class SceneBuilder
             Object.DestroyImmediate(a.gameObject);
         foreach (var g in Object.FindObjectsByType<GachaManager>(FindObjectsInactive.Include))
             Object.DestroyImmediate(g.gameObject);
+        foreach (var h in Object.FindObjectsByType<MainHubUIManager>(FindObjectsInactive.Include))
+            Object.DestroyImmediate(h.gameObject);
 
         // EventSystem is required for Unity UI to detect mouse clicks and keyboard input.
         // InputSystemUIInputModule works with Unity's new Input System package.
@@ -55,10 +57,13 @@ public static class SceneBuilder
         // "GaiaGacha/LayoutBuilders/Build Gacha Panel" first if the prefabs don't exist yet.
         var authPrefab  = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AuthPanel.prefab");
         var gachaPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaPanel.prefab");
+        var hubPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/HubPanel.prefab");
 
         var authPanel  = (GameObject)PrefabUtility.InstantiatePrefab(authPrefab,  canvasGo.transform);
         var gachaPanel = (GameObject)PrefabUtility.InstantiatePrefab(gachaPrefab, canvasGo.transform);
         gachaPanel.SetActive(false);
+        var hubPanel = (GameObject)PrefabUtility.InstantiatePrefab(hubPrefab, canvasGo.transform);
+        hubPanel.SetActive(false);
 
         // Create the manager GameObjects that handle the game logic.
         // AuthManager handles login/register API calls.
@@ -67,9 +72,10 @@ public static class SceneBuilder
         var authMgr   = authMgrGo.AddComponent<AuthManager>();
         var authUIMgr = authMgrGo.AddComponent<AuthUIManager>();
 
-        // GachaManager handles pull requests and updating the item card.
-        var gachaMgrGo = new GameObject("_GachaManager");
-        var gachaMgr   = gachaMgrGo.AddComponent<GachaManager>();
+        // GachaManager and MainHubUIManager live on their respective panels so that
+        // Start/OnEnable fire when the panel activates (post-login), not at scene load.
+        var gachaMgr = gachaPanel.AddComponent<GachaManager>();
+        var hubUIMgr = hubPanel.AddComponent<MainHubUIManager>();
 
         // Wire up the AuthUIManager Inspector references in code.
         // SerializedObject lets us set [SerializeField] values from an Editor script,
@@ -77,7 +83,7 @@ public static class SceneBuilder
         var authSO = new SerializedObject(authUIMgr);
         authSO.FindProperty("authManager").objectReferenceValue        = authMgr;
         authSO.FindProperty("authPanel").objectReferenceValue          = authPanel;
-        authSO.FindProperty("gachaPanel").objectReferenceValue         = gachaPanel;
+        authSO.FindProperty("hubPanel").objectReferenceValue           = hubPanel;
         authSO.FindProperty("emailInputField").objectReferenceValue    = UIConstants.Find<TMP_InputField>(authPanel.transform, "FormCard/EmailInput");
         authSO.FindProperty("passwordInputField").objectReferenceValue = UIConstants.Find<TMP_InputField>(authPanel.transform, "FormCard/PasswordInput");
         authSO.FindProperty("actionButton").objectReferenceValue       = UIConstants.Find<Button>(authPanel.transform, "FormCard/ActionButton");
@@ -86,7 +92,7 @@ public static class SceneBuilder
         authSO.FindProperty("toggleModeText").objectReferenceValue     = UIConstants.Find<TextMeshProUGUI>(authPanel.transform, "FormCard/ToggleModeButton/Text");
         authSO.FindProperty("statusText").objectReferenceValue         = UIConstants.Find<TextMeshProUGUI>(authPanel.transform, "StatusText");
         authSO.ApplyModifiedProperties(); // save all the wired references
-        UIConstants.WarnIfUnwired(authSO, "authManager", "authPanel", "gachaPanel", "emailInputField",
+        UIConstants.WarnIfUnwired(authSO, "authManager", "authPanel", "hubPanel", "emailInputField",
             "passwordInputField", "actionButton", "actionButtonText",
             "toggleModeButton", "toggleModeText", "statusText");
 
@@ -103,11 +109,29 @@ public static class SceneBuilder
         gachaSO.FindProperty("rarityBadgeText").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadge/RarityText");
         gachaSO.FindProperty("defaultCardState").objectReferenceValue  = UIConstants.Find<Transform>(gachaPanel.transform, "ItemCard/DefaultState")?.gameObject;
         gachaSO.FindProperty("revealedCardState").objectReferenceValue = UIConstants.Find<Transform>(gachaPanel.transform, "ItemCard/RevealedState")?.gameObject;
+        gachaSO.FindProperty("gachaPanel").objectReferenceValue = gachaPanel;
+        gachaSO.FindProperty("hubPanel").objectReferenceValue   = hubPanel;
+        gachaSO.FindProperty("backButton").objectReferenceValue = UIConstants.Find<Button>(gachaPanel.transform, "FooterBar/BackButton");
         gachaSO.ApplyModifiedProperties();
         UIConstants.WarnIfUnwired(gachaSO, "pullButton", "statusText", "balanceText",
             "starImage1", "starImage2", "starImage3",
             "itemNameText", "rarityBadgeImage", "rarityBadgeText",
-            "defaultCardState", "revealedCardState");
+            "defaultCardState", "revealedCardState",
+            "gachaPanel", "hubPanel", "backButton");
+
+        var hubSO = new SerializedObject(hubUIMgr);
+        hubSO.FindProperty("coinsText").objectReferenceValue       = UIConstants.Find<TextMeshProUGUI>(hubPanel.transform, "HeaderBar/CoinsText");
+        hubSO.FindProperty("logoutButton").objectReferenceValue    = UIConstants.Find<Button>(hubPanel.transform, "FooterBar/LogoutButton");
+        hubSO.FindProperty("quoteText").objectReferenceValue       = UIConstants.Find<TextMeshProUGUI>(hubPanel.transform, "HeroCard/QuoteText");
+        hubSO.FindProperty("gachaButton").objectReferenceValue     = UIConstants.Find<Button>(hubPanel.transform, "GachaTile");
+        hubSO.FindProperty("quizButton").objectReferenceValue      = UIConstants.Find<Button>(hubPanel.transform, "BottomRow/QuizTile");
+        hubSO.FindProperty("inventoryButton").objectReferenceValue = UIConstants.Find<Button>(hubPanel.transform, "BottomRow/InventoryTile");
+        hubSO.FindProperty("hubPanel").objectReferenceValue        = hubPanel;
+        hubSO.FindProperty("authPanel").objectReferenceValue       = authPanel;
+        hubSO.FindProperty("gachaPanel").objectReferenceValue      = gachaPanel;
+        hubSO.ApplyModifiedProperties();
+        UIConstants.WarnIfUnwired(hubSO, "coinsText", "logoutButton", "quoteText",
+            "gachaButton", "quizButton", "inventoryButton", "hubPanel", "authPanel", "gachaPanel");
 
         // Mark the scene as changed so Unity knows to save it.
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
