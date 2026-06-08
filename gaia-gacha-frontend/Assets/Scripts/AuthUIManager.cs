@@ -111,6 +111,14 @@ public class AuthUIManager : MonoBehaviour
         if (statusText != null) statusText.text = "<color=#57C278>Account created! Please sign in.</color>";
     }
 
+    // Clears the form fields and status text — called on logout.
+    public void ClearForm()
+    {
+        if (emailInputField    != null) emailInputField.text    = "";
+        if (passwordInputField != null) passwordInputField.text = "";
+        if (statusText         != null) statusText.text         = "";
+    }
+
     // Hides the auth screen and shows the hub screen.
     // Called by AuthManager after a successful login.
     public void SwapToHubPage()

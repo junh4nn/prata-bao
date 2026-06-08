@@ -22,6 +22,7 @@ public class MainHubUIManager : MonoBehaviour
     [SerializeField] private GameObject gachaPanel;
     // quizPanel and inventoryPanel intentionally absent — panels not yet built
 
+
     static readonly string[] Quotes = {
         "\"In every walk with nature, one receives\nfar more than he seeks.\"",
         "\"The earth does not belong to us.\nWe belong to the earth.\"",
@@ -57,7 +58,7 @@ public class MainHubUIManager : MonoBehaviour
     {
         // Refresh coin balance every time the hub becomes visible (e.g. returning from gacha).
         if (coinsText != null)
-            coinsText.text = $"✦ {AuthManager.Coins} ECO-COINS";
+            coinsText.text = $"Eco-Coins: {AuthManager.Coins}";
     }
 
     private void OnGachaClicked()
@@ -81,6 +82,7 @@ public class MainHubUIManager : MonoBehaviour
     private void OnLogoutClicked()
     {
         AuthManager.ClearSession();
+        FindAnyObjectByType<AuthUIManager>()?.ClearForm();
         if (hubPanel  != null) hubPanel.SetActive(false);
         if (authPanel != null) authPanel.SetActive(true);
     }

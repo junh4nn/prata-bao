@@ -72,12 +72,10 @@ public static class SceneBuilder
         var authMgr   = authMgrGo.AddComponent<AuthManager>();
         var authUIMgr = authMgrGo.AddComponent<AuthUIManager>();
 
-        // GachaManager handles pull requests and updating the item card.
-        var gachaMgrGo = new GameObject("_GachaManager");
-        var gachaMgr   = gachaMgrGo.AddComponent<GachaManager>();
-
-        var hubMgrGo = new GameObject("_HubManager");
-        var hubUIMgr = hubMgrGo.AddComponent<MainHubUIManager>();
+        // GachaManager and MainHubUIManager live on their respective panels so that
+        // Start/OnEnable fire when the panel activates (post-login), not at scene load.
+        var gachaMgr = gachaPanel.AddComponent<GachaManager>();
+        var hubUIMgr = hubPanel.AddComponent<MainHubUIManager>();
 
         // Wire up the AuthUIManager Inspector references in code.
         // SerializedObject lets us set [SerializeField] values from an Editor script,

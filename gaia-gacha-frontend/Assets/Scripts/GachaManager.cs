@@ -58,7 +58,7 @@ public class GachaManager : MonoBehaviour
     {
         // Set initial UI state.
         if (statusText    != null) statusText.text    = "";
-        if (balanceText   != null) balanceText.text   = "Eco-Coins: --";
+        if (balanceText   != null) balanceText.text   = $"Eco-Coins: {AuthManager.Coins}";
         if (defaultCardState  != null) defaultCardState.SetActive(true);   // show the "?" card
         if (revealedCardState != null) revealedCardState.SetActive(false);  // hide the item reveal
 

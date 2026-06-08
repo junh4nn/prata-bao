@@ -55,7 +55,7 @@ public static class GachaLayoutBuilder {
 
         // Eco-Coins balance on the right side of the header, in gold text.
         // GachaManager.cs updates this after each pull.
-        var balanceTmp = UIConstants.MakeTMP(header.transform, "BalanceText", "Eco-Coins: --", 16, UIConstants.ColGold, FontStyles.Bold, s_Poppins);
+        var balanceTmp = UIConstants.MakeTMP(header.transform, "BalanceText", "Eco-Coins: --", 16, UIConstants.ColGold, FontStyles.Bold, s_Cinzel);
         UIConstants.SetAnchored(balanceTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0, 40));
         balanceTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         balanceTmp.alignment = TextAlignmentOptions.MidlineRight;
