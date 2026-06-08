@@ -9,28 +9,25 @@ export default function (supabase) {
   // =====================================
   router.post('/register', async (req, res) => {
     const { email, password } = req.body;
-    
-    // Simple validation check
+    console.log(`[register] email: ${email}`);
+
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
     try {
-      // Instruct Supabase to securely create the user account
       const { data, error } = await supabase.auth.admin.createUser({
         email: email,
         password: password,
-        email_confirm: true // Automatically confirms email for smooth local testing
+        email_confirm: true
       });
 
       if (error) throw error;
 
-      return res.status(201).json({ 
-        message: 'Account created successfully!' 
-      });
+      return res.status(201).json({ message: 'Account created successfully!' });
 
     } catch (error) {
-      // If Supabase says the email is taken or password is too weak, catch it here
+      console.error(`[register] Supabase error: ${error.message}`);
       return res.status(400).json({ error: error.message });
     }
   });

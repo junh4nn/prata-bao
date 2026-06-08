@@ -17,67 +17,65 @@ public class AuthManager : MonoBehaviour
     public static bool IsLoggedIn => !string.IsNullOrEmpty(Token);
 
     // Registers a new user account on the Express backend.
-    public void Register(string email, string password)
+    public void Register(string email, string password, Action onSuccess, Action<string> onError = null)
     {
-        StartCoroutine(SendAuthRequest(registerUrl, email, password, isLogin: false, null));
+        StartCoroutine(SendAuthRequest(registerUrl, email, password, isLogin: false, onSuccess, onError));
     }
 
     // Logs in an existing user and captures their JWT session key.
-    public void Login(string email, string password, Action onSuccess)
+    public void Login(string email, string password, Action onSuccess, Action<string> onError = null)
     {
-        StartCoroutine(SendAuthRequest(loginUrl, email, password, isLogin: true, onSuccess));
+        StartCoroutine(SendAuthRequest(loginUrl, email, password, isLogin: true, onSuccess, onError));
     }
 
-    private IEnumerator SendAuthRequest(string url, string email, string password, bool isLogin, Action onSuccess)
+    private IEnumerator SendAuthRequest(string url, string email, string password, bool isLogin, Action onSuccess, Action<string> onError)
     {
-        // 1. Pack data into JSON string
-        string jsonPayload = isLogin 
+        string jsonPayload = isLogin
             ? JsonUtility.ToJson(new LoginRequest { email = email, password = password })
             : JsonUtility.ToJson(new RegisterRequest { email = email, password = password });
 
-        // 2. Set up raw network payload over HTTP POST
         using (UnityWebRequest request = new UnityWebRequest(url, "POST"))
         {
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonPayload));
             request.downloadHandler = new DownloadHandlerBuffer();
-            
-            // Critical header tells Express we are transmitting a JSON payload object
             request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = 10; // fail after 10 seconds instead of hanging forever
 
             Debug.Log($"[AuthManager] Sending request to {url}...");
             yield return request.SendWebRequest();
 
-            // 3. Process Network Response
-            if (request.result == UnityWebRequest.Result.ConnectionError)
+            Debug.Log($"[AuthManager] Response received. Result: {request.result}, Code: {request.responseCode}");
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"[AuthManager] Network Connection Error: {request.error}");
+                string err = request.error ?? "Unknown network error";
+                Debug.LogError($"[AuthManager] Request failed: {err}");
+                onError?.Invoke(err);
+                yield break;
+            }
+
+            string jsonResponse = request.downloadHandler.text;
+            Debug.Log($"[AuthManager] Response body: {jsonResponse}");
+            AuthResponse responseData = JsonUtility.FromJson<AuthResponse>(jsonResponse);
+
+            if (request.responseCode == 200 || request.responseCode == 201)
+            {
+                Debug.Log($"<color=green>[AuthManager] Success: {responseData.message}</color>");
+
+                if (isLogin)
+                {
+                    Token  = responseData.token;
+                    UserId = responseData.userId;
+                    Debug.Log($"[AuthManager] JWT captured. UserId: {UserId}");
+                }
+
+                onSuccess?.Invoke();
             }
             else
             {
-                string jsonResponse = request.downloadHandler.text;
-                AuthResponse responseData = JsonUtility.FromJson<AuthResponse>(jsonResponse);
-
-                if (request.responseCode == 200 || request.responseCode == 201)
-                {
-                    Debug.Log($"<color=green>[AuthManager] Success: {responseData.message}</color>");
-
-                    if (isLogin)
-                    {
-                        // KEY SAVER: Safely stash passport details directly inside static memory layout
-                        Token = responseData.token;
-                        UserId = responseData.userId;
-
-                        Debug.Log($"[AuthManager] JWT Passport Captured! User UUID: {UserId}");
-
-                        onSuccess?.Invoke();
-                    }
-                }
-                else
-                {
-                    // Handles controlled server rejections like invalid credentials or duplicate emails
-                    Debug.LogError($"[AuthManager] Server Rejected Request ({request.responseCode}): {responseData.error}");
-                }
+                string err = responseData?.error ?? $"Server error {request.responseCode}";
+                Debug.LogError($"[AuthManager] Server rejected ({request.responseCode}): {err}");
+                onError?.Invoke(err);
             }
         }
     }

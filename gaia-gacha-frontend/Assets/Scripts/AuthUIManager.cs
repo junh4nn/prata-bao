@@ -71,13 +71,12 @@ public class AuthUIManager : MonoBehaviour
         if (isLoginMode)
         {
             if (statusText != null) statusText.text = "<color=#E9C46A>Logging in...</color>";
-            // SwapToGachaPage is passed as a callback — AuthManager calls it on success.
             authManager.Login(email, password, SwapToGachaPage);
         }
         else
         {
             if (statusText != null) statusText.text = "<color=#E9C46A>Creating account...</color>";
-            authManager.Register(email, password);
+            authManager.Register(email, password, OnRegisterSuccess);
         }
     }
 
@@ -102,6 +101,14 @@ public class AuthUIManager : MonoBehaviour
             toggleModeText.text = isLoginMode
                 ? "Don't have an account?\n<b>Register</b>"
                 : "Already have an account?\n<b>Sign In</b>";
+    }
+
+    // Called after successful registration — switches to login mode with a confirmation message.
+    private void OnRegisterSuccess()
+    {
+        isLoginMode = true;
+        UpdateModeUI();
+        if (statusText != null) statusText.text = "<color=#57C278>Account created! Please sign in.</color>";
     }
 
     // Hides the auth screen and shows the gacha screen.
