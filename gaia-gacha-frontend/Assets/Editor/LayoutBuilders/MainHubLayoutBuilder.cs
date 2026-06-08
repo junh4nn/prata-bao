@@ -98,12 +98,19 @@ public static class MainHubLayoutBuilder
         UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
         footer.rectTransform.anchoredPosition = new Vector2(0, 28);
 
-        var logoutImg = UIConstants.MakeImage(footer.transform, "LogoutButton", s_LogoutIcon, UIConstants.ColTextMuted);
-        logoutImg.preserveAspect = true;
-        UIConstants.SetAnchored(logoutImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(24, 24));
-        logoutImg.rectTransform.anchoredPosition = Vector2.zero;
-        var logoutBtn = logoutImg.gameObject.AddComponent<Button>();
-        logoutBtn.targetGraphic = logoutImg;
+        // Logout tile: dark background box with the icon centred inside.
+        var logoutTileRt = UIConstants.MakeRect(footer.transform, "LogoutButton");
+        UIConstants.SetAnchored(logoutTileRt, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(48, 40));
+        logoutTileRt.anchoredPosition = new Vector2(0, 2);
+        var logoutTileBg = logoutTileRt.gameObject.AddComponent<Image>();
+        logoutTileBg.color = UIConstants.ColBg;
+        var logoutTileBtn = logoutTileRt.gameObject.AddComponent<Button>();
+        logoutTileBtn.targetGraphic = logoutTileBg;
+
+        var logoutIconImg = UIConstants.MakeImage(logoutTileRt, "Icon", s_LogoutIcon, UIConstants.ColTextMuted);
+        logoutIconImg.preserveAspect = true;
+        UIConstants.SetAnchored(logoutIconImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(20, 20));
+        logoutIconImg.rectTransform.anchoredPosition = Vector2.zero;
 
         return panel.gameObject;
     }

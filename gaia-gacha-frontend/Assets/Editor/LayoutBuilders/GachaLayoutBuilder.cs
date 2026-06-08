@@ -7,6 +7,7 @@ public static class GachaLayoutBuilder {
 
     static TMP_FontAsset s_Poppins;
     static TMP_FontAsset s_Cinzel;
+    static Sprite        s_BackIcon;
 
     
      // ── Gacha Panel ──────────────────────────────────────────────────────────
@@ -22,8 +23,9 @@ public static class GachaLayoutBuilder {
     [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel")]
     static void Build()
     {
-        s_Poppins = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
-        s_Cinzel  = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Cinzel-Regular SDF.asset");
+        s_Poppins  = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
+        s_Cinzel   = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Cinzel-Regular SDF.asset");
+        s_BackIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/back_button.png");
 
         var temp   = new GameObject("Temp");
         var panelGo = BuildGachaPanel(temp.transform);
@@ -154,9 +156,18 @@ public static class GachaLayoutBuilder {
         UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
         footer.rectTransform.anchoredPosition = new Vector2(0, 28);
 
-        var (backBtnGo, _) = UIConstants.MakeLinkButton(footer.transform, "BackButton", "← Back", 13, s_Poppins);
-        UIConstants.SetAnchored(backBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(90, 36));
-        backBtnGo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+        var backTileRt = UIConstants.MakeRect(footer.transform, "BackButton");
+        UIConstants.SetAnchored(backTileRt, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(48, 40));
+        backTileRt.anchoredPosition = new Vector2(0, 2);
+        var backTileBg = backTileRt.gameObject.AddComponent<Image>();
+        backTileBg.color = UIConstants.ColBg;
+        var backTileBtn = backTileRt.gameObject.AddComponent<Button>();
+        backTileBtn.targetGraphic = backTileBg;
+
+        var backIconImg = UIConstants.MakeImage(backTileRt, "Icon", s_BackIcon, UIConstants.ColTextMuted);
+        backIconImg.preserveAspect = true;
+        UIConstants.SetAnchored(backIconImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(20, 20));
+        backIconImg.rectTransform.anchoredPosition = Vector2.zero;
 
         return panel.gameObject;
     }

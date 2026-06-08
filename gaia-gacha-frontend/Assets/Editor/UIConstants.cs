@@ -168,11 +168,11 @@ public static class UIConstants
         return field;
     }
 
-    public static (GameObject, TextMeshProUGUI) MakeButton(Transform parent, string name, string label, float fontSize, TMP_FontAsset font = null)
+    public static (GameObject, TextMeshProUGUI) MakeButton(Transform parent, string name, string label, float fontSize, TMP_FontAsset font = null, Color? bgColor = null, Color? textColor = null)
     {
         var rt = MakeRect(parent, name);
         var bg = rt.gameObject.AddComponent<Image>();
-        bg.color = ColButton;
+        bg.color = bgColor ?? ColButton;
         var btn = rt.gameObject.AddComponent<Button>();
         btn.targetGraphic = bg;
 
@@ -183,7 +183,7 @@ public static class UIConstants
         var textTmp = textRt.gameObject.AddComponent<TextMeshProUGUI>();
         textTmp.text = label;
         textTmp.fontSize = fontSize;
-        textTmp.color = ColButtonText;
+        textTmp.color = textColor ?? ColButtonText;
         textTmp.alignment = TextAlignmentOptions.Center;
         textTmp.fontStyle = FontStyles.Bold;
         if (font != null) textTmp.font = font;
