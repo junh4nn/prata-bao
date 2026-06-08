@@ -110,6 +110,8 @@ public static class AuthLayoutBuilder {
             statusTmp.alignment = TextAlignmentOptions.Center;
             statusTmp.textWrappingMode = TextWrappingModes.Normal;
 
+            
+
             return panel.gameObject;
         }
     }

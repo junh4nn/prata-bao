@@ -149,6 +149,15 @@ public static class GachaLayoutBuilder {
         statusTmp.rectTransform.anchoredPosition = new Vector2(0, -660);
         statusTmp.alignment = TextAlignmentOptions.Center;
 
+        // Footer bar pinned to the bottom of the screen.
+        var footer = UIConstants.MakeImage(panel.transform, "FooterBar", null, UIConstants.ColSurface);
+        UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
+        footer.rectTransform.anchoredPosition = new Vector2(0, 28);
+
+        var (backBtnGo, _) = UIConstants.MakeLinkButton(footer.transform, "BackButton", "← Back", 13, s_Poppins);
+        UIConstants.SetAnchored(backBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(90, 36));
+        backBtnGo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
         return panel.gameObject;
     }
     }
