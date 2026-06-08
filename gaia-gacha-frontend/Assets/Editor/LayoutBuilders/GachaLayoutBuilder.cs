@@ -119,10 +119,11 @@ public static class GachaLayoutBuilder {
         star3.rectTransform.anchoredPosition = new Vector2(28, 0);
         star3.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
-        // Circular placeholder for a future item sprite/image.
-        var circle = UIConstants.MakeImage(revealedState.transform, "PlaceholderCircle", null, UIConstants.ColTextMuted);
-        UIConstants.SetAnchored(circle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 120));
-        circle.rectTransform.anchoredPosition = new Vector2(0, 16);
+        // Item sprite — swapped at runtime by GachaManager based on the pulled item name.
+        var itemImg = UIConstants.MakeImage(revealedState.transform, "ItemImage", null, Color.white);
+        itemImg.preserveAspect = true;
+        UIConstants.SetAnchored(itemImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 120));
+        itemImg.rectTransform.anchoredPosition = new Vector2(0, 16);
 
         // Item name displayed in bold cream text after a pull.
         var itemNameTmp = UIConstants.MakeTMP(revealedState.transform, "ItemNameText", "", 18, UIConstants.ColTextPrimary, FontStyles.Bold, s_Poppins);
