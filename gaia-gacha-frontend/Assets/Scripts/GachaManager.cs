@@ -25,6 +25,7 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI balanceText;  // Eco-Coins count in the header
 
     [Header("UI - Item Card")]
+    [SerializeField] private Image itemImage;              // swapped per pull based on item name
     [SerializeField] private Image starImage1;             // leftmost rarity diamond (always gold on pull)
     [SerializeField] private Image starImage2;             // middle diamond (gold if Rare or Legendary)
     [SerializeField] private Image starImage3;             // rightmost diamond (gold if Legendary only)
@@ -33,6 +34,11 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI rarityBadgeText; // "COMMON", "RARE", or "LEGENDARY" label
     [SerializeField] private GameObject defaultCardState;  // the "?" state shown before any pull
     [SerializeField] private GameObject revealedCardState; // the item reveal state shown after a pull
+
+    [Header("Item Sprites")]
+    [SerializeField] private Sprite spriteMangrove;
+    [SerializeField] private Sprite spriteCoral;
+    [SerializeField] private Sprite spriteTurtle;
 
     [Header("Navigation")]
     [SerializeField] private GameObject gachaPanel;  // this panel — needed to hide on back
@@ -167,6 +173,19 @@ public class GachaManager : MonoBehaviour
                 "Rare"      => ColRare,
                 _           => ColCommon
             };
+
+        // Swap item sprite based on the pulled item's name.
+        if (itemImage != null)
+        {
+            itemImage.sprite = response.item.name switch
+            {
+                "Mangrove Seed"          => spriteMangrove,
+                "Coral Fragment"         => spriteCoral,
+                "Giant Sea Turtle Shell" => spriteTurtle,
+                _                        => null
+            };
+            itemImage.enabled = itemImage.sprite != null;
+        }
 
         // Update the coin balance shown in the header.
         AuthManager.Coins = response.newBalance;

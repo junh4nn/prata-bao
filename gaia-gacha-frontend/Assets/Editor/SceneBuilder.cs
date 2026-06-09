@@ -98,6 +98,10 @@ public static class SceneBuilder
 
         // Wire up the GachaManager Inspector references in the same way.
         var gachaSO = new SerializedObject(gachaMgr);
+        gachaSO.FindProperty("itemImage").objectReferenceValue          = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/ItemImage");
+        gachaSO.FindProperty("spriteMangrove").objectReferenceValue    = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_mangrove_seed.png");
+        gachaSO.FindProperty("spriteCoral").objectReferenceValue       = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_coral_fragment.png");
+        gachaSO.FindProperty("spriteTurtle").objectReferenceValue      = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_sea_turtle.png");
         gachaSO.FindProperty("pullButton").objectReferenceValue        = UIConstants.Find<Button>(gachaPanel.transform, "PullButton");
         gachaSO.FindProperty("statusText").objectReferenceValue        = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");
         gachaSO.FindProperty("balanceText").objectReferenceValue       = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "HeaderBar/BalanceText");
@@ -113,7 +117,8 @@ public static class SceneBuilder
         gachaSO.FindProperty("hubPanel").objectReferenceValue   = hubPanel;
         gachaSO.FindProperty("backButton").objectReferenceValue = UIConstants.Find<Button>(gachaPanel.transform, "FooterBar/BackButton");
         gachaSO.ApplyModifiedProperties();
-        UIConstants.WarnIfUnwired(gachaSO, "pullButton", "statusText", "balanceText",
+        UIConstants.WarnIfUnwired(gachaSO, "itemImage", "spriteMangrove", "spriteCoral", "spriteTurtle",
+            "pullButton", "statusText", "balanceText",
             "starImage1", "starImage2", "starImage3",
             "itemNameText", "rarityBadgeImage", "rarityBadgeText",
             "defaultCardState", "revealedCardState",
