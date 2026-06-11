@@ -3,6 +3,7 @@
 // receives the pulled item, and updates the item card UI to show the result.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -31,9 +32,13 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private Image starImage3;             // rightmost diamond (gold if Legendary only)
     [SerializeField] private TextMeshProUGUI itemNameText; // the pulled item's name
     [SerializeField] private Image rarityBadgeImage;       // colored pill background (Common/Rare/Legendary)
+    [SerializeField] private Image rarityBadgeBorderImage; // rarity-colored border around the badge
     [SerializeField] private TextMeshProUGUI rarityBadgeText; // "COMMON", "RARE", or "LEGENDARY" label
     [SerializeField] private GameObject defaultCardState;  // the "?" state shown before any pull
     [SerializeField] private GameObject revealedCardState; // the item reveal state shown after a pull
+    [SerializeField] private Image cardBorderImage;        // rarity-colored border behind the card
+    [SerializeField] private Image cardGlowImage;          // rarity glow (Rare = subtle, Legendary = bright)
+    [SerializeField] private TextMeshProUGUI scientificNameText; // italic muted scientific name
 
     [Header("Item Sprites")]
     [SerializeField] private Sprite spriteMangrove;
@@ -58,6 +63,14 @@ public class GachaManager : MonoBehaviour
     static readonly Color ColStarActive   = new Color(0.914f, 0.769f, 0.404f); // gold — earned tier
     static readonly Color ColStarInactive = new Color(0.2f,   0.32f,  0.24f);  // dim green — unearned tier
 
+    // Scientific names keyed by item name, looked up client-side after a pull.
+    static readonly Dictionary<string, string> ScientificNames = new()
+    {
+        { "Mangrove Seed",          "Rhizophora mangle"   },
+        { "Coral Fragment",         "Acropora cervicornis" },
+        { "Giant Sea Turtle Shell", "Chelonia mydas"       },
+    };
+
     // ── Unity lifecycle ──────────────────────────────────────────────────────
 
     void Start()
@@ -67,6 +80,9 @@ public class GachaManager : MonoBehaviour
         if (balanceText   != null) balanceText.text   = $"Eco-Coins: {AuthManager.Coins}";
         if (defaultCardState  != null) defaultCardState.SetActive(true);   // show the "?" card
         if (revealedCardState != null) revealedCardState.SetActive(false);  // hide the item reveal
+        if (cardBorderImage        != null) cardBorderImage.gameObject.SetActive(false);
+        if (rarityBadgeBorderImage != null) rarityBadgeBorderImage.gameObject.SetActive(false);
+        if (cardGlowImage     != null) cardGlowImage.gameObject.SetActive(false);
 
         // Register the pull button's click listener.
         if (pullButton != null)
@@ -165,14 +181,51 @@ public class GachaManager : MonoBehaviour
         if (rarityBadgeText != null)
             rarityBadgeText.text = response.item.rarity.ToUpper();
 
-        // Update the rarity badge background color to match the rarity tier.
+        // Badge background: dark fill always; border takes the rarity color.
         if (rarityBadgeImage != null)
-            rarityBadgeImage.color = response.item.rarity switch
+            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f);
+
+        if (rarityBadgeBorderImage != null)
+        {
+            rarityBadgeBorderImage.gameObject.SetActive(true);
+            rarityBadgeBorderImage.color = response.item.rarity switch
             {
                 "Legendary" => ColLegendary,
                 "Rare"      => ColRare,
                 _           => ColCommon
             };
+        }
+
+        // Rarity-colored border — always shown after a pull.
+        if (cardBorderImage != null)
+        {
+            cardBorderImage.gameObject.SetActive(true);
+            cardBorderImage.color = response.item.rarity switch
+            {
+                "Legendary" => ColLegendary,
+                "Rare"      => ColRare,
+                _           => ColCommon
+            };
+        }
+
+        // Rarity glow: Common = none, Rare = subtle green, Legendary = bright gold.
+        if (cardGlowImage != null)
+        {
+            switch (response.item.rarity)
+            {
+                case "Legendary":
+                    cardGlowImage.gameObject.SetActive(true);
+                    cardGlowImage.color = new Color(ColLegendary.r, ColLegendary.g, ColLegendary.b, 0.30f);
+                    break;
+                default:
+                    cardGlowImage.gameObject.SetActive(false);
+                    break;
+            }
+        }
+
+        // Scientific name.
+        if (scientificNameText != null)
+            scientificNameText.text = ScientificNames.TryGetValue(response.item.name, out var sci) ? sci : "";
 
         // Swap item sprite based on the pulled item's name.
         if (itemImage != null)
