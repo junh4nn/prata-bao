@@ -101,7 +101,7 @@ public static class MainHubLayoutBuilder
         // Logout tile: dark background box with the icon centred inside.
         var logoutTileRt = UIConstants.MakeRect(footer.transform, "LogoutButton");
         UIConstants.SetAnchored(logoutTileRt, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(48, 40));
-        logoutTileRt.anchoredPosition = new Vector2(0, 2);
+        logoutTileRt.anchoredPosition = new Vector2(0, 1);
         var logoutTileBg = logoutTileRt.gameObject.AddComponent<Image>();
         logoutTileBg.color = UIConstants.ColBg;
         var logoutTileBtn = logoutTileRt.gameObject.AddComponent<Button>();
