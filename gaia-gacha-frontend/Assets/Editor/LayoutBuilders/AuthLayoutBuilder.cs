@@ -17,7 +17,7 @@ public static class AuthLayoutBuilder {
     //   StatusText — error/feedback messages shown below the form
 
 
-    [MenuItem("GaiaGacha/LayoutBuilders/Build Auth Panel")]
+    [MenuItem("GaiaGacha/LayoutBuilders/Build Auth Panel", priority = 200)]
     static void Build()
     {
         s_Poppins = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");

@@ -14,7 +14,7 @@ using TMPro;
 public static class SceneBuilder
 {
     // ── Entry point ──────────────────────────────────────────────────────────
-    [MenuItem("GaiaGacha/Build Scene")]
+    [MenuItem("GaiaGacha/Build Scene", priority = 300)]
     static void Build()
     {
         // Wipe any existing Canvas, EventSystem, and manager objects so we start fresh.
@@ -98,35 +98,17 @@ public static class SceneBuilder
 
         // Wire up the GachaManager Inspector references in the same way.
         var gachaSO = new SerializedObject(gachaMgr);
-        gachaSO.FindProperty("itemImage").objectReferenceValue          = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/ItemImage");
-        gachaSO.FindProperty("spriteMangrove").objectReferenceValue    = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_mangrove_seed.png");
-        gachaSO.FindProperty("spriteCoral").objectReferenceValue       = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_coral_fragment.png");
-        gachaSO.FindProperty("spriteTurtle").objectReferenceValue      = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/item_sea_turtle.png");
-        gachaSO.FindProperty("pullButton").objectReferenceValue        = UIConstants.Find<Button>(gachaPanel.transform, "PullButton");
-        gachaSO.FindProperty("statusText").objectReferenceValue        = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");
-        gachaSO.FindProperty("balanceText").objectReferenceValue       = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "HeaderBar/BalanceText");
-        gachaSO.FindProperty("starImage1").objectReferenceValue        = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star1");
-        gachaSO.FindProperty("starImage2").objectReferenceValue        = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star2");
-        gachaSO.FindProperty("starImage3").objectReferenceValue        = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/StarsRow/Star3");
-        gachaSO.FindProperty("itemNameText").objectReferenceValue      = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/ItemNameText");
-        gachaSO.FindProperty("rarityBadgeImage").objectReferenceValue        = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadge");
-        gachaSO.FindProperty("rarityBadgeBorderImage").objectReferenceValue  = UIConstants.Find<Image>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadgeBorder");
-        gachaSO.FindProperty("rarityBadgeText").objectReferenceValue         = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/RarityBadge/RarityText");
-        gachaSO.FindProperty("cardBorderImage").objectReferenceValue   = UIConstants.Find<Image>(gachaPanel.transform, "CardBorder");
-        gachaSO.FindProperty("cardGlowImage").objectReferenceValue     = UIConstants.Find<Image>(gachaPanel.transform, "CardGlow");
-        gachaSO.FindProperty("scientificNameText").objectReferenceValue = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "ItemCard/RevealedState/ScientificNameText");
-        gachaSO.FindProperty("defaultCardState").objectReferenceValue  = UIConstants.Find<Transform>(gachaPanel.transform, "ItemCard/DefaultState")?.gameObject;
-        gachaSO.FindProperty("revealedCardState").objectReferenceValue = UIConstants.Find<Transform>(gachaPanel.transform, "ItemCard/RevealedState")?.gameObject;
-        gachaSO.FindProperty("gachaPanel").objectReferenceValue = gachaPanel;
-        gachaSO.FindProperty("hubPanel").objectReferenceValue   = hubPanel;
-        gachaSO.FindProperty("backButton").objectReferenceValue = UIConstants.Find<Button>(gachaPanel.transform, "FooterBar/BackButton");
+        gachaSO.FindProperty("cardDisplay").objectReferenceValue  = UIConstants.Find<CardDisplay>(gachaPanel.transform, "ItemCard");
+        gachaSO.FindProperty("itemRegistry").objectReferenceValue = AssetDatabase.LoadAssetAtPath<ItemRegistry>("Assets/ScriptableObjects/ItemRegistry.asset");
+        gachaSO.FindProperty("pullButton").objectReferenceValue   = UIConstants.Find<Button>(gachaPanel.transform, "PullButton");
+        gachaSO.FindProperty("statusText").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");
+        gachaSO.FindProperty("balanceText").objectReferenceValue  = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "HeaderBar/BalanceText");
+        gachaSO.FindProperty("gachaPanel").objectReferenceValue   = gachaPanel;
+        gachaSO.FindProperty("hubPanel").objectReferenceValue     = hubPanel;
+        gachaSO.FindProperty("backButton").objectReferenceValue   = UIConstants.Find<Button>(gachaPanel.transform, "FooterBar/BackButton");
         gachaSO.ApplyModifiedProperties();
-        UIConstants.WarnIfUnwired(gachaSO, "itemImage", "spriteMangrove", "spriteCoral", "spriteTurtle",
+        UIConstants.WarnIfUnwired(gachaSO, "cardDisplay", "itemRegistry",
             "pullButton", "statusText", "balanceText",
-            "starImage1", "starImage2", "starImage3",
-            "itemNameText", "rarityBadgeImage", "rarityBadgeBorderImage", "rarityBadgeText",
-            "cardBorderImage", "cardGlowImage", "scientificNameText",
-            "defaultCardState", "revealedCardState",
             "gachaPanel", "hubPanel", "backButton");
 
         var hubSO = new SerializedObject(hubUIMgr);
