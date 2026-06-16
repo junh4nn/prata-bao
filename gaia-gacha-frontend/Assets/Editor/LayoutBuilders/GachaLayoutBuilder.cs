@@ -6,11 +6,8 @@ using TMPro;
 public static class GachaLayoutBuilder {
 
     static TMP_FontAsset s_PoppinsSemiBold;
-    static TMP_FontAsset s_PoppinsLight;
     static TMP_FontAsset s_CinzelRegular;
-    static TMP_FontAsset s_CinzelSemiBold;
     static Sprite        s_BackIcon;
-    static Sprite        s_UISprite;
 
     
      // ── Gacha Panel ──────────────────────────────────────────────────────────
@@ -23,15 +20,12 @@ public static class GachaLayoutBuilder {
     //   StatusText  — feedback during/after a pull
 
 
-    [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel")]
+    [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel", priority = 201)]
     static void Build()
     {
-        s_PoppinsSemiBold  = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
-        s_PoppinsLight       = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-Light SDF.asset");
+        s_PoppinsSemiBold = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
         s_CinzelRegular   = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Cinzel-Regular SDF.asset");
-        s_CinzelSemiBold = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Cinzel-SemiBold SDF.asset");
-        s_BackIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/back_button.png");
-        s_UISprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
+        s_BackIcon        = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/back_button.png");
 
         var temp   = new GameObject("Temp");
         var panelGo = BuildGachaPanel(temp.transform);
@@ -75,110 +69,10 @@ public static class GachaLayoutBuilder {
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
-        // Glow and border sit behind the card. Sibling order: CardGlow → CardBorder → ItemCard
-        // (Unity renders later siblings on top, so glow is furthest back).
-
-        // Rarity glow — 8px bleed on each side (316x336). Color and visibility set at runtime by GachaManager.
-        var cardGlow = UIConstants.MakeImage(panel.transform, "CardGlow", s_UISprite, UIConstants.ColGold);
-        cardGlow.color = new Color(UIConstants.ColGold.r, UIConstants.ColGold.g, UIConstants.ColGold.b, 0.30f);
-        cardGlow.type = Image.Type.Sliced;
-        UIConstants.SetAnchored(cardGlow.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(302, 402));
-        cardGlow.rectTransform.anchoredPosition = new Vector2(0, -340);
-        cardGlow.gameObject.SetActive(false);
-
-        // Rarity-colored border — 9px border on each side (318x338). Color set at runtime by GachaManager.
-        var cardBorder = UIConstants.MakeImage(panel.transform, "CardBorder", s_UISprite, UIConstants.ColSurface);
-        cardBorder.type = Image.Type.Sliced;
-        UIConstants.SetAnchored(cardBorder.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(292, 392));
-        cardBorder.rectTransform.anchoredPosition = new Vector2(0, -340);
-        cardBorder.gameObject.SetActive(false);
-
-        // Item card — the main display area. Contains two child states:
-        //   DefaultState  — shown before any pull ("?" placeholder)
-        //   RevealedState — shown after a pull (item name, rarity, diamonds)
-        var itemCard = UIConstants.MakeImage(panel.transform, "ItemCard", s_UISprite, UIConstants.ColSurface);
-        itemCard.type = Image.Type.Sliced;
-        UIConstants.SetAnchored(itemCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 380));
-        itemCard.rectTransform.anchoredPosition = new Vector2(0, -340);
-
-        // Default state: fills the entire card and shows a "?" until the player pulls.
-        var defaultState = UIConstants.MakeRect(itemCard.transform, "DefaultState");
-        UIConstants.Stretch(defaultState);
-
-        var questionMark = UIConstants.MakeTMP(defaultState.transform, "QuestionMark", "?", 52, UIConstants.ColTextPrimary, FontStyles.Bold, s_PoppinsSemiBold);
-        UIConstants.SetAnchored(questionMark.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 70));
-        questionMark.rectTransform.anchoredPosition = new Vector2(0, 10);
-        questionMark.alignment = TextAlignmentOptions.Center;
-
-        var readyTmp = UIConstants.MakeTMP(defaultState.transform, "ReadyText", "What will nature reveal?", 12, UIConstants.ColTextMuted, FontStyles.Italic, s_PoppinsSemiBold);
-        UIConstants.SetAnchored(readyTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(220, 44));
-        readyTmp.rectTransform.anchoredPosition = new Vector2(0, -40);
-        readyTmp.alignment = TextAlignmentOptions.Center;
-        readyTmp.textWrappingMode = TextWrappingModes.Normal;
-
-        // Revealed state: hidden at start. GachaManager.cs activates it after a successful pull.
-        var revealedState = UIConstants.MakeRect(itemCard.transform, "RevealedState");
-        UIConstants.Stretch(revealedState);
-        revealedState.gameObject.SetActive(false);
-
-        // Rarity indicator: three diamond shapes in a row.
-        // Gold = earned rarity tier, dark green = unearned tier.
-        // GachaManager.cs sets the colors based on Common/Rare/Legendary.
-        // Squares rotated 45° become diamond shapes — avoids font glyph issues with ★.
-        var starsRow = UIConstants.MakeRect(revealedState.transform, "StarsRow");
-        UIConstants.SetAnchored(starsRow, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(80, 20));
-        starsRow.anchoredPosition = new Vector2(0, -90);
-
-        var star1 = UIConstants.MakeImage(starsRow.transform, "Star1", null, UIConstants.ColGold); // always gold (at least 1 rarity)
-        UIConstants.SetAnchored(star1.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
-        star1.rectTransform.anchoredPosition = new Vector2(-28, 0);
-        star1.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
-
-        var star2 = UIConstants.MakeImage(starsRow.transform, "Star2", null, new Color(0.2f, 0.32f, 0.24f)); // dim until Rare+
-        UIConstants.SetAnchored(star2.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
-        star2.rectTransform.anchoredPosition = new Vector2(0, 0);
-        star2.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
-
-        var star3 = UIConstants.MakeImage(starsRow.transform, "Star3", null, new Color(0.2f, 0.32f, 0.24f)); // dim until Legendary
-        UIConstants.SetAnchored(star3.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 16));
-        star3.rectTransform.anchoredPosition = new Vector2(28, 0);
-        star3.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
-
-        // Item sprite — stamp-style, larger than before. Swapped at runtime by GachaManager.
-        var itemImg = UIConstants.MakeImage(revealedState.transform, "ItemImage", null, Color.white);
-        itemImg.preserveAspect = true;
-        UIConstants.SetAnchored(itemImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(140, 140));
-        itemImg.rectTransform.anchoredPosition = new Vector2(0, 75);
-
-        // Item name displayed in bold cream text after a pull.
-        var itemNameTmp = UIConstants.MakeTMP(revealedState.transform, "ItemNameText", "", 19, UIConstants.ColTextPrimary, FontStyles.Normal, s_CinzelSemiBold);
-        UIConstants.SetAnchored(itemNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 36));
-        itemNameTmp.rectTransform.anchoredPosition = new Vector2(0, -30);
-        itemNameTmp.alignment = TextAlignmentOptions.Center;
-
-        // Scientific name in italic muted text below the item name.
-        var sciNameTmp = UIConstants.MakeTMP(revealedState.transform, "ScientificNameText", "", 13, UIConstants.ColTextMuted, FontStyles.Italic, s_PoppinsLight);
-        UIConstants.SetAnchored(sciNameTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(240, 24));
-        sciNameTmp.rectTransform.anchoredPosition = new Vector2(0, -55);
-        sciNameTmp.alignment = TextAlignmentOptions.Center;
-
-        // Rarity badge border — sits behind the badge, colored by rarity at runtime.
-        var rarityBadgeBorder = UIConstants.MakeImage(revealedState.transform, "RarityBadgeBorder", s_UISprite, UIConstants.ColTextMuted);
-        rarityBadgeBorder.type = Image.Type.Sliced;
-        UIConstants.SetAnchored(rarityBadgeBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(128, 38));
-        rarityBadgeBorder.rectTransform.anchoredPosition = new Vector2(0, -148);
-        rarityBadgeBorder.gameObject.SetActive(false);
-
-        // Rarity badge — pill-shaped background whose color is set by GachaManager.cs.
-        var rarityBadge = UIConstants.MakeImage(revealedState.transform, "RarityBadge", s_UISprite, UIConstants.ColInputBg);
-        rarityBadge.type = Image.Type.Sliced;
-        UIConstants.SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 32));
-        rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -148);
-
-        // Text inside the rarity badge ("COMMON", "RARE", or "LEGENDARY").
-        var rarityTmp = UIConstants.MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 12, UIConstants.ColTextPrimary, FontStyles.Bold, s_PoppinsSemiBold);
-        UIConstants.SetAnchored(rarityTmp.rectTransform, Vector2.zero, Vector2.one, new Vector2(0, 0));
-        rarityTmp.alignment = TextAlignmentOptions.Center;
+        // Load the pre-built ItemCard prefab. Run "GaiaGacha/LayoutBuilders/Build Item Card" first.
+        var itemCardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/ItemCard.prefab");
+        if (itemCardPrefab == null) { Debug.LogError("[GachaLayoutBuilder] ItemCard.prefab not found — run Build Item Card first."); return panel.gameObject; }
+        PrefabUtility.InstantiatePrefab(itemCardPrefab, panel.transform);
 
         // Pull button — costs 10 Eco-Coins. GachaManager.cs listens to its onClick event.
         var (pullBtnGo, _) = UIConstants.MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins", 20, s_PoppinsSemiBold);
