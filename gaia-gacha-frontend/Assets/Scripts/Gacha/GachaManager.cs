@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
@@ -100,7 +101,9 @@ public class GachaManager : MonoBehaviour
     private void UpdateGachaUI(PullResponse response)
     {
         if (response?.item == null) return;
-        cardDisplay.Setup(itemRegistry.FindByName(response.item.name));
+        var visuals = itemRegistry.FindById(response.item.id);
+        var rarity  = Enum.Parse<Rarity>(response.item.rarity);
+        cardDisplay.Setup(response.item.name, rarity, visuals);
         AuthManager.Coins = response.newBalance;
         if (balanceText != null) balanceText.text = $"Eco-Coins: {response.newBalance}";
         if (statusText  != null) statusText.text  = "";

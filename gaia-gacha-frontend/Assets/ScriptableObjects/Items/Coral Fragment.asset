@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: Coral Fragment
   m_EditorClassIdentifier: Assembly-CSharp::ItemDefinition
   id: 2
-  displayName: Coral Fragment
   scientificName: Acropora cervicornis
-  rarity: 1
   sprite: {fileID: 21300000, guid: d00261684cad41b38275d669a4a29097, type: 3}

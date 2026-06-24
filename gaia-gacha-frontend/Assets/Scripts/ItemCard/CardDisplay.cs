@@ -7,6 +7,7 @@ public class CardDisplay : MonoBehaviour
     [SerializeField] private GameObject        defaultCardState;
     [SerializeField] private GameObject        revealedCardState;
     [SerializeField] private Image             itemImage;
+    [SerializeField] private Sprite            placeholderSprite;
     [SerializeField] private Image             starImage1;
     [SerializeField] private Image             starImage2;
     [SerializeField] private Image             starImage3;
@@ -24,31 +25,32 @@ public class CardDisplay : MonoBehaviour
     static readonly Color ColStarActive   = new Color(0.914f, 0.769f, 0.404f);
     static readonly Color ColStarInactive = new Color(0.2f,   0.32f,  0.24f);
 
-    public void Setup(ItemDefinition item)
+    public void Setup(string displayName, Rarity rarity, ItemDefinition visuals)
     {
         if (defaultCardState  != null) defaultCardState.SetActive(false);
         if (revealedCardState != null) revealedCardState.SetActive(true);
 
-        Color rarityColor = item.rarity switch
+        Color rarityColor = rarity switch
         {
             Rarity.Legendary => ColLegendary,
             Rarity.Rare      => ColRare,
             _                => ColCommon
         };
 
-        int starCount = item.rarity switch { Rarity.Legendary => 3, Rarity.Rare => 2, _ => 1 };
+        int starCount = rarity switch { Rarity.Legendary => 3, Rarity.Rare => 2, _ => 1 };
         if (starImage1 != null) starImage1.color = starCount >= 1 ? ColStarActive : ColStarInactive;
         if (starImage2 != null) starImage2.color = starCount >= 2 ? ColStarActive : ColStarInactive;
         if (starImage3 != null) starImage3.color = starCount >= 3 ? ColStarActive : ColStarInactive;
 
         if (itemImage != null)
         {
-            itemImage.sprite  = item.sprite;
-            itemImage.enabled = item.sprite != null;
+            Sprite sprite = visuals != null ? visuals.sprite : placeholderSprite;
+            itemImage.sprite  = sprite;
+            itemImage.enabled = sprite != null;
         }
 
-        if (itemNameText       != null) itemNameText.text       = item.displayName;
-        if (scientificNameText != null) scientificNameText.text = item.scientificName;
+        if (itemNameText       != null) itemNameText.text       = displayName;
+        if (scientificNameText != null) scientificNameText.text = visuals != null ? visuals.scientificName : "Unknown Specimen";
 
         if (rarityBadgeImage != null)
             rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f);
@@ -60,7 +62,7 @@ public class CardDisplay : MonoBehaviour
         }
 
         if (rarityBadgeText != null)
-            rarityBadgeText.text = item.rarity.ToString().ToUpper();
+            rarityBadgeText.text = rarity.ToString().ToUpper();
 
         if (cardBorderImage != null)
         {
@@ -70,7 +72,7 @@ public class CardDisplay : MonoBehaviour
 
         if (cardGlowImage != null)
         {
-            bool showGlow = item.rarity == Rarity.Legendary;
+            bool showGlow = rarity == Rarity.Legendary;
             cardGlowImage.gameObject.SetActive(showGlow);
             if (showGlow)
                 cardGlowImage.color = new Color(ColLegendary.r, ColLegendary.g, ColLegendary.b, 0.30f);

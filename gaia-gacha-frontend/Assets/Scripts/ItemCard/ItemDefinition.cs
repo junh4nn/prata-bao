@@ -6,8 +6,6 @@ public enum Rarity { Common, Rare, Legendary }
 public class ItemDefinition : ScriptableObject
 {
     public int    id;
-    public string displayName;
     public string scientificName;
-    public Rarity rarity;
     public Sprite sprite;
 }
