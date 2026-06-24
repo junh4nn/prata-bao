@@ -241,6 +241,7 @@ MonoBehaviour:
   defaultCardState: {fileID: 578104040000318287}
   revealedCardState: {fileID: 2045097020601727491}
   itemImage: {fileID: 3090228283238319650}
+  placeholderSprite: {fileID: 0}
   starImage1: {fileID: 2402345229224519415}
   starImage2: {fileID: 4081455796558380620}
   starImage3: {fileID: 3920600244298209292}

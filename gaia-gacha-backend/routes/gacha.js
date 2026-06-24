@@ -5,11 +5,6 @@ export default function (supabase) {
 
   // --- GACHA CONFIGURATION ---
   const GACHA_COST = 10;
-  const ITEMS = [
-    { id: 1, name: 'Mangrove Seed', rarity: 'Common', weight: 70 },
-    { id: 2, name: 'Coral Fragment', rarity: 'Rare', weight: 25 },
-    { id: 3, name: 'Giant Sea Turtle Shell', rarity: 'Legendary', weight: 5 }
-  ];
 
   // --- THE GACHA ROUTE ---
   router.post('/pull', async (req, res) => {
@@ -34,11 +29,20 @@ export default function (supabase) {
       }
 
       // 3. Logic: Weighted Random Selection
+      const { data: items, error: itemsError } = await supabase
+        .from('items')
+        .select('id, name, rarity, weight');
+
+      if (itemsError || !items || items.length === 0) {
+        console.error("Fetch Items Error:", itemsError?.message);
+        return res.status(500).json({ error: "Failed to load items" });
+      }
+
       const roll = Math.random() * 100;
-      let selectedItem = ITEMS[0];
+      let selectedItem = items[0];
       let cumulativeWeight = 0;
 
-      for (const item of ITEMS) {
+      for (const item of items) {
         cumulativeWeight += item.weight;
         if (roll < cumulativeWeight) {
           selectedItem = item;
@@ -63,10 +67,9 @@ export default function (supabase) {
       // Add item to 'inventory' table
       const { error: insertError } = await supabase
         .from('inventory')
-        .insert([{ 
-          user_id: userId, 
-          item_name: selectedItem.name,
-          rarity: selectedItem.rarity
+        .insert([{
+          user_id: userId,
+          item_id: selectedItem.id
         }]);
 
       if (insertError) {
@@ -78,7 +81,7 @@ export default function (supabase) {
       // 6. Send Result back to Unity
       return res.json({
         message: `You found a ${selectedItem.name}!`,
-        item: selectedItem,
+        item: { id: selectedItem.id, name: selectedItem.name, rarity: selectedItem.rarity },
         newBalance: newBalance
       });
 

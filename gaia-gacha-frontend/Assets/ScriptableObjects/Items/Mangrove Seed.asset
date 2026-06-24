@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: Mangrove Seed
   m_EditorClassIdentifier: Assembly-CSharp::ItemDefinition
   id: 1
-  displayName: Mangrove Seed
   scientificName: Rhizophora mangle
-  rarity: 0
   sprite: {fileID: 21300000, guid: 9dae303c36164a3ab0ef319baf3333a5, type: 3}
