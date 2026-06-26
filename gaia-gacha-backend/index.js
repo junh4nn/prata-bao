@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import gachaRouter from './routes/gacha.js';
 import authRouter from './routes/auth.js';
+import inventoryRouter from './routes/inventory.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const supabaseAuth = createClient(
 // =====================================
 app.use('/api/gacha', gachaRouter(supabase)); // Mounts gacha routes under /api/gacha
 app.use('/api/auth', authRouter(supabase, supabaseAuth)); // Mounts auth routes under /api/auth
+app.use('/api/inventory', inventoryRouter(supabase)); // Mounts inventory routes under /api/inventory
 
 // Optional base fallback route for checking server status in a browser
 app.get('/', (req, res) => {
