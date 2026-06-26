@@ -10,13 +10,14 @@ public static class CreateItemAssets
         public string displayName;
         public string scientificName;
         public string spritePath;
+        public string abilityText;
     }
 
     static readonly ItemData[] Items = new[]
     {
-        new ItemData { id = 1, displayName = "Mangrove Seed",          scientificName = "Rhizophora mangle",    spritePath = "Assets/Sprites/item_mangrove_seed.png"   },
-        new ItemData { id = 2, displayName = "Coral Fragment",         scientificName = "Acropora cervicornis", spritePath = "Assets/Sprites/item_coral_fragment.png"  },
-        new ItemData { id = 3, displayName = "Giant Sea Turtle Shell", scientificName = "Chelonia mydas",       spritePath = "Assets/Sprites/item_sea_turtle.png"      },
+        new ItemData { id = 1, displayName = "Mangrove Seed",          scientificName = "Rhizophora mangle",    spritePath = "Assets/Sprites/item_mangrove_seed.png",  abilityText = "" },
+        new ItemData { id = 2, displayName = "Coral Fragment",         scientificName = "Acropora cervicornis", spritePath = "Assets/Sprites/item_coral_fragment.png", abilityText = "" },
+        new ItemData { id = 3, displayName = "Giant Sea Turtle Shell", scientificName = "Chelonia mydas",       spritePath = "Assets/Sprites/item_sea_turtle.png",     abilityText = "" },
     };
 
     [MenuItem("GaiaGacha/ItemCard/Create Item Assets", priority = 10)]
@@ -52,7 +53,8 @@ public static class CreateItemAssets
 
             def.id             = data.id;
             def.scientificName = data.scientificName;
-            def.sprite         = AssetDatabase.LoadAssetAtPath<Sprite>(data.spritePath);
+            def.itemSprite     = AssetDatabase.LoadAssetAtPath<Sprite>(data.spritePath);
+            def.abilityText    = data.abilityText;
 
             EditorUtility.SetDirty(def);
             definitions.Add(def);
@@ -64,6 +66,14 @@ public static class CreateItemAssets
 
         registry.items = definitions;
         EditorUtility.SetDirty(registry);
+
+        const string typeVisualsPath = "Assets/ScriptableObjects/TypeVisuals.asset";
+        var typeVisuals = AssetDatabase.LoadAssetAtPath<TypeVisuals>(typeVisualsPath)
+                       ?? CreateAssetAt<TypeVisuals>(typeVisualsPath);
+
+        typeVisuals.floraIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/icon_flora.png");
+        typeVisuals.faunaIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Sprites/icon_fauna.png");
+        EditorUtility.SetDirty(typeVisuals);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

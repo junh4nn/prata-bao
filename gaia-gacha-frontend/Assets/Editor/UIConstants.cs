@@ -12,6 +12,7 @@ public static class UIConstants
     public static readonly Color ColButton      = Hex("#D4A373"); // earth-tone primary button
     public static readonly Color ColButtonText  = Hex("#1B4332"); // dark text on buttons
     public static readonly Color ColTextPrimary = Hex("#F1FAEE"); // headings and body text
+    public static readonly Color ColTextSecondary = Hex("#000000"); // rarity badge text, card name, and other secondary text
     public static readonly Color ColTextMuted   = Hex("#95B8A0"); // placeholder and subtitle text
     public static readonly Color ColGold        = Hex("#E9C46A"); // gold for coins and rarity diamonds
     public static readonly Color ColInputBg     = Hex("#102215"); // input fields — darker than ColSurface

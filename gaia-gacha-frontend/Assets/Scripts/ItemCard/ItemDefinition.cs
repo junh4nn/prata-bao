@@ -7,5 +7,6 @@ public class ItemDefinition : ScriptableObject
 {
     public int    id;
     public string scientificName;
-    public Sprite sprite;
+    public Sprite itemSprite;
+    public string abilityText; // shown in the future inventory detail view; falls back to placeholder text if empty
 }

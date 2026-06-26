@@ -95,6 +95,18 @@ public static class GachaCardBuilder
         star3.rectTransform.anchoredPosition = new Vector2(28, 0);
         star3.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
+        // Type icon background — rounded-square chip behind the icon, colored by type
+        var typeIconBg = UIConstants.MakeImage(revealedState.transform, "TypeIconBg", s_UISprite, Color.white);
+        typeIconBg.type = Image.Type.Sliced;
+        UIConstants.SetAnchored(typeIconBg.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(30, 30));
+        typeIconBg.rectTransform.anchoredPosition = new Vector2(25, -25);
+
+        // Type icon — top-left corner of the card face
+        var typeIcon = UIConstants.MakeImage(revealedState.transform, "TypeIcon", null, Color.white);
+        typeIcon.preserveAspect = true;
+        UIConstants.SetAnchored(typeIcon.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(20, 20));
+        typeIcon.rectTransform.anchoredPosition = new Vector2(25, -25);
+
         // Item sprite
         var itemImg = UIConstants.MakeImage(revealedState.transform, "ItemImage", null, Color.white);
         itemImg.preserveAspect = true;
@@ -126,7 +138,7 @@ public static class GachaCardBuilder
         UIConstants.SetAnchored(rarityBadge.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(120, 32));
         rarityBadge.rectTransform.anchoredPosition = new Vector2(0, -148);
 
-        var rarityTmp = UIConstants.MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 12, UIConstants.ColTextPrimary, FontStyles.Bold, s_PoppinsSemiBold);
+        var rarityTmp = UIConstants.MakeTMP(rarityBadge.transform, "RarityText", "COMMON", 13, UIConstants.ColTextSecondary, FontStyles.Bold, s_PoppinsSemiBold);
         UIConstants.SetAnchored(rarityTmp.rectTransform, Vector2.zero, Vector2.one, new Vector2(0, 0));
         rarityTmp.alignment = TextAlignmentOptions.Center;
 
@@ -145,6 +157,9 @@ public static class GachaCardBuilder
         so.FindProperty("rarityBadgeText").objectReferenceValue        = rarityTmp;
         so.FindProperty("cardBorderImage").objectReferenceValue  = cardBorder;
         so.FindProperty("cardGlowImage").objectReferenceValue    = cardGlow;
+        so.FindProperty("typeIconImage").objectReferenceValue    = typeIcon;
+        so.FindProperty("typeIconBgImage").objectReferenceValue  = typeIconBg;
+        so.FindProperty("typeVisuals").objectReferenceValue      = AssetDatabase.LoadAssetAtPath<TypeVisuals>("Assets/ScriptableObjects/TypeVisuals.asset");
         so.ApplyModifiedProperties();
 
         return root.gameObject;

@@ -31,7 +31,7 @@ export default function (supabase) {
       // 3. Logic: Weighted Random Selection
       const { data: items, error: itemsError } = await supabase
         .from('items')
-        .select('id, name, rarity, weight');
+        .select('id, name, rarity, weight, type');
 
       if (itemsError || !items || items.length === 0) {
         console.error("Fetch Items Error:", JSON.stringify(itemsError, null, 2));
@@ -81,7 +81,7 @@ export default function (supabase) {
       // 6. Send Result back to Unity
       return res.json({
         message: `You found a ${selectedItem.name}!`,
-        item: { id: selectedItem.id, name: selectedItem.name, rarity: selectedItem.rarity },
+        item: { id: selectedItem.id, name: selectedItem.name, rarity: selectedItem.rarity, type: selectedItem.type },
         newBalance: newBalance
       });
 

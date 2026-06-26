@@ -103,7 +103,7 @@ public class GachaManager : MonoBehaviour
         if (response?.item == null) return;
         var visuals = itemRegistry.FindById(response.item.id);
         var rarity  = Enum.Parse<Rarity>(response.item.rarity);
-        cardDisplay.Setup(response.item.name, rarity, visuals);
+        cardDisplay.Setup(response.item.name, rarity, response.item.type, visuals);
         AuthManager.Coins = response.newBalance;
         if (balanceText != null) balanceText.text = $"Eco-Coins: {response.newBalance}";
         if (statusText  != null) statusText.text  = "";
