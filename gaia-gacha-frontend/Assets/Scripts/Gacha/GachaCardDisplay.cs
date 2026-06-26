@@ -22,11 +22,6 @@ public class GachaCardDisplay : MonoBehaviour
     [SerializeField] private Image             typeIconBgImage;
     [SerializeField] private TypeVisuals       typeVisuals;
 
-    static readonly Color ColCommon    = new Color(0.659f, 0.710f, 0.635f);
-    static readonly Color ColRare      = new Color(0.322f, 0.718f, 0.533f);
-    static readonly Color ColLegendary = new Color(0.914f, 0.769f, 0.404f);
-    static readonly Color ColStarActive   = new Color(0.914f, 0.769f, 0.404f);
-    static readonly Color ColStarInactive = new Color(0.2f,   0.32f,  0.24f);
     static readonly Color ColTypeFlora    = new Color(0.133f, 0.773f, 0.369f);
     static readonly Color ColTypeFauna    = new Color(0.545f, 0.353f, 0.169f);
 
@@ -35,17 +30,12 @@ public class GachaCardDisplay : MonoBehaviour
         if (defaultCardState  != null) defaultCardState.SetActive(false);
         if (revealedCardState != null) revealedCardState.SetActive(true);
 
-        Color rarityColor = rarity switch
-        {
-            Rarity.Legendary => ColLegendary,
-            Rarity.Rare      => ColRare,
-            _                => ColCommon
-        };
+        Color rarityColor = RarityVisuals.GetColor(rarity);
 
-        int starCount = rarity switch { Rarity.Legendary => 3, Rarity.Rare => 2, _ => 1 };
-        if (starImage1 != null) starImage1.color = starCount >= 1 ? ColStarActive : ColStarInactive;
-        if (starImage2 != null) starImage2.color = starCount >= 2 ? ColStarActive : ColStarInactive;
-        if (starImage3 != null) starImage3.color = starCount >= 3 ? ColStarActive : ColStarInactive;
+        int starCount = RarityVisuals.GetStarCount(rarity);
+        if (starImage1 != null) starImage1.color = starCount >= 1 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
+        if (starImage2 != null) starImage2.color = starCount >= 2 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
+        if (starImage3 != null) starImage3.color = starCount >= 3 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
 
         if (itemImage != null)
         {
@@ -97,7 +87,7 @@ public class GachaCardDisplay : MonoBehaviour
             bool showGlow = rarity == Rarity.Legendary;
             cardGlowImage.gameObject.SetActive(showGlow);
             if (showGlow)
-                cardGlowImage.color = new Color(ColLegendary.r, ColLegendary.g, ColLegendary.b, 0.30f);
+                cardGlowImage.color = new Color(RarityVisuals.ColLegendary.r, RarityVisuals.ColLegendary.g, RarityVisuals.ColLegendary.b, 0.30f);
         }
     }
 
