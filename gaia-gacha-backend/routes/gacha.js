@@ -34,7 +34,7 @@ export default function (supabase) {
         .select('id, name, rarity, weight');
 
       if (itemsError || !items || items.length === 0) {
-        console.error("Fetch Items Error:", itemsError?.message);
+        console.error("Fetch Items Error:", JSON.stringify(itemsError, null, 2));
         return res.status(500).json({ error: "Failed to load items" });
       }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CardDisplay : MonoBehaviour
+public class GachaCardDisplay : MonoBehaviour
 {
     [SerializeField] private GameObject        defaultCardState;
     [SerializeField] private GameObject        revealedCardState;

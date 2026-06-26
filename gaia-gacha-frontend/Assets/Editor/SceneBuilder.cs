@@ -98,7 +98,7 @@ public static class SceneBuilder
 
         // Wire up the GachaManager Inspector references in the same way.
         var gachaSO = new SerializedObject(gachaMgr);
-        gachaSO.FindProperty("cardDisplay").objectReferenceValue  = UIConstants.Find<CardDisplay>(gachaPanel.transform, "ItemCard");
+        gachaSO.FindProperty("cardDisplay").objectReferenceValue  = UIConstants.Find<GachaCardDisplay>(gachaPanel.transform, "GachaCard");
         gachaSO.FindProperty("itemRegistry").objectReferenceValue = AssetDatabase.LoadAssetAtPath<ItemRegistry>("Assets/ScriptableObjects/ItemRegistry.asset");
         gachaSO.FindProperty("pullButton").objectReferenceValue   = UIConstants.Find<Button>(gachaPanel.transform, "PullButton");
         gachaSO.FindProperty("statusText").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(gachaPanel.transform, "StatusText");

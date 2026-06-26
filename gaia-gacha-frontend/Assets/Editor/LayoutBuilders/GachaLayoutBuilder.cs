@@ -15,7 +15,7 @@ public static class GachaLayoutBuilder {
     // Layout (top to bottom):
     //   HeaderBar   — "GaiaGacha" title + Eco-Coins balance
     //   BannerLabel — "NATURE'S COLLECTION" label
-    //   ItemCard    — shows "?" before a pull, then the item with rarity diamonds after
+    //   GachaCard   — shows "?" before a pull, then the item with rarity diamonds after
     //   PullButton  — costs 10 Eco-Coins per pull
     //   StatusText  — feedback during/after a pull
 
@@ -69,10 +69,10 @@ public static class GachaLayoutBuilder {
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
-        // Load the pre-built ItemCard prefab. Run "GaiaGacha/LayoutBuilders/Build Item Card" first.
-        var itemCardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/ItemCard.prefab");
-        if (itemCardPrefab == null) { Debug.LogError("[GachaLayoutBuilder] ItemCard.prefab not found — run Build Item Card first."); return panel.gameObject; }
-        PrefabUtility.InstantiatePrefab(itemCardPrefab, panel.transform);
+        // Load the pre-built GachaCard prefab. Run "GaiaGacha/Gacha/Build Gacha Card" first.
+        var gachaCardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaCard.prefab");
+        if (gachaCardPrefab == null) { Debug.LogError("[GachaLayoutBuilder] GachaCard.prefab not found — run Build Gacha Card first."); return panel.gameObject; }
+        PrefabUtility.InstantiatePrefab(gachaCardPrefab, panel.transform);
 
         // Pull button — costs 10 Eco-Coins. GachaManager.cs listens to its onClick event.
         var (pullBtnGo, _) = UIConstants.MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins", 20, s_PoppinsSemiBold);

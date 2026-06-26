@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public static class ItemCardBuilder
+public static class GachaCardBuilder
 {
     static TMP_FontAsset s_PoppinsSemiBold;
     static TMP_FontAsset s_PoppinsLight;
     static TMP_FontAsset s_CinzelSemiBold;
     static Sprite        s_UISprite;
 
-    [MenuItem("GaiaGacha/ItemCard/Build Item Card", priority = 101)]
+    [MenuItem("GaiaGacha/Gacha/Build Gacha Card", priority = 100)]
     static void Build()
     {
         s_PoppinsSemiBold = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
@@ -19,21 +19,21 @@ public static class ItemCardBuilder
         s_UISprite        = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");
 
         var temp   = new GameObject("Temp");
-        var cardGo = BuildItemCard(temp.transform);
+        var cardGo = BuildGachaCard(temp.transform);
 
-        PrefabUtility.SaveAsPrefabAsset(cardGo, "Assets/Prefabs/ItemCard.prefab");
+        PrefabUtility.SaveAsPrefabAsset(cardGo, "Assets/Prefabs/GachaCard.prefab");
         Object.DestroyImmediate(temp);
         AssetDatabase.Refresh();
-        Debug.Log("<color=green>[ItemCardBuilder] ItemCard prefab saved.</color>");
+        Debug.Log("<color=green>[GachaCardBuilder] GachaCard prefab saved.</color>");
     }
 
-    public static GameObject BuildItemCard(Transform parent)
+    public static GameObject BuildGachaCard(Transform parent)
     {
-        // Root — CardDisplay lives here, sized to match the full card visual
-        var root = UIConstants.MakeRect(parent, "ItemCard");
+        // Root — GachaCardDisplay lives here, sized to match the full card visual
+        var root = UIConstants.MakeRect(parent, "GachaCard");
         UIConstants.SetAnchored(root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(302, 402));
         root.anchoredPosition = new Vector2(0, -340);
-        var display = root.gameObject.AddComponent<CardDisplay>();
+        var display = root.gameObject.AddComponent<GachaCardDisplay>();
 
         // CardGlow — 8px bleed on each side, behind everything
         var cardGlow = UIConstants.MakeImage(root.transform, "CardGlow", s_UISprite, UIConstants.ColGold);
@@ -70,7 +70,7 @@ public static class ItemCardBuilder
         readyTmp.alignment = TextAlignmentOptions.Center;
         readyTmp.textWrappingMode = TextWrappingModes.Normal;
 
-        // RevealedState — populated by CardDisplay.Setup()
+        // RevealedState — populated by GachaCardDisplay.Setup()
         var revealedState = UIConstants.MakeRect(cardFace.transform, "RevealedState");
         UIConstants.Stretch(revealedState);
         revealedState.gameObject.SetActive(false);
@@ -130,7 +130,7 @@ public static class ItemCardBuilder
         UIConstants.SetAnchored(rarityTmp.rectTransform, Vector2.zero, Vector2.one, new Vector2(0, 0));
         rarityTmp.alignment = TextAlignmentOptions.Center;
 
-        // Wire CardDisplay SerializedFields from within the prefab
+        // Wire GachaCardDisplay SerializedFields from within the prefab
         var so = new UnityEditor.SerializedObject(display);
         so.FindProperty("defaultCardState").objectReferenceValue   = defaultState.gameObject;
         so.FindProperty("revealedCardState").objectReferenceValue  = revealedState.gameObject;

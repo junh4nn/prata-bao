@@ -17,11 +17,20 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Separate client for verifying player logins. signInWithPassword() attaches the
+// signed-in player's session to whichever client it's called on, so it must never
+// run on the service-role `supabase` client above — that would silently swap every
+// later admin-level query (gacha pulls, inventory) onto that player's own permissions.
+const supabaseAuth = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
 // =====================================
 // MOUNT ROUTERS
 // =====================================
 app.use('/api/gacha', gachaRouter(supabase)); // Mounts gacha routes under /api/gacha
-app.use('/api/auth', authRouter(supabase)); // Mounts auth routes under /api/auth
+app.use('/api/auth', authRouter(supabase, supabaseAuth)); // Mounts auth routes under /api/auth
 
 // Optional base fallback route for checking server status in a browser
 app.get('/', (req, res) => {

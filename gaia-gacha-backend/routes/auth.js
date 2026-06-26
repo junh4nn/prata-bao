@@ -1,6 +1,6 @@
 import express from 'express';
 
-export default function (supabase) {
+export default function (supabase, supabaseAuth) {
   const router = express.Router();
 
   // =====================================
@@ -40,8 +40,10 @@ export default function (supabase) {
     const { email, password } = req.body;
 
     try {
-      // Ask Supabase to verify the email and password
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // Ask Supabase to verify the email and password. This must run on the anon-key
+      // client, not the service-role `supabase` client — signInWithPassword() attaches
+      // the resulting session to whichever client it's called on.
+      const { data, error } = await supabaseAuth.auth.signInWithPassword({
         email: email,
         password: password
       });

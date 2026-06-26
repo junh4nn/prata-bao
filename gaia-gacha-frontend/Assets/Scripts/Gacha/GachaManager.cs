@@ -19,7 +19,7 @@ public class GachaManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI balanceText;
 
     [Header("UI - Card")]
-    [SerializeField] private CardDisplay cardDisplay;
+    [SerializeField] private GachaCardDisplay cardDisplay;
 
     [Header("Data")]
     [SerializeField] private ItemRegistry itemRegistry;
