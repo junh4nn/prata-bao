@@ -10,7 +10,7 @@ public static class GachaCardBuilder
     static TMP_FontAsset s_CinzelSemiBold;
     static Sprite        s_UISprite;
 
-    [MenuItem("GaiaGacha/Gacha/Build Gacha Card", priority = 100)]
+    [MenuItem("GaiaGacha/ItemCard/Build Gacha Card", priority = 101)]
     static void Build()
     {
         s_PoppinsSemiBold = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");

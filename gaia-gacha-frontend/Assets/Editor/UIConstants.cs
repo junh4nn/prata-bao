@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -213,5 +214,57 @@ public static class UIConstants
         if (font != null) textTmp.font = font;
 
         return (rt.gameObject, textTmp);
+    }
+
+    // Builds a fully-wired TMP_Dropdown. A label + background alone isn't enough — TMP_Dropdown
+    // needs the Template/Viewport/Content/Item subtree to show its popup list, so this delegates
+    // to TMPro's own TMP_DefaultControls (the same code Unity's UI menu uses) and then restyles
+    // the result to match this project's palette.
+    public static TMP_Dropdown MakeDropdown(Transform parent, string name, string[] options, TMP_FontAsset font = null)
+    {
+        GameObject go = TMP_DefaultControls.CreateDropdown(new TMP_DefaultControls.Resources());
+        go.name = name;
+        var rt = (RectTransform)go.transform;
+        rt.SetParent(parent, false);
+        rt.localScale = Vector3.one;
+
+        var dropdown = go.GetComponent<TMP_Dropdown>();
+        go.GetComponent<Image>().color = ColInputBg;
+
+        var labelTmp = (TextMeshProUGUI)dropdown.captionText;
+        labelTmp.color = ColTextPrimary;
+        labelTmp.fontSize = 13;
+        if (font != null) labelTmp.font = font;
+
+        // No dropdown-arrow sprite asset exists yet — swap the default Image arrow for a "▼"
+        // glyph, same convention as the sort-direction button's text-glyph icon.
+        var arrow = (RectTransform)rt.Find("Arrow");
+        Object.DestroyImmediate(arrow.GetComponent<Image>());
+        var arrowTmp = arrow.gameObject.AddComponent<TextMeshProUGUI>();
+        arrowTmp.text = "▼";
+        arrowTmp.fontSize = 10;
+        arrowTmp.color = ColTextMuted;
+        arrowTmp.alignment = TextAlignmentOptions.Center;
+        if (font != null) arrowTmp.font = font;
+
+        var template = (RectTransform)rt.Find("Template");
+        template.GetComponent<Image>().color = ColSurface;
+        template.sizeDelta = new Vector2(0, 28 * options.Length);
+        template.Find("Viewport").GetComponent<Image>().color = ColSurface;
+        var item = (RectTransform)template.Find("Viewport/Content/Item");
+        item.sizeDelta = new Vector2(item.sizeDelta.x, 28);
+        template.Find("Viewport/Content/Item/Item Background").GetComponent<Image>().color = ColSurface;
+        template.Find("Viewport/Content/Item/Item Checkmark").GetComponent<Image>().color = ColGold;
+
+        var itemLabelTmp = (TextMeshProUGUI)dropdown.itemText;
+        itemLabelTmp.color = ColTextPrimary;
+        itemLabelTmp.fontSize = 13;
+        itemLabelTmp.rectTransform.offsetMin = new Vector2(26, itemLabelTmp.rectTransform.offsetMin.y);
+        if (font != null) itemLabelTmp.font = font;
+
+        dropdown.ClearOptions();
+        dropdown.AddOptions(new List<string>(options));
+
+        return dropdown;
     }
 }

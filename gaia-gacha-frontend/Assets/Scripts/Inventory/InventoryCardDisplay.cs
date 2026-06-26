@@ -16,6 +16,7 @@ public class InventoryCardDisplay : MonoBehaviour
     [SerializeField] private Image              rarityBadgeBorderImage;
     [SerializeField] private TextMeshProUGUI    rarityBadgeText;
     [SerializeField] private Image              cardBorderImage;
+    [SerializeField] private Image              cardGlowImage;
     [SerializeField] private Image              typeIconImage;
     [SerializeField] private Image              typeIconBgImage;
     [SerializeField] private TypeVisuals        typeVisuals;
@@ -87,6 +88,14 @@ public class InventoryCardDisplay : MonoBehaviour
         {
             cardBorderImage.gameObject.SetActive(true);
             cardBorderImage.color = rarityColor;
+        }
+
+        if (cardGlowImage != null)
+        {
+            bool showGlow = rarity == Rarity.Legendary;
+            cardGlowImage.gameObject.SetActive(showGlow);
+            if (showGlow)
+                cardGlowImage.color = new Color(RarityVisuals.ColLegendary.r, RarityVisuals.ColLegendary.g, RarityVisuals.ColLegendary.b, 0.30f);
         }
 
         if (countBadge != null)

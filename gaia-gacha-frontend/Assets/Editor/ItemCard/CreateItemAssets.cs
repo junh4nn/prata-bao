@@ -20,7 +20,7 @@ public static class CreateItemAssets
         new ItemData { id = 3, displayName = "Giant Sea Turtle Shell", scientificName = "Chelonia mydas",       spritePath = "Assets/Sprites/item_sea_turtle.png",     abilityText = "" },
     };
 
-    [MenuItem("GaiaGacha/ItemCard/Create Item Assets", priority = 10)]
+    [MenuItem("GaiaGacha/ItemCard/Create Item Assets", priority = 100)]
     static void Create()
     {
         EnsureFolder("Assets/ScriptableObjects");

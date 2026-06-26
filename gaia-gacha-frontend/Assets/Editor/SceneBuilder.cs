@@ -28,6 +28,8 @@ public static class SceneBuilder
             Object.DestroyImmediate(g.gameObject);
         foreach (var h in Object.FindObjectsByType<MainHubUIManager>(FindObjectsInactive.Include))
             Object.DestroyImmediate(h.gameObject);
+        foreach (var inv in Object.FindObjectsByType<InventoryManager>(FindObjectsInactive.Include))
+            Object.DestroyImmediate(inv.gameObject);
 
         // EventSystem is required for Unity UI to detect mouse clicks and keyboard input.
         // InputSystemUIInputModule works with Unity's new Input System package.
@@ -58,12 +60,15 @@ public static class SceneBuilder
         var authPrefab  = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AuthPanel.prefab");
         var gachaPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaPanel.prefab");
         var hubPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/HubPanel.prefab");
+        var inventoryPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/InventoryPanel.prefab");
 
         var authPanel  = (GameObject)PrefabUtility.InstantiatePrefab(authPrefab,  canvasGo.transform);
         var gachaPanel = (GameObject)PrefabUtility.InstantiatePrefab(gachaPrefab, canvasGo.transform);
         gachaPanel.SetActive(false);
         var hubPanel = (GameObject)PrefabUtility.InstantiatePrefab(hubPrefab, canvasGo.transform);
         hubPanel.SetActive(false);
+        var inventoryPanel = (GameObject)PrefabUtility.InstantiatePrefab(inventoryPrefab, canvasGo.transform);
+        inventoryPanel.SetActive(false);
 
         // Create the manager GameObjects that handle the game logic.
         // AuthManager handles login/register API calls.
@@ -76,6 +81,7 @@ public static class SceneBuilder
         // Start/OnEnable fire when the panel activates (post-login), not at scene load.
         var gachaMgr = gachaPanel.AddComponent<GachaManager>();
         var hubUIMgr = hubPanel.AddComponent<MainHubUIManager>();
+        var inventoryMgr = inventoryPanel.AddComponent<InventoryManager>();
 
         // Wire up the AuthUIManager Inspector references in code.
         // SerializedObject lets us set [SerializeField] values from an Editor script,
@@ -121,9 +127,31 @@ public static class SceneBuilder
         hubSO.FindProperty("hubPanel").objectReferenceValue        = hubPanel;
         hubSO.FindProperty("authPanel").objectReferenceValue       = authPanel;
         hubSO.FindProperty("gachaPanel").objectReferenceValue      = gachaPanel;
+        hubSO.FindProperty("inventoryPanel").objectReferenceValue  = inventoryPanel;
         hubSO.ApplyModifiedProperties();
         UIConstants.WarnIfUnwired(hubSO, "coinsText", "logoutButton", "quoteText",
-            "gachaButton", "quizButton", "inventoryButton", "hubPanel", "authPanel", "gachaPanel");
+            "gachaButton", "quizButton", "inventoryButton", "hubPanel", "authPanel", "gachaPanel", "inventoryPanel");
+
+        // Wire up the InventoryManager Inspector references in the same way.
+        var inventorySO = new SerializedObject(inventoryMgr);
+        inventorySO.FindProperty("itemRegistry").objectReferenceValue        = AssetDatabase.LoadAssetAtPath<ItemRegistry>("Assets/ScriptableObjects/ItemRegistry.asset");
+        inventorySO.FindProperty("inventoryCardPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/InventoryCard.prefab").GetComponent<InventoryCardDisplay>();
+        inventorySO.FindProperty("coinsText").objectReferenceValue           = UIConstants.Find<TextMeshProUGUI>(inventoryPanel.transform, "HeaderBar/CoinsText");
+        inventorySO.FindProperty("categoryDropdown").objectReferenceValue    = UIConstants.Find<TMP_Dropdown>(inventoryPanel.transform, "FilterRow/CategoryDropdown");
+        inventorySO.FindProperty("sortDropdown").objectReferenceValue       = UIConstants.Find<TMP_Dropdown>(inventoryPanel.transform, "FilterRow/SortDropdown");
+        inventorySO.FindProperty("sortDirectionButton").objectReferenceValue = UIConstants.Find<Button>(inventoryPanel.transform, "FilterRow/SortDirectionButton");
+        inventorySO.FindProperty("sortDirectionIcon").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(inventoryPanel.transform, "FilterRow/SortDirectionButton/Text");
+        inventorySO.FindProperty("gridContent").objectReferenceValue        = UIConstants.Find<Transform>(inventoryPanel.transform, "InventoryScrollRect/Viewport/Content");
+        inventorySO.FindProperty("collectedCountText").objectReferenceValue = UIConstants.Find<TextMeshProUGUI>(inventoryPanel.transform, "CollectedCountText");
+        inventorySO.FindProperty("detailModal").objectReferenceValue        = UIConstants.Find<ItemDetailModal>(inventoryPanel.transform, "DetailModal");
+        inventorySO.FindProperty("inventoryPanel").objectReferenceValue     = inventoryPanel;
+        inventorySO.FindProperty("hubPanel").objectReferenceValue           = hubPanel;
+        inventorySO.FindProperty("backButton").objectReferenceValue         = UIConstants.Find<Button>(inventoryPanel.transform, "FooterBar/BackButton");
+        inventorySO.ApplyModifiedProperties();
+        UIConstants.WarnIfUnwired(inventorySO, "itemRegistry", "inventoryCardPrefab", "coinsText",
+            "categoryDropdown", "sortDropdown", "sortDirectionButton", "sortDirectionIcon",
+            "gridContent", "collectedCountText", "detailModal",
+            "inventoryPanel", "hubPanel", "backButton");
 
         // Mark the scene as changed so Unity knows to save it.
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());

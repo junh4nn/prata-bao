@@ -16,6 +16,9 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private ItemRegistry         itemRegistry;
     [SerializeField] private InventoryCardDisplay inventoryCardPrefab;
 
+    [Header("UI - Header")]
+    [SerializeField] private TextMeshProUGUI coinsText;
+
     [Header("UI - Filter/Sort")]
     [SerializeField] private TMP_Dropdown    categoryDropdown;
     [SerializeField] private TMP_Dropdown    sortDropdown;
@@ -48,6 +51,9 @@ public class InventoryManager : MonoBehaviour
 
     void OnEnable()
     {
+        // Refresh coin balance every time the inventory panel becomes visible (e.g. returning
+        // from gacha), same convention as MainHubUIManager.OnEnable.
+        if (coinsText != null) coinsText.text = $"Eco-Coins: {AuthManager.Coins}";
         StartCoroutine(FetchInventory());
     }
 

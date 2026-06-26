@@ -6,7 +6,9 @@ using TMPro;
 
 public class ItemDetailModal : MonoBehaviour
 {
-    [SerializeField] private Image             itemImage;
+    [SerializeField] private Image              cardGlowImage;
+    [SerializeField] private Image              cardBorderImage;
+    [SerializeField] private Image              itemImage;
     [SerializeField] private Sprite             placeholderSprite;
     [SerializeField] private Image              starImage1;
     [SerializeField] private Image              starImage2;
@@ -16,12 +18,13 @@ public class ItemDetailModal : MonoBehaviour
     [SerializeField] private Image              rarityBadgeImage;
     [SerializeField] private Image              rarityBadgeBorderImage;
     [SerializeField] private TextMeshProUGUI    rarityBadgeText;
-    [SerializeField] private Image              typeIconImage;
-    [SerializeField] private TextMeshProUGUI    typeText;
-    [SerializeField] private TypeVisuals        typeVisuals;
-    [SerializeField] private TextMeshProUGUI    firstObtainedText;
+    [SerializeField] private TextMeshProUGUI    typeValueText;
+    [SerializeField] private TextMeshProUGUI    firstObtainedValueText;
     [SerializeField] private TextMeshProUGUI    abilityText;
     [SerializeField] private Button             closeButton;
+
+    static readonly Color ColTypeFlora = new Color(0.133f, 0.773f, 0.369f);
+    static readonly Color ColTypeFauna = new Color(0.545f, 0.353f, 0.169f);
 
     const string PlaceholderAbilityText = "Placeholder ability text for this card.";
 
@@ -64,20 +67,35 @@ public class ItemDetailModal : MonoBehaviour
         if (rarityBadgeText != null)
             rarityBadgeText.text = rarity.ToString().ToUpper();
 
-        if (typeIconImage != null)
+        if (cardBorderImage != null)
         {
-            Sprite icon = typeVisuals.GetIcon(row.type);
-            typeIconImage.sprite  = icon;
-            typeIconImage.enabled = icon != null;
+            cardBorderImage.gameObject.SetActive(true);
+            cardBorderImage.color = rarityColor;
         }
 
-        if (typeText != null)
-            typeText.text = $"Type: {row.type}";
+        if (cardGlowImage != null)
+        {
+            bool showGlow = rarity == Rarity.Legendary;
+            cardGlowImage.gameObject.SetActive(showGlow);
+            if (showGlow)
+                cardGlowImage.color = new Color(RarityVisuals.ColLegendary.r, RarityVisuals.ColLegendary.g, RarityVisuals.ColLegendary.b, 0.30f);
+        }
 
-        if (firstObtainedText != null)
+        if (typeValueText != null)
+        {
+            typeValueText.text  = row.type;
+            typeValueText.color = row.type switch
+            {
+                "Flora" => ColTypeFlora,
+                "Fauna" => ColTypeFauna,
+                _       => Color.white
+            };
+        }
+
+        if (firstObtainedValueText != null)
         {
             DateTime obtainedDate = DateTime.Parse(row.firstObtainedAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-            firstObtainedText.text = $"First obtained: {obtainedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture)}";
+            firstObtainedValueText.text = obtainedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
         }
 
         if (abilityText != null)

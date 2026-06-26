@@ -20,7 +20,7 @@ public static class GachaLayoutBuilder {
     //   StatusText  — feedback during/after a pull
 
 
-    [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel", priority = 201)]
+    [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel", priority = 202)]
     static void Build()
     {
         s_PoppinsSemiBold = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");
