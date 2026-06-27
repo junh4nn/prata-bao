@@ -13,7 +13,7 @@ public static class MainHubLayoutBuilder
     static Sprite s_InventoryIcon;
     static Sprite s_LogoutIcon;
 
-    [MenuItem("GaiaGacha/LayoutBuilders/Build Hub Panel", priority = 202)]
+    [MenuItem("GaiaGacha/LayoutBuilders/Build Hub Panel", priority = 201)]
     static void Build()
     {
         s_Poppins       = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Poppins-SemiBold SDF.asset");

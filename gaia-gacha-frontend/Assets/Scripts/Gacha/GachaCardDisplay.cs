@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class CardDisplay : MonoBehaviour
+public class GachaCardDisplay : MonoBehaviour
 {
     [SerializeField] private GameObject        defaultCardState;
     [SerializeField] private GameObject        revealedCardState;
@@ -18,42 +18,54 @@ public class CardDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI   rarityBadgeText;
     [SerializeField] private Image             cardBorderImage;
     [SerializeField] private Image             cardGlowImage;
+    [SerializeField] private Image             typeIconImage;
+    [SerializeField] private Image             typeIconBgImage;
+    [SerializeField] private TypeVisuals       typeVisuals;
 
-    static readonly Color ColCommon    = new Color(0.659f, 0.710f, 0.635f);
-    static readonly Color ColRare      = new Color(0.322f, 0.718f, 0.533f);
-    static readonly Color ColLegendary = new Color(0.914f, 0.769f, 0.404f);
-    static readonly Color ColStarActive   = new Color(0.914f, 0.769f, 0.404f);
-    static readonly Color ColStarInactive = new Color(0.2f,   0.32f,  0.24f);
+    static readonly Color ColTypeFlora    = new Color(0.133f, 0.773f, 0.369f);
+    static readonly Color ColTypeFauna    = new Color(0.545f, 0.353f, 0.169f);
 
-    public void Setup(string displayName, Rarity rarity, ItemDefinition visuals)
+    public void Setup(string displayName, Rarity rarity, string typeName, ItemDefinition visuals)
     {
         if (defaultCardState  != null) defaultCardState.SetActive(false);
         if (revealedCardState != null) revealedCardState.SetActive(true);
 
-        Color rarityColor = rarity switch
-        {
-            Rarity.Legendary => ColLegendary,
-            Rarity.Rare      => ColRare,
-            _                => ColCommon
-        };
+        Color rarityColor = RarityVisuals.GetColor(rarity);
 
-        int starCount = rarity switch { Rarity.Legendary => 3, Rarity.Rare => 2, _ => 1 };
-        if (starImage1 != null) starImage1.color = starCount >= 1 ? ColStarActive : ColStarInactive;
-        if (starImage2 != null) starImage2.color = starCount >= 2 ? ColStarActive : ColStarInactive;
-        if (starImage3 != null) starImage3.color = starCount >= 3 ? ColStarActive : ColStarInactive;
+        int starCount = RarityVisuals.GetStarCount(rarity);
+        if (starImage1 != null) starImage1.color = starCount >= 1 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
+        if (starImage2 != null) starImage2.color = starCount >= 2 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
+        if (starImage3 != null) starImage3.color = starCount >= 3 ? RarityVisuals.ColStarActive : RarityVisuals.ColStarInactive;
 
         if (itemImage != null)
         {
-            Sprite sprite = visuals != null ? visuals.sprite : placeholderSprite;
+            Sprite sprite = visuals != null ? visuals.itemSprite : placeholderSprite;
             itemImage.sprite  = sprite;
             itemImage.enabled = sprite != null;
+        }
+
+        if (typeIconImage != null)
+        {
+            Sprite icon = typeVisuals.GetIcon(typeName);
+            typeIconImage.sprite  = icon;
+            typeIconImage.enabled = icon != null;
+        }
+
+        if (typeIconBgImage != null)
+        {
+            typeIconBgImage.color = typeName switch
+            {
+                "Flora" => ColTypeFlora,
+                "Fauna" => ColTypeFauna,
+                _       => Color.clear
+            };
         }
 
         if (itemNameText       != null) itemNameText.text       = displayName;
         if (scientificNameText != null) scientificNameText.text = visuals != null ? visuals.scientificName : "Unknown Specimen";
 
         if (rarityBadgeImage != null)
-            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f);
+            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f, 0f); // dark fill hidden for now — bigger colored border shows through solid
 
         if (rarityBadgeBorderImage != null)
         {
@@ -75,7 +87,7 @@ public class CardDisplay : MonoBehaviour
             bool showGlow = rarity == Rarity.Legendary;
             cardGlowImage.gameObject.SetActive(showGlow);
             if (showGlow)
-                cardGlowImage.color = new Color(ColLegendary.r, ColLegendary.g, ColLegendary.b, 0.30f);
+                cardGlowImage.color = new Color(RarityVisuals.ColLegendary.r, RarityVisuals.ColLegendary.g, RarityVisuals.ColLegendary.b, 0.30f);
         }
     }
 
