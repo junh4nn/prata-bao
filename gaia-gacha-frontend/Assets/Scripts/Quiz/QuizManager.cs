@@ -170,7 +170,7 @@ public class QuizManager : MonoBehaviour
 
         if (feedbackText != null)
         {
-            string prefix = response.isCorrect ? "✦ Correct! " : "✕ Not quite. ";
+            string prefix = response.isCorrect ? "Correct! " : "Not quite. ";
             feedbackText.text  = prefix + response.explanation;
             feedbackText.color = response.isCorrect ? QuizAnswerVisuals.ColCorrect : QuizAnswerVisuals.ColWrong;
         }
@@ -198,22 +198,22 @@ public class QuizManager : MonoBehaviour
         string glyph, title, subtitle;
         if (score == questions.Length)
         {
-            glyph = "\U0001F3C6"; title = "Perfect!"; subtitle = "You know your ecosystems inside and out.";
+            glyph = ""; title = "Perfect!"; subtitle = "You know your ecosystems inside and out.";
         }
         else if (score > 0)
         {
-            glyph = "\U0001F333"; title = "Nice work!"; subtitle = "Solid grasp of the material — keep it up.";
+            glyph = ""; title = "Nice work!"; subtitle = "Solid grasp of the material! Keep it up.";
         }
         else
         {
-            glyph = "\U0001F331"; title = "Keep learning!"; subtitle = "Every attempt grows your knowledge.";
+            glyph = ""; title = "Keep learning!"; subtitle = "Every attempt grows your knowledge.";
         }
 
         if (resultGlyphText != null) resultGlyphText.text = glyph;
         if (resultTitleText != null) resultTitleText.text = title;
         if (subtitleText    != null) subtitleText.text    = subtitle;
         if (scoreText        != null) scoreText.text        = $"{score}/{questions.Length}";
-        if (rewardText        != null) rewardText.text        = $"+{coinsEarnedThisRun} Eco-Coins earned";
+        if (rewardText        != null) rewardText.text        = $"{coinsEarnedThisRun} Eco-Coins earned";
         if (resultsModal      != null) resultsModal.SetActive(true);
     }
 
