@@ -21,7 +21,7 @@ public class MainHubUIManager : MonoBehaviour
     [SerializeField] private GameObject authPanel;
     [SerializeField] private GameObject gachaPanel;
     [SerializeField] private GameObject inventoryPanel;
-    // quizPanel intentionally absent — panel not yet built
+    [SerializeField] private GameObject quizPanel;
 
 
     static readonly string[] Quotes = {
@@ -70,8 +70,8 @@ public class MainHubUIManager : MonoBehaviour
 
     private void OnQuizClicked()
     {
-        // Quiz panel not yet built — no-op until wired by SceneBuilder.
-        Debug.Log("[MainHubUIManager] Quiz panel not yet available.");
+        if (hubPanel  != null) hubPanel.SetActive(false);
+        if (quizPanel != null) quizPanel.SetActive(true);
     }
 
     private void OnInventoryClicked()

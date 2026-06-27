@@ -193,6 +193,40 @@ public static class UIConstants
         return (rt.gameObject, textTmp);
     }
 
+    // Bordered button — a slightly larger background Image (the border) behind an inset
+    // dark Fill image, same peeking-border trick used for rarity/answer card outlines.
+    public static (GameObject, TextMeshProUGUI) MakeOutlineButton(Transform parent, string name, string label, float fontSize, TMP_FontAsset font = null, Color? borderColor = null, Color? textColor = null)
+    {
+        var rt = MakeRect(parent, name);
+        var border = rt.gameObject.AddComponent<Image>();
+        border.color = borderColor ?? ColGold;
+
+        var fillRt = MakeRect(rt, "Fill");
+        fillRt.anchorMin = Vector2.zero;
+        fillRt.anchorMax = Vector2.one;
+        fillRt.offsetMin = new Vector2(2, 2);
+        fillRt.offsetMax = new Vector2(-2, -2);
+        var fill = fillRt.gameObject.AddComponent<Image>();
+        fill.color = ColBg;
+
+        var btn = rt.gameObject.AddComponent<Button>();
+        btn.targetGraphic = fill;
+
+        var textRt = MakeRect(fillRt, "Text");
+        textRt.anchorMin = Vector2.zero;
+        textRt.anchorMax = Vector2.one;
+        textRt.sizeDelta = Vector2.zero;
+        var textTmp = textRt.gameObject.AddComponent<TextMeshProUGUI>();
+        textTmp.text = label;
+        textTmp.fontSize = fontSize;
+        textTmp.color = textColor ?? ColTextPrimary;
+        textTmp.alignment = TextAlignmentOptions.Center;
+        textTmp.fontStyle = FontStyles.Bold;
+        if (font != null) textTmp.font = font;
+
+        return (rt.gameObject, textTmp);
+    }
+
     public static (GameObject, TextMeshProUGUI) MakeLinkButton(Transform parent, string name, string label, float fontSize, TMP_FontAsset font = null)
     {
         var rt = MakeRect(parent, name);

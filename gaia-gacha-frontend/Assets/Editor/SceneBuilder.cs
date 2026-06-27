@@ -30,6 +30,8 @@ public static class SceneBuilder
             Object.DestroyImmediate(h.gameObject);
         foreach (var inv in Object.FindObjectsByType<InventoryManager>(FindObjectsInactive.Include))
             Object.DestroyImmediate(inv.gameObject);
+        foreach (var q in Object.FindObjectsByType<QuizManager>(FindObjectsInactive.Include))
+            Object.DestroyImmediate(q.gameObject);
 
         // EventSystem is required for Unity UI to detect mouse clicks and keyboard input.
         // InputSystemUIInputModule works with Unity's new Input System package.
@@ -61,6 +63,7 @@ public static class SceneBuilder
         var gachaPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaPanel.prefab");
         var hubPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/HubPanel.prefab");
         var inventoryPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/InventoryPanel.prefab");
+        var quizPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/QuizPanel.prefab");
 
         var authPanel  = (GameObject)PrefabUtility.InstantiatePrefab(authPrefab,  canvasGo.transform);
         var gachaPanel = (GameObject)PrefabUtility.InstantiatePrefab(gachaPrefab, canvasGo.transform);
@@ -69,6 +72,8 @@ public static class SceneBuilder
         hubPanel.SetActive(false);
         var inventoryPanel = (GameObject)PrefabUtility.InstantiatePrefab(inventoryPrefab, canvasGo.transform);
         inventoryPanel.SetActive(false);
+        var quizPanel = (GameObject)PrefabUtility.InstantiatePrefab(quizPrefab, canvasGo.transform);
+        quizPanel.SetActive(false);
 
         // Create the manager GameObjects that handle the game logic.
         // AuthManager handles login/register API calls.
@@ -82,6 +87,7 @@ public static class SceneBuilder
         var gachaMgr = gachaPanel.AddComponent<GachaManager>();
         var hubUIMgr = hubPanel.AddComponent<MainHubUIManager>();
         var inventoryMgr = inventoryPanel.AddComponent<InventoryManager>();
+        var quizMgr = quizPanel.AddComponent<QuizManager>();
 
         // Wire up the AuthUIManager Inspector references in code.
         // SerializedObject lets us set [SerializeField] values from an Editor script,
@@ -128,9 +134,10 @@ public static class SceneBuilder
         hubSO.FindProperty("authPanel").objectReferenceValue       = authPanel;
         hubSO.FindProperty("gachaPanel").objectReferenceValue      = gachaPanel;
         hubSO.FindProperty("inventoryPanel").objectReferenceValue  = inventoryPanel;
+        hubSO.FindProperty("quizPanel").objectReferenceValue       = quizPanel;
         hubSO.ApplyModifiedProperties();
         UIConstants.WarnIfUnwired(hubSO, "coinsText", "logoutButton", "quoteText",
-            "gachaButton", "quizButton", "inventoryButton", "hubPanel", "authPanel", "gachaPanel", "inventoryPanel");
+            "gachaButton", "quizButton", "inventoryButton", "hubPanel", "authPanel", "gachaPanel", "inventoryPanel", "quizPanel");
 
         // Wire up the InventoryManager Inspector references in the same way.
         var inventorySO = new SerializedObject(inventoryMgr);
@@ -152,6 +159,33 @@ public static class SceneBuilder
             "categoryDropdown", "sortDropdown", "sortDirectionButton", "sortDirectionIcon",
             "gridContent", "collectedCountText", "detailModal",
             "inventoryPanel", "hubPanel", "backButton");
+
+        // Wire up the QuizManager Inspector references in the same way.
+        var quizSO = new SerializedObject(quizMgr);
+        quizSO.FindProperty("coinsText").objectReferenceValue         = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "HeaderBar/CoinsText");
+        quizSO.FindProperty("progressFillImage").objectReferenceValue = UIConstants.Find<Image>(quizPanel.transform, "ProgressBar/Track/Fill");
+        quizSO.FindProperty("progressText").objectReferenceValue      = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ProgressBar/ProgressText");
+        quizSO.FindProperty("questionText").objectReferenceValue      = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "QuestionCard/QuestionText");
+        quizSO.FindProperty("answerRowA").objectReferenceValue        = UIConstants.Find<QuizAnswerOptionDisplay>(quizPanel.transform, "QuestionCard/AnswerRowA");
+        quizSO.FindProperty("answerRowB").objectReferenceValue        = UIConstants.Find<QuizAnswerOptionDisplay>(quizPanel.transform, "QuestionCard/AnswerRowB");
+        quizSO.FindProperty("answerRowC").objectReferenceValue        = UIConstants.Find<QuizAnswerOptionDisplay>(quizPanel.transform, "QuestionCard/AnswerRowC");
+        quizSO.FindProperty("feedbackText").objectReferenceValue      = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "FeedbackText");
+        quizSO.FindProperty("nextButton").objectReferenceValue        = UIConstants.Find<Button>(quizPanel.transform, "NextButton");
+        quizSO.FindProperty("resultsModal").objectReferenceValue      = UIConstants.Find<Transform>(quizPanel.transform, "ResultsModal")?.gameObject;
+        quizSO.FindProperty("resultGlyphText").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ResultsModal/ResultsCard/ResultGlyphText");
+        quizSO.FindProperty("resultTitleText").objectReferenceValue   = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ResultsModal/ResultsCard/ResultTitleText");
+        quizSO.FindProperty("scoreText").objectReferenceValue         = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ResultsModal/ResultsCard/ScoreText");
+        quizSO.FindProperty("subtitleText").objectReferenceValue      = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ResultsModal/ResultsCard/SubtitleText");
+        quizSO.FindProperty("rewardText").objectReferenceValue        = UIConstants.Find<TextMeshProUGUI>(quizPanel.transform, "ResultsModal/ResultsCard/RewardPill/RewardText");
+        quizSO.FindProperty("tryAgainButton").objectReferenceValue    = UIConstants.Find<Button>(quizPanel.transform, "ResultsModal/ResultsCard/TryAgainButton");
+        quizSO.FindProperty("quizPanel").objectReferenceValue         = quizPanel;
+        quizSO.FindProperty("hubPanel").objectReferenceValue          = hubPanel;
+        quizSO.FindProperty("backButton").objectReferenceValue        = UIConstants.Find<Button>(quizPanel.transform, "FooterBar/BackButton");
+        quizSO.ApplyModifiedProperties();
+        UIConstants.WarnIfUnwired(quizSO, "coinsText", "progressFillImage", "progressText", "questionText",
+            "answerRowA", "answerRowB", "answerRowC", "feedbackText", "nextButton",
+            "resultsModal", "resultGlyphText", "resultTitleText", "scoreText", "subtitleText", "rewardText", "tryAgainButton",
+            "quizPanel", "hubPanel", "backButton");
 
         // Mark the scene as changed so Unity knows to save it.
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
