@@ -7,6 +7,7 @@ import gachaRouter from './routes/gacha.js';
 import authRouter from './routes/auth.js';
 import inventoryRouter from './routes/inventory.js';
 import quizRouter from './routes/quiz.js';
+import createAuthMiddleware from './middleware/requireAuth.js';
 
 dotenv.config();
 
@@ -28,13 +29,15 @@ const supabaseAuth = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+const requireAuth = createAuthMiddleware(supabaseAuth);
+
 // =====================================
 // MOUNT ROUTERS
 // =====================================
-app.use('/api/gacha', gachaRouter(supabase)); // Mounts gacha routes under /api/gacha
+app.use('/api/gacha', gachaRouter(supabase, requireAuth)); // Mounts gacha routes under /api/gacha
 app.use('/api/auth', authRouter(supabase, supabaseAuth)); // Mounts auth routes under /api/auth
-app.use('/api/inventory', inventoryRouter(supabase)); // Mounts inventory routes under /api/inventory
-app.use('/api/quiz', quizRouter(supabase)); // Mounts quiz routes under /api/quiz
+app.use('/api/inventory', inventoryRouter(supabase, requireAuth)); // Mounts inventory routes under /api/inventory
+app.use('/api/quiz', quizRouter(supabase, requireAuth)); // Mounts quiz routes under /api/quiz
 
 // Optional base fallback route for checking server status in a browser
 app.get('/', (req, res) => {

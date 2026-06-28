@@ -1,14 +1,14 @@
 import express from 'express';
 
-export default function (supabase) {
+export default function (supabase, requireAuth) {
   const router = express.Router();
 
   // --- GACHA CONFIGURATION ---
   const GACHA_COST = 10;
 
   // --- THE GACHA ROUTE ---
-  router.post('/pull', async (req, res) => {
-    const { userId } = req.body; 
+  router.post('/pull', requireAuth, async (req, res) => {
+    const userId = req.userId;
 
     try {
       // 1. Fetch Player Data

@@ -1,13 +1,13 @@
 import express from 'express';
 
-export default function (supabase) {
+export default function (supabase, requireAuth) {
   const router = express.Router();
 
-  router.get('/:userId', async (req, res) => {
+  router.get('/', requireAuth, async (req, res) => {
     const { data, error } = await supabase
       .from('inventory')
       .select('item_id, created_at, items(name, rarity, type)')
-      .eq('user_id', req.params.userId);
+      .eq('user_id', req.userId);
 
     if (error) return res.status(500).json({ error: 'Failed to load inventory' });
 

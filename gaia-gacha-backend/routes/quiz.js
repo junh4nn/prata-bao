@@ -1,6 +1,6 @@
 import express from 'express';
 
-export default function (supabase) {
+export default function (supabase, requireAuth) {
   const router = express.Router();
 
   function shuffle(array) {
@@ -40,8 +40,9 @@ export default function (supabase) {
   });
 
   // --- GRADE AN ANSWER AND AWARD COINS ---
-  router.post('/answer', async (req, res) => {
-    const { userId, questionId, selectedIndex } = req.body;
+  router.post('/answer', requireAuth, async (req, res) => {
+    const { questionId, selectedIndex } = req.body;
+    const userId = req.userId;
 
     try {
       // 1. Fetch Question Data
