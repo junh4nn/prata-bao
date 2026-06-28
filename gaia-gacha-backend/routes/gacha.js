@@ -1,14 +1,14 @@
 import express from 'express';
 
-export default function (supabase) {
+export default function (supabase, requireAuth) {
   const router = express.Router();
 
   // --- GACHA CONFIGURATION ---
   const GACHA_COST = 10;
 
   // --- THE GACHA ROUTE ---
-  router.post('/pull', async (req, res) => {
-    const { userId } = req.body; 
+  router.post('/pull', requireAuth, async (req, res) => {
+    const userId = req.userId;
 
     try {
       // 1. Fetch Player Data
@@ -75,7 +75,7 @@ export default function (supabase) {
       if (insertError) {
         // If RLS or policy errors happen, this will print it directly to the terminal screen
         console.error("Inventory Insertion Database Error:", insertError.message);
-        return res.status(500).json({ error: `Failed to secure item in inventory: ${insertError.message}` });
+        return res.status(500).json({ error: 'Failed to secure item in inventory' });
       }
 
       // 6. Send Result back to Unity

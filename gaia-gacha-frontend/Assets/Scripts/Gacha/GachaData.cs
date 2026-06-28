@@ -1,12 +1,6 @@
 using System;
 
 [Serializable]
-public class PullRequest
-{
-    public string userId;
-}
-
-[Serializable]
 public class GachaItem
 {
     public int id;

@@ -59,8 +59,9 @@ public class InventoryManager : MonoBehaviour
 
     private IEnumerator FetchInventory()
     {
-        using (UnityWebRequest request = UnityWebRequest.Get($"{inventoryUrl}/{AuthManager.UserId}"))
+        using (UnityWebRequest request = UnityWebRequest.Get(inventoryUrl))
         {
+            request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)

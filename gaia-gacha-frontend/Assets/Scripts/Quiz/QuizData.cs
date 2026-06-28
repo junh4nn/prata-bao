@@ -24,9 +24,8 @@ public class QuizQuestionsResponse
 [Serializable]
 public class QuizAnswerRequest
 {
-    public string userId;
-    public int    questionId;
-    public int    selectedIndex; // the tapped option's key, not its on-screen row position
+    public int questionId;
+    public int selectedIndex; // the tapped option's key, not its on-screen row position
 }
 
 [Serializable]

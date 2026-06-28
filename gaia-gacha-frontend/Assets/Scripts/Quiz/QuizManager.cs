@@ -128,7 +128,6 @@ public class QuizManager : MonoBehaviour
     {
         string jsonPayload = JsonUtility.ToJson(new QuizAnswerRequest
         {
-            userId        = AuthManager.UserId,
             questionId    = questions[currentIndex].id,
             selectedIndex = key
         });
@@ -138,6 +137,7 @@ public class QuizManager : MonoBehaviour
             request.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonPayload));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
 
             yield return request.SendWebRequest();
 
