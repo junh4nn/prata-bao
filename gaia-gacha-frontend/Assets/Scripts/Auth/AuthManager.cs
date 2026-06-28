@@ -6,9 +6,8 @@ using UnityEngine.Networking;
 
 public class AuthManager : MonoBehaviour
 {
-    [Header("Backend Endpoints")]
-    [SerializeField] private string registerUrl = "http://localhost:3000/api/auth/register";
-    [SerializeField] private string loginUrl = "http://localhost:3000/api/auth/login";
+    private string registerUrl => $"{BackendConfig.Instance.baseUrl}/api/auth/register";
+    private string loginUrl => $"{BackendConfig.Instance.baseUrl}/api/auth/login";
 
     // Static properties allows any other script in your game
     // to read the current player's token instantly without manual linking.

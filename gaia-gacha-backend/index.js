@@ -12,7 +12,8 @@ import createAuthMiddleware from './middleware/requireAuth.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:3000';
+app.use(cors({ origin: allowedOrigin }));
 app.use(express.json());
 
 const supabase = createClient(

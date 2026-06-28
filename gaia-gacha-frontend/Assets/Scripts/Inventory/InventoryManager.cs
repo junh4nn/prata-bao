@@ -9,8 +9,7 @@ using TMPro;
 
 public class InventoryManager : MonoBehaviour
 {
-    [Header("Backend Configuration")]
-    [SerializeField] private string inventoryUrl = "http://localhost:3000/api/inventory";
+    private string inventoryUrl => $"{BackendConfig.Instance.baseUrl}/api/inventory";
 
     [Header("Data")]
     [SerializeField] private ItemRegistry         itemRegistry;

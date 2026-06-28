@@ -8,8 +8,7 @@ using TMPro;
 
 public class GachaManager : MonoBehaviour
 {
-    [Header("Backend Configuration")]
-    [SerializeField] private string backendUrl = "http://localhost:3000/api/gacha/pull";
+    private string backendUrl => $"{BackendConfig.Instance.baseUrl}/api/gacha/pull";
 
     [Header("UI - Pull Controls")]
     [SerializeField] private Button pullButton;
