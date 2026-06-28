@@ -1,14 +1,25 @@
-app = "gaia-gacha-backend" # placeholder — update to match the name `fly launch` assigns
-primary_region = "iad" # placeholder — set to your preferred fly.io region
+# fly.toml app configuration file generated for gaia-gacha on 2026-06-28T18:27:55Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'gaia-gacha'
+primary_region = 'sin'
 
 [build]
 
 [env]
-  PORT = "8080"
+  PORT = '8080'
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
