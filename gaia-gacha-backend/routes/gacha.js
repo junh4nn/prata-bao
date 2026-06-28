@@ -75,7 +75,7 @@ export default function (supabase, requireAuth) {
       if (insertError) {
         // If RLS or policy errors happen, this will print it directly to the terminal screen
         console.error("Inventory Insertion Database Error:", insertError.message);
-        return res.status(500).json({ error: `Failed to secure item in inventory: ${insertError.message}` });
+        return res.status(500).json({ error: 'Failed to secure item in inventory' });
       }
 
       // 6. Send Result back to Unity
