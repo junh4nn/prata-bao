@@ -61,7 +61,6 @@ public class AuthManager : MonoBehaviour
             }
 
             string jsonResponse = request.downloadHandler.text;
-            Debug.Log($"[AuthManager] Response body: {jsonResponse}");
             AuthResponse responseData = JsonUtility.FromJson<AuthResponse>(jsonResponse);
 
             if (request.responseCode == 200 || request.responseCode == 201)
