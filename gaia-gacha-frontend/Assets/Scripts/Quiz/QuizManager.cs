@@ -8,9 +8,8 @@ using TMPro;
 
 public class QuizManager : MonoBehaviour
 {
-    [Header("Backend Configuration")]
-    [SerializeField] private string questionsUrl = "http://localhost:3000/api/quiz/questions";
-    [SerializeField] private string answerUrl    = "http://localhost:3000/api/quiz/answer";
+    private string questionsUrl => $"{BackendConfig.Instance.baseUrl}/api/quiz/questions";
+    private string answerUrl    => $"{BackendConfig.Instance.baseUrl}/api/quiz/answer";
 
     [Header("UI - Header")]
     [SerializeField] private TextMeshProUGUI coinsText;
