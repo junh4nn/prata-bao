@@ -10,8 +10,6 @@ public class GachaManager : MonoBehaviour
 {
     [Header("Backend Configuration")]
     [SerializeField] private string backendUrl = "http://localhost:3000/api/gacha/pull";
-    [Tooltip("Paste a UUID here to bypass login for testing.")]
-    [SerializeField] private string testUserId = "";
 
     [Header("UI - Pull Controls")]
     [SerializeField] private Button pullButton;
@@ -52,32 +50,27 @@ public class GachaManager : MonoBehaviour
     {
         if (isPulling) return;
 
-        string activeUserId = !string.IsNullOrEmpty(testUserId)
-            ? testUserId.Trim()
-            : AuthManager.UserId;
-
-        if (string.IsNullOrEmpty(activeUserId))
+        if (!AuthManager.IsLoggedIn)
         {
             if (statusText != null) statusText.text = "<color=red>Please log in first.</color>";
             return;
         }
 
-        StartCoroutine(SendPullRequest(activeUserId));
+        StartCoroutine(SendPullRequest());
     }
 
-    private IEnumerator SendPullRequest(string userId)
+    private IEnumerator SendPullRequest()
     {
         isPulling = true;
         SetUIInteractivity(false);
         if (statusText != null) statusText.text = "Connecting to nature registry...";
 
-        string jsonPayload = JsonUtility.ToJson(new PullRequest { userId = userId });
-
         using (UnityWebRequest request = new UnityWebRequest(backendUrl, "POST"))
         {
-            request.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonPayload));
+            request.uploadHandler   = new UploadHandlerRaw(Encoding.UTF8.GetBytes("{}"));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
 
             yield return request.SendWebRequest();
 
