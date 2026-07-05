@@ -1,3 +1,6 @@
+// InventoryCardDisplay.cs: renders one inventory grid cell, showing rarity stars, colours,
+// type icon, and a duplicate-count badge. Sibling to GachaCardDisplay.cs.
+
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -73,7 +76,7 @@ public class InventoryCardDisplay : MonoBehaviour
         if (scientificNameText != null) scientificNameText.text = visuals != null ? visuals.scientificName : "Unknown Specimen";
 
         if (rarityBadgeImage != null)
-            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f, 0f); // dark fill hidden for now — bigger colored border shows through solid
+            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f, 0f); // kept transparent: the rarity-coloured border underneath provides the colour instead
 
         if (rarityBadgeBorderImage != null)
         {

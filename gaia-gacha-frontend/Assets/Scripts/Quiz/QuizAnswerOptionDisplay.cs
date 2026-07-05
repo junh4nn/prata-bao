@@ -1,3 +1,6 @@
+// QuizAnswerOptionDisplay.cs: a single tappable answer row in the quiz UI. Reflects its
+// visual state (unanswered/correct/wrong) via QuizAnswerVisuals.
+
 using System;
 using UnityEngine;
 using UnityEngine.UI;

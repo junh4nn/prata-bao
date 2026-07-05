@@ -1,3 +1,6 @@
+// InventoryManager.cs: drives the inventory screen. Fetches the player's owned items,
+// filters/sorts them, and spawns InventoryCardDisplay cards into the grid.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,15 +63,18 @@ public class InventoryManager : MonoBehaviour
     {
         using (UnityWebRequest request = UnityWebRequest.Get(inventoryUrl))
         {
+            // 1. Send the Authenticated Request
             request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
             yield return request.SendWebRequest();
 
+            // 2. Bail Out Early on a Network-Level Failure
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError($"[InventoryManager] Failed to load inventory: {request.error}");
                 yield break;
             }
 
+            // 3. Parse the Response and Refresh the Grid
             allRows = JsonUtility.FromJson<InventoryResponse>(request.downloadHandler.text).items;
             RefreshGrid();
         }
@@ -85,11 +91,13 @@ public class InventoryManager : MonoBehaviour
     {
         IEnumerable<InventoryItemRow> rows = allRows;
 
+        // 1. Filter by Category (dropdown: 0 = all, 1 = fauna, 2 = flora)
         int categoryIndex = categoryDropdown != null ? categoryDropdown.value : 0;
         string typeFilter = categoryIndex switch { 1 => "Fauna", 2 => "Flora", _ => null };
         if (typeFilter != null)
             rows = rows.Where(r => r.type == typeFilter);
 
+        // 2. Sort by the Selected Criterion (dropdown: 0 = rarity, 1 = name, 2 = date obtained)
         int sortIndex = sortDropdown != null ? sortDropdown.value : 0;
         rows = sortIndex switch
         {
@@ -102,6 +110,7 @@ public class InventoryManager : MonoBehaviour
 
         List<InventoryItemRow> visibleRows = rows.ToList();
 
+        // 3. Rebuild the Grid
         if (gridContent != null)
         {
             foreach (Transform child in gridContent)
@@ -118,6 +127,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        // 4. Update the Collected Count
         if (collectedCountText != null)
             collectedCountText.text = $"COLLECTED · {visibleRows.Count} CARDS";
     }

@@ -1,3 +1,6 @@
+// ItemDetailModal.cs: the pop-up detail view shown when a player taps an inventory
+// card. Shares its rarity/type visual logic with InventoryCardDisplay.cs.
+
 using System;
 using System.Globalization;
 using UnityEngine;
@@ -56,7 +59,7 @@ public class ItemDetailModal : MonoBehaviour
         if (scientificNameText != null) scientificNameText.text = visuals != null ? visuals.scientificName : "Unknown Specimen";
 
         if (rarityBadgeImage != null)
-            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f, 0f); // dark fill hidden for now — bigger colored border shows through solid
+            rarityBadgeImage.color = new Color(0.063f, 0.133f, 0.082f, 0f); // kept transparent: the rarity-coloured border underneath provides the colour instead
 
         if (rarityBadgeBorderImage != null)
         {
@@ -94,6 +97,7 @@ public class ItemDetailModal : MonoBehaviour
 
         if (firstObtainedValueText != null)
         {
+            // RoundtripKind preserves the UTC offset Supabase's timestamp format includes.
             DateTime obtainedDate = DateTime.Parse(row.firstObtainedAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             firstObtainedValueText.text = obtainedDate.ToString("d MMM yyyy", CultureInfo.InvariantCulture);
         }
