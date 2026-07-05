@@ -1,9 +1,4 @@
 # =====================================
-# Superpowers planning docs
-# =====================================
-/docs/
-
-# =====================================
 # Node.js Backend (gaia-gacha-backend)
 # =====================================
 /gaia-gacha-backend/node_modules/
@@ -33,3 +28,9 @@
 
 # --- TEXTMESH PRO LOCAL CONFIGS ---
 /gaia-gacha-frontend/Assets/TextMesh Pro.meta
+
+# =====================================
+# macOS junk
+# =====================================
+**/.DS_Store
+

@@ -1,3 +1,6 @@
+// quiz.js: serves quiz questions and grades submitted answers, awarding coins for
+// correct responses via the authenticated player's profile.
+
 import express from 'express';
 
 export default function (supabase, requireAuth) {
@@ -12,7 +15,7 @@ export default function (supabase, requireAuth) {
     return result;
   }
 
-  // --- FETCH A RANDOM BATCH OF QUESTIONS ---
+  // --- Fetch a Random Batch of Questions ---
   router.get('/questions', async (req, res) => {
     const { data: questions, error } = await supabase
       .from('quiz_questions')
@@ -39,7 +42,7 @@ export default function (supabase, requireAuth) {
     res.json({ questions: result });
   });
 
-  // --- GRADE AN ANSWER AND AWARD COINS ---
+  // --- Grade an Answer and Award Coins ---
   router.post('/answer', requireAuth, async (req, res) => {
     const { questionId, selectedIndex } = req.body;
     const userId = req.userId;

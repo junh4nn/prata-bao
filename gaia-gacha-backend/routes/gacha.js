@@ -1,12 +1,15 @@
+// gacha.js: handles the coin-spend gacha pull. Verifies the caller via requireAuth,
+// picks a weighted-random item, and updates the player's coins and inventory in Supabase.
+
 import express from 'express';
 
 export default function (supabase, requireAuth) {
   const router = express.Router();
 
-  // --- GACHA CONFIGURATION ---
+  // --- Gacha Configuration ---
   const GACHA_COST = 10;
 
-  // --- THE GACHA ROUTE ---
+  // --- Gacha Pull Route ---
   router.post('/pull', requireAuth, async (req, res) => {
     const userId = req.userId;
 
@@ -28,7 +31,7 @@ export default function (supabase, requireAuth) {
         return res.status(400).json({ error: "Not enough coins!" });
       }
 
-      // 3. Logic: Weighted Random Selection
+      // 3. Select a Weighted Random Item
       const { data: items, error: itemsError } = await supabase
         .from('items')
         .select('id, name, rarity, weight, type');
@@ -52,8 +55,7 @@ export default function (supabase, requireAuth) {
 
       const newBalance = player.coins - GACHA_COST;
 
-      // 4. Update Database 
-      // Subtract coins from 'profiles' table
+      // 4. Deduct the Gacha Cost
       const { error: deductError } = await supabase
         .from('profiles')
         .update({ coins: newBalance })
@@ -64,7 +66,7 @@ export default function (supabase, requireAuth) {
         return res.status(500).json({ error: "Failed to process coin deduction" });
       }
 
-      // Add item to 'inventory' table
+      // 5. Add the Item to Inventory
       const { error: insertError } = await supabase
         .from('inventory')
         .insert([{
@@ -73,7 +75,6 @@ export default function (supabase, requireAuth) {
         }]);
 
       if (insertError) {
-        // If RLS or policy errors happen, this will print it directly to the terminal screen
         console.error("Inventory Insertion Database Error:", insertError.message);
         return res.status(500).json({ error: 'Failed to secure item in inventory' });
       }
