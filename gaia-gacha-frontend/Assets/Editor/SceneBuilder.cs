@@ -1,7 +1,6 @@
-// SceneBuilder.cs — Unity Editor script
-// Adds a "GaiaGacha → Build Scene" menu item to the Unity toolbar.
-// Running it wipes the existing UI, loads the AuthPanel and GachaPanel prefabs,
-// and wires all manager references
+// SceneBuilder.cs: adds a "GaiaGacha/Build Scene" menu item. Running it wipes the
+// existing UI, loads the Auth/Gacha/Hub/Inventory/Quiz panel prefabs, and wires
+// every manager's Inspector references.
 
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -13,11 +12,11 @@ using TMPro;
 
 public static class SceneBuilder
 {
-    // ── Entry point ──────────────────────────────────────────────────────────
+    // --- Entry Point ---
     [MenuItem("GaiaGacha/Build Scene", priority = 300)]
     static void Build()
     {
-        // Wipe any existing Canvas, EventSystem, and manager objects so we start fresh.
+        // 1. Wipe Existing Objects so we start fresh
         foreach (var c in Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include))
             Object.DestroyImmediate(c.gameObject);
         foreach (var e in Object.FindObjectsByType<EventSystem>(FindObjectsInactive.Include))
@@ -33,16 +32,18 @@ public static class SceneBuilder
         foreach (var q in Object.FindObjectsByType<QuizManager>(FindObjectsInactive.Include))
             Object.DestroyImmediate(q.gameObject);
 
-        // EventSystem is required for Unity UI to detect mouse clicks and keyboard input.
+        // 2. Create the EventSystem
+        // Required for Unity UI to detect mouse clicks and keyboard input.
         // InputSystemUIInputModule works with Unity's new Input System package.
         var esGo = new GameObject("EventSystem");
         esGo.AddComponent<EventSystem>();
         esGo.AddComponent<InputSystemUIInputModule>();
 
+        // 3. Create the Canvas and Background
         // Canvas is the root container for all UI elements.
         // ScreenSpaceOverlay means it renders on top of the game world.
         // ScaleWithScreenSize makes the UI resize proportionally on different screens.
-        // referenceResolution is the "design size" — 390x844 is an iPhone-sized portrait screen.
+        // referenceResolution is the "design size": 390x844 is an iPhone-sized portrait screen.
         // matchWidthOrHeight = 1f means we scale based on screen HEIGHT (good for portrait UIs on PC).
         var canvasGo = new GameObject("Canvas");
         var canvas = canvasGo.AddComponent<Canvas>();
@@ -53,12 +54,13 @@ public static class SceneBuilder
         scaler.matchWidthOrHeight = 1f;
         canvasGo.AddComponent<GraphicRaycaster>(); // allows UI elements to receive click events
 
-        // Full-screen background image using the darkest color in the palette.
+        // Full-screen background image using the darkest colour in the palette.
         var bgImg = UIConstants.MakeImage(canvasGo.transform, "Background", null, UIConstants.ColBg);
         UIConstants.Stretch(bgImg.rectTransform); // stretch to fill the entire canvas
 
-        // Load the pre-built panel prefabs. Run "GaiaGacha/LayoutBuilders/Build Auth Panel" and
-        // "GaiaGacha/LayoutBuilders/Build Gacha Panel" first if the prefabs don't exist yet.
+        // 4. Load and Instantiate the Panel Prefabs
+        // Run each panel's "GaiaGacha/LayoutBuilders/Build ... Panel" menu item first if its
+        // prefab doesn't exist yet.
         var authPrefab  = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AuthPanel.prefab");
         var gachaPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaPanel.prefab");
         var hubPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/HubPanel.prefab");
@@ -75,21 +77,22 @@ public static class SceneBuilder
         var quizPanel = (GameObject)PrefabUtility.InstantiatePrefab(quizPrefab, canvasGo.transform);
         quizPanel.SetActive(false);
 
-        // Create the manager GameObjects that handle the game logic.
+        // 5. Create the Manager Components
         // AuthManager handles login/register API calls.
         // AuthUIManager handles what the auth panel looks like and reacts to.
         var authMgrGo = new GameObject("_AuthManager");
         var authMgr   = authMgrGo.AddComponent<AuthManager>();
         var authUIMgr = authMgrGo.AddComponent<AuthUIManager>();
 
-        // GachaManager and MainHubUIManager live on their respective panels so that
-        // Start/OnEnable fire when the panel activates (post-login), not at scene load.
+        // GachaManager, MainHubUIManager, InventoryManager, and QuizManager all live on
+        // their respective panels so that Start/OnEnable fire when the panel activates
+        // (post-login), not at scene load.
         var gachaMgr = gachaPanel.AddComponent<GachaManager>();
         var hubUIMgr = hubPanel.AddComponent<MainHubUIManager>();
         var inventoryMgr = inventoryPanel.AddComponent<InventoryManager>();
         var quizMgr = quizPanel.AddComponent<QuizManager>();
 
-        // Wire up the AuthUIManager Inspector references in code.
+        // 6. Wire Each Manager's Inspector References
         // SerializedObject lets us set [SerializeField] values from an Editor script,
         // the same as dragging and dropping in the Inspector by hand.
         var authSO = new SerializedObject(authUIMgr);
@@ -123,6 +126,7 @@ public static class SceneBuilder
             "pullButton", "statusText", "balanceText",
             "gachaPanel", "hubPanel", "backButton");
 
+        // Wire up the MainHubUIManager Inspector references in the same way.
         var hubSO = new SerializedObject(hubUIMgr);
         hubSO.FindProperty("coinsText").objectReferenceValue       = UIConstants.Find<TextMeshProUGUI>(hubPanel.transform, "HeaderBar/CoinsText");
         hubSO.FindProperty("logoutButton").objectReferenceValue    = UIConstants.Find<Button>(hubPanel.transform, "FooterBar/LogoutButton");
@@ -187,7 +191,7 @@ public static class SceneBuilder
             "resultsModal", "resultGlyphText", "resultTitleText", "scoreText", "subtitleText", "rewardText", "tryAgainButton",
             "quizPanel", "hubPanel", "backButton");
 
-        // Mark the scene as changed so Unity knows to save it.
+        // 7. Mark the Scene Dirty so Unity knows to save it
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         Debug.Log("<color=green>[SceneBuilder] Scene rebuilt successfully! Press Play to test.</color>");
     }

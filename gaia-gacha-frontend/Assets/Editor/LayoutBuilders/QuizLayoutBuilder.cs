@@ -1,3 +1,15 @@
+// QuizLayoutBuilder.cs: builds the QuizPanel prefab (the eco-quiz screen reached from
+// the Hub's Quiz tile). Layout (top to bottom):
+//   HeaderBar: "GaiaGacha" title + Eco-Coins balance, same as every other panel
+//   ProgressBar: Track + Fill (width driven by QuizManager) + "N/3" text
+//   QuestionCard: wrapped question text
+//   AnswerRowA/B/C: badge + answer text, coloured by QuizAnswerOptionDisplay at runtime
+//   FeedbackText: per-question correct/incorrect explanation
+//   NextButton: outline style, hidden until an answer is given
+//   FooterBar: back button
+//   ResultsModal: dim backdrop + centred card, parented last so it draws on top;
+//     SetActive(false) by default
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,19 +24,6 @@ public static class QuizLayoutBuilder
     static Sprite        s_BackIcon;
     static Sprite        s_UISprite;
     static Sprite        s_KnobSprite;
-
-    // ── Quiz Panel ───────────────────────────────────────────────────────────
-    // Builds the eco-quiz screen reached from the Hub's Quiz tile.
-    // Layout (top to bottom):
-    //   HeaderBar    — "GaiaGacha" title + Eco-Coins balance, same as every other panel
-    //   ProgressBar  — Track + Fill (width driven by QuizManager) + "N/3" text
-    //   QuestionCard — wrapped question text
-    //   AnswerRowA/B/C — badge + answer text, colored by QuizAnswerOptionDisplay at runtime
-    //   FeedbackText — per-question correct/incorrect explanation
-    //   NextButton   — outline style, hidden until an answer is given
-    //   FooterBar    — back button
-    //   ResultsModal — dim backdrop + centered card, parented last so it draws on top;
-    //                  SetActive(false) by default
 
     [MenuItem("GaiaGacha/LayoutBuilders/Build Quiz Panel", priority = 204)]
     static void Build()
@@ -51,7 +50,7 @@ public static class QuizLayoutBuilder
         var panel = UIConstants.MakeRect(parent, "QuizPanel");
         UIConstants.Stretch(panel);
 
-        // ── Header bar (matches every other panel) ──────────────────────────
+        // --- Header Bar (matches every other panel) ---
         var header = UIConstants.MakeImage(panel.transform, "HeaderBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(header.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 64));
         header.rectTransform.anchoredPosition = new Vector2(0, -32);
@@ -66,14 +65,14 @@ public static class QuizLayoutBuilder
         coinsTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         coinsTmp.alignment = TextAlignmentOptions.MidlineRight;
 
-        // ── Progress bar — Track + Fill (width driven by QuizManager) + "N/3" text ──
+        // --- Progress Bar: Track + Fill (width driven by QuizManager) + "N/3" text ---
         var progressRow = UIConstants.MakeRect(panel.transform, "ProgressBar");
         UIConstants.SetAnchored(progressRow, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 40));
         progressRow.anchoredPosition = new Vector2(0, -73);
 
         // Margins below are a percentage of the panel's width (20% per side) rather than a
         // fixed pixel inset, so the gap to the screen edge grows on wide windows instead of
-        // staying flush — ProgressBar/QuestionCard/FeedbackText all share this same edge.
+        // staying flush: ProgressBar/QuestionCard/FeedbackText all share this same edge.
         // ProgressText sits at the right end of the bar (not stacked above it), so the two
         // only need to share ~20px of vertical room instead of ~32px.
         var progressText = UIConstants.MakeTMP(progressRow.transform, "ProgressText", "1/3", 12, UIConstants.ColTextMuted, FontStyles.Bold, s_PoppinsSemiBold);
@@ -97,7 +96,7 @@ public static class QuizLayoutBuilder
         fillImg.type   = Image.Type.Sliced;
         fillImg.color  = QuizAnswerVisuals.ColCorrect;
 
-        // ── Question card — contains the question text and all 3 answer rows ──
+        // --- Question Card (contains the question text and all 3 answer rows) ---
         var questionCard = UIConstants.MakeImage(panel.transform, "QuestionCard", s_UISprite, UIConstants.ColSurface);
         questionCard.type = Image.Type.Sliced;
         UIConstants.SetAnchored(questionCard.rectTransform, new Vector2(0.2f, 1f), new Vector2(0.8f, 1f), new Vector2(0, 450));
@@ -109,25 +108,25 @@ public static class QuizLayoutBuilder
         questionText.alignment = TextAlignmentOptions.Center;
         questionText.textWrappingMode = TextWrappingModes.Normal;
 
-        // ── Answer rows — always exactly 3 static rows, nested inside the card ──
+        // --- Answer Rows (always exactly 3 static rows, nested inside the card) ---
         var rowA = BuildAnswerRow(questionCard.transform, "AnswerRowA", -194);
         var rowB = BuildAnswerRow(questionCard.transform, "AnswerRowB", -292);
         var rowC = BuildAnswerRow(questionCard.transform, "AnswerRowC", -390);
 
-        // ── Feedback text — outside the card ────────────────────────────────────
+        // --- Feedback Text (outside the card) ---
         var feedbackText = UIConstants.MakeTMP(panel.transform, "FeedbackText", "", 13, UIConstants.ColTextPrimary, FontStyles.Italic, s_PoppinsLight);
         UIConstants.SetAnchored(feedbackText.rectTransform, new Vector2(0.2f, 1f), new Vector2(0.8f, 1f), new Vector2(0, 100));
         feedbackText.rectTransform.anchoredPosition = new Vector2(0, -612);
         feedbackText.alignment = TextAlignmentOptions.Center;
         feedbackText.textWrappingMode = TextWrappingModes.Normal;
 
-        // ── Next button — outline style, flush below the feedback text, hidden until an answer is given ──
+        // --- Next Button (outline style, flush below the feedback text, hidden until an answer is given) ---
         var (nextButtonGo, _) = UIConstants.MakeOutlineButton(panel.transform, "NextButton", "NEXT", 15, s_PoppinsSemiBold);
         UIConstants.SetAnchored(nextButtonGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(140, 44));
         nextButtonGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -702);
         nextButtonGo.SetActive(false);
 
-        // ── Footer bar (back button, matches every other panel) ─────────────
+        // --- Footer Bar (back button, matches every other panel) ---
         var footer = UIConstants.MakeImage(panel.transform, "FooterBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
         footer.rectTransform.anchoredPosition = new Vector2(0, 28);
@@ -145,14 +144,14 @@ public static class QuizLayoutBuilder
         UIConstants.SetAnchored(backIconImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(20, 20));
         backIconImg.rectTransform.anchoredPosition = Vector2.zero;
 
-        // ── Results modal — parented last so it draws on top; hidden by default ──
+        // --- Results Modal (parented last so it draws on top; hidden by default) ---
         BuildResultsModal(panel.transform);
 
         return panel.gameObject;
     }
 
     // Builds one static answer row using the layered "Border behind Face" trick from
-    // InventoryCardBuilder — AnswerBorder peeks a few px around AnswerFace, so recoloring
+    // InventoryCardBuilder: AnswerBorder peeks a few px around AnswerFace, so recolouring
     // the border at runtime produces the green/red outline.
     static GameObject BuildAnswerRow(Transform parent, string name, float anchoredY)
     {
@@ -252,6 +251,6 @@ public static class QuizLayoutBuilder
         tryAgainGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -354);
 
         // These ResultsModal fields are wired into QuizManager by SceneBuilder once the
-        // panel is instantiated into the scene — same convention as every other panel.
+        // panel is instantiated into the scene, same convention as every other panel.
     }
 }

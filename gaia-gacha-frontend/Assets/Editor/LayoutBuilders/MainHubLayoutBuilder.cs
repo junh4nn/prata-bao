@@ -1,3 +1,7 @@
+// MainHubLayoutBuilder.cs: builds the HubPanel prefab (the main menu after login).
+// Layout (top to bottom): HeaderBar (title + coins), HeroCard (welcome + quote),
+// GachaTile (featured, full-width), BottomRow (Quiz + Inventory tiles), FooterBar (logout).
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +42,7 @@ public static class MainHubLayoutBuilder
         var panel = UIConstants.MakeRect(parent, "HubPanel");
         UIConstants.Stretch(panel);
 
-        // ── Header bar (matches gacha page) ──────────────────────────────────
+        // --- Header Bar (matches gacha page) ---
         var header = UIConstants.MakeImage(panel.transform, "HeaderBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(header.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 64));
         header.rectTransform.anchoredPosition = new Vector2(0, -32);
@@ -53,7 +57,7 @@ public static class MainHubLayoutBuilder
         coinsTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         coinsTmp.alignment = TextAlignmentOptions.MidlineRight;
 
-        // ── Hero card ─────────────────────────────────────────────────────────
+        // --- Hero Card ---
         var heroCard = UIConstants.MakeImage(panel.transform, "HeroCard", s_PanelFlat, UIConstants.Hex("#0d2a1e"));
         heroCard.type = Image.Type.Sliced;
         UIConstants.SetAnchored(heroCard.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(350, 140));
@@ -72,7 +76,7 @@ public static class MainHubLayoutBuilder
         quoteTmp.textWrappingMode = TextWrappingModes.Normal;
         quoteTmp.characterSpacing = 2;
 
-        // ── Gacha tile (featured, full-width) ────────────────────────────────
+        // --- Gacha Tile (featured, full-width) ---
         var gachaTile = BuildNavTile(panel.transform, "GachaTile", "Gacha Pull",
             "Spend 10 Eco-Coins · Discover a specimen", new Vector2(350, 180), UIConstants.ColGold, 20, s_GachaIcon);
         var gachaTileRt = gachaTile.GetComponent<RectTransform>();
@@ -80,7 +84,7 @@ public static class MainHubLayoutBuilder
         gachaTileRt.anchorMax = new Vector2(0.5f, 1f);
         gachaTileRt.anchoredPosition = new Vector2(0, -342);
 
-        // ── Bottom row ───────────────────────────────────────────────────────
+        // --- Bottom Row ---
         var bottomRow = UIConstants.MakeRect(panel.transform, "BottomRow");
         UIConstants.SetAnchored(bottomRow, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(350, 160));
         bottomRow.anchoredPosition = new Vector2(0, -542);
@@ -93,7 +97,7 @@ public static class MainHubLayoutBuilder
             "Your collection", new Vector2(170, 160), UIConstants.ColTextMuted, 16, s_InventoryIcon);
         inventoryTile.GetComponent<RectTransform>().anchoredPosition = new Vector2(90, 0);
 
-        // ── Footer bar (logout) ───────────────────────────────────────────────
+        // --- Footer Bar (logout) ---
         var footer = UIConstants.MakeImage(panel.transform, "FooterBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
         footer.rectTransform.anchoredPosition = new Vector2(0, 28);

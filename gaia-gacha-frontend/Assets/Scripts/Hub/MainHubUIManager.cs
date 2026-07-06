@@ -1,3 +1,6 @@
+// MainHubUIManager.cs: controls the main hub screen (nav tiles, hero quote, logout).
+// Sits between AuthUIManager.cs and each feature's own UI manager (Gacha/Quiz/Inventory).
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -44,13 +47,11 @@ public class MainHubUIManager : MonoBehaviour
 
     void Start()
     {
-        // Wire button handlers (runs once).
         if (gachaButton     != null) gachaButton.onClick.AddListener(OnGachaClicked);
         if (quizButton      != null) quizButton.onClick.AddListener(OnQuizClicked);
         if (inventoryButton != null) inventoryButton.onClick.AddListener(OnInventoryClicked);
         if (logoutButton    != null) logoutButton.onClick.AddListener(OnLogoutClicked);
 
-        // Pick a random quote for this session.
         int idx = Random.Range(0, Quotes.Length);
         if (quoteText != null) quoteText.text = Quotes[idx] + "\n" + Authors[idx];
     }

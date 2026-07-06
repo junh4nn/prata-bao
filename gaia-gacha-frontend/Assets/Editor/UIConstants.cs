@@ -1,3 +1,6 @@
+// UIConstants.cs: shared colour palette and layout-building helpers (MakeRect, MakeImage,
+// MakeTMP, etc.) used by SceneBuilder.cs and every LayoutBuilders/*.cs script.
+
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -6,8 +9,8 @@ using TMPro;
 
 public static class UIConstants
 {
-    // ── Color palette ────────────────────────────────────────────────────────
-    // All UI colors defined in one place. Change a hex here and it updates everywhere.
+    // --- Colour Palette ---
+    // All UI colours defined in one place. Change a hex here and it updates everywhere.
     public static readonly Color ColBg          = Hex("#081C15"); // dark forest background
     public static readonly Color ColSurface     = Hex("#1B4332"); // panels, cards, input fields
     public static readonly Color ColButton      = Hex("#D4A373"); // earth-tone primary button
@@ -16,9 +19,9 @@ public static class UIConstants
     public static readonly Color ColTextSecondary = Hex("#000000"); // rarity badge text, card name, and other secondary text
     public static readonly Color ColTextMuted   = Hex("#95B8A0"); // placeholder and subtitle text
     public static readonly Color ColGold        = Hex("#E9C46A"); // gold for coins and rarity diamonds
-    public static readonly Color ColInputBg     = Hex("#102215"); // input fields — darker than ColSurface
+    public static readonly Color ColInputBg     = Hex("#102215"); // input fields, darker than ColSurface
 
-    // ── Fonts ────────────────────────────────────────────────────────────────
+    // --- Fonts ---
     // Loaded from Assets/Fonts/ at build time.
     // Cinzel is used for titles only; Poppins is used for everything else.
     static TMP_FontAsset s_Poppins;
@@ -36,7 +39,7 @@ public static class UIConstants
         return rt;
     }
 
-    // Create an Image under parent, optional sprite and color
+    // Create an Image under parent, optional sprite and colour
     public static Image MakeImage(Transform parent, string name, Sprite sprite = null, Color? color = null)
     {
         var rt = MakeRect(parent, name);
@@ -82,7 +85,7 @@ public static class UIConstants
         return t != null ? t.GetComponent<T>() : null;
     }
 
-    // Parse HTML hex color strings (#RRGGBB or #RRGGBBAA, with or without leading '#')
+    // Parse HTML hex colour strings (#RRGGBB or #RRGGBBAA, with or without leading '#')
     public static Color Hex(string hex)
     {
         if (string.IsNullOrEmpty(hex)) return Color.magenta;
@@ -193,7 +196,7 @@ public static class UIConstants
         return (rt.gameObject, textTmp);
     }
 
-    // Bordered button — a slightly larger background Image (the border) behind an inset
+    // Bordered button: a slightly larger background Image (the border) behind an inset
     // dark Fill image, same peeking-border trick used for rarity/answer card outlines.
     public static (GameObject, TextMeshProUGUI) MakeOutlineButton(Transform parent, string name, string label, float fontSize, TMP_FontAsset font = null, Color? borderColor = null, Color? textColor = null)
     {
@@ -250,7 +253,7 @@ public static class UIConstants
         return (rt.gameObject, textTmp);
     }
 
-    // Builds a fully-wired TMP_Dropdown. A label + background alone isn't enough — TMP_Dropdown
+    // Builds a fully-wired TMP_Dropdown. A label + background alone isn't enough: TMP_Dropdown
     // needs the Template/Viewport/Content/Item subtree to show its popup list, so this delegates
     // to TMPro's own TMP_DefaultControls (the same code Unity's UI menu uses) and then restyles
     // the result to match this project's palette.
@@ -270,7 +273,7 @@ public static class UIConstants
         labelTmp.fontSize = 13;
         if (font != null) labelTmp.font = font;
 
-        // No dropdown-arrow sprite asset exists yet — swap the default Image arrow for a "▼"
+        // No dropdown-arrow sprite asset exists yet: swap the default Image arrow for a "▼"
         // glyph, same convention as the sort-direction button's text-glyph icon.
         var arrow = (RectTransform)rt.Find("Arrow");
         Object.DestroyImmediate(arrow.GetComponent<Image>());

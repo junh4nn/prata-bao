@@ -1,3 +1,11 @@
+// GachaLayoutBuilder.cs: builds the GachaPanel prefab (the pull/collection screen
+// shown after login). Layout (top to bottom):
+//   HeaderBar: "GaiaGacha" title + Eco-Coins balance
+//   BannerLabel: "NATURE'S COLLECTION" label
+//   GachaCard: shows "?" before a pull, then the item with rarity diamonds after
+//   PullButton: costs 10 Eco-Coins per pull
+//   StatusText: feedback during/after a pull
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,17 +16,6 @@ public static class GachaLayoutBuilder {
     static TMP_FontAsset s_PoppinsSemiBold;
     static TMP_FontAsset s_CinzelRegular;
     static Sprite        s_BackIcon;
-
-    
-     // ── Gacha Panel ──────────────────────────────────────────────────────────
-    // Builds the main pull/collection screen shown after login.
-    // Layout (top to bottom):
-    //   HeaderBar   — "GaiaGacha" title + Eco-Coins balance
-    //   BannerLabel — "NATURE'S COLLECTION" label
-    //   GachaCard   — shows "?" before a pull, then the item with rarity diamonds after
-    //   PullButton  — costs 10 Eco-Coins per pull
-    //   StatusText  — feedback during/after a pull
-
 
     [MenuItem("GaiaGacha/LayoutBuilders/Build Gacha Panel", priority = 202)]
     static void Build()
@@ -69,17 +66,17 @@ public static class GachaLayoutBuilder {
         bannerTmp.alignment = TextAlignmentOptions.Center;
         bannerTmp.characterSpacing = 4;
 
-        // Load the pre-built GachaCard prefab. Run "GaiaGacha/Gacha/Build Gacha Card" first.
+        // Load the pre-built GachaCard prefab. Run "GaiaGacha/ItemCard/Build Gacha Card" first.
         var gachaCardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/GachaCard.prefab");
         if (gachaCardPrefab == null) { Debug.LogError("[GachaLayoutBuilder] GachaCard.prefab not found — run Build Gacha Card first."); return panel.gameObject; }
         PrefabUtility.InstantiatePrefab(gachaCardPrefab, panel.transform);
 
-        // Pull button — costs 10 Eco-Coins. GachaManager.cs listens to its onClick event.
+        // Pull button: costs 10 Eco-Coins. GachaManager.cs listens to its onClick event.
         var (pullBtnGo, _) = UIConstants.MakeButton(panel.transform, "PullButton", "Pull  ·  10 Eco-Coins", 20, s_PoppinsSemiBold);
         UIConstants.SetAnchored(pullBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 62));
         pullBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -590);
 
-        // Status text — shows "Connecting to nature registry..." during a pull, errors on failure.
+        // Status text: shows "Connecting to nature registry..." during a pull, errors on failure.
         var statusTmp = UIConstants.MakeTMP(panel.transform, "StatusText", "", 13, UIConstants.ColTextMuted, FontStyles.Normal, s_PoppinsSemiBold);
         UIConstants.SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(300, 32));
         statusTmp.rectTransform.anchoredPosition = new Vector2(0, -660);

@@ -1,3 +1,9 @@
+// AuthLayoutBuilder.cs: builds the AuthPanel prefab (the login/register screen).
+// Layout (top to bottom):
+//   LogoArea: icon square + "GAIAGACHA" title + subtitle
+//   FormCard: email input, password input, Sign In button, Register link
+//   StatusText: error/feedback messages shown below the form
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,15 +13,6 @@ public static class AuthLayoutBuilder {
 
     static TMP_FontAsset s_Poppins;
     static TMP_FontAsset s_Cinzel;
-
-    
-     // ── Auth Panel ───────────────────────────────────────────────────────────
-    // Builds the login/register screen.
-    // Layout (top to bottom):
-    //   LogoArea  — icon square + "GAIAGACHA" title + subtitle
-    //   FormCard  — email input, password input, Sign In button, Register link
-    //   StatusText — error/feedback messages shown below the form
-
 
     [MenuItem("GaiaGacha/LayoutBuilders/Build Auth Panel", priority = 200)]
     static void Build()
@@ -76,7 +73,7 @@ public static class AuthLayoutBuilder {
             UIConstants.SetAnchored(emailLabel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 20));
             emailLabel.rectTransform.anchoredPosition = new Vector2(0, -20);
 
-            // Email input field — not a password field (isPassword = false).
+            // Email input field: not a password field (isPassword = false).
             var emailInput = UIConstants.MakeInputField(formCard.transform, "EmailInput", "your@email.com", false, s_Poppins);
             UIConstants.SetAnchored(emailInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
             emailInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -60);
@@ -86,24 +83,24 @@ public static class AuthLayoutBuilder {
             UIConstants.SetAnchored(passwordLabel.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 20));
             passwordLabel.rectTransform.anchoredPosition = new Vector2(0, -106);
 
-            // Password input field — characters are hidden (isPassword = true).
+            // Password input field: characters are hidden (isPassword = true).
             var passwordInput = UIConstants.MakeInputField(formCard.transform, "PasswordInput", "••••••••", true, s_Poppins);
             UIConstants.SetAnchored(passwordInput.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 52));
             passwordInput.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -146);
 
-            // Primary action button — label is "Sign In" by default.
+            // Primary action button: label is "Sign In" by default.
             // AuthUIManager.cs changes it to "Create Account" when toggled to register mode.
             var (actionBtnGo, _) = UIConstants.MakeButton(formCard.transform, "ActionButton", "Sign In", 20, s_Poppins);
             UIConstants.SetAnchored(actionBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 62));
             actionBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -216);
 
-            // Toggle link — tapping this switches between login and register mode.
+            // Toggle link: tapping this switches between login and register mode.
             // Uses \n to put "Register" on its own line below the question text.
             var (toggleBtnGo, _) = UIConstants.MakeLinkButton(formCard.transform, "ToggleModeButton", "Don't have an account?\n<b>Register</b>", 14, s_Poppins);
             UIConstants.SetAnchored(toggleBtnGo.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(280, 36));
             toggleBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -294);
 
-            // Status text — shows login errors, "Logging in..." etc. Starts empty.
+            // Status text: shows login errors, "Logging in..." etc. Starts empty.
             var statusTmp = UIConstants.MakeTMP(panel.transform, "StatusText", "", 13, UIConstants.ColTextMuted, FontStyles.Normal, s_Poppins);
             UIConstants.SetAnchored(statusTmp.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(320, 40));
             statusTmp.rectTransform.anchoredPosition = new Vector2(0, -300);

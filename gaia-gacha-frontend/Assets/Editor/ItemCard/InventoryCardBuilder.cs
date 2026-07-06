@@ -1,3 +1,6 @@
+// InventoryCardBuilder.cs: builds the InventoryCard prefab used by InventoryLayoutBuilder.cs.
+// The InventoryCardDisplay component wired here does the actual runtime rendering.
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,47 +32,47 @@ public static class InventoryCardBuilder
 
     public static GameObject BuildInventoryCard(Transform parent)
     {
-        // Root — InventoryCardDisplay lives here, sized to match one grid cell. The whole tile
+        // Root: InventoryCardDisplay lives here, sized to match one grid cell. The whole tile
         // is the click target, so the Button sits on the root too.
         var root = UIConstants.MakeRect(parent, "InventoryCard");
         UIConstants.SetAnchored(root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(160, 220));
         var display = root.gameObject.AddComponent<InventoryCardDisplay>();
         var cardButton = root.gameObject.AddComponent<Button>();
 
-        // CardGlow — bleeds beyond CardBorder, behind everything; shown for Legendary only
+        // CardGlow: bleeds beyond CardBorder, behind everything; shown for Legendary only
         var cardGlow = UIConstants.MakeImage(root.transform, "CardGlow", s_UISprite, UIConstants.ColGold);
         cardGlow.color = new Color(UIConstants.ColGold.r, UIConstants.ColGold.g, UIConstants.ColGold.b, 0.30f);
         cardGlow.type  = Image.Type.Sliced;
         UIConstants.Stretch(cardGlow.rectTransform);
         cardGlow.gameObject.SetActive(false);
 
-        // CardBorder — colored by rarity at runtime, sits behind CardFace as a peeking outline
+        // CardBorder: coloured by rarity at runtime, sits behind CardFace as a peeking outline
         var cardBorder = UIConstants.MakeImage(root.transform, "CardBorder", s_UISprite, UIConstants.ColSurface);
         cardBorder.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(156, 216));
         cardBorder.rectTransform.anchoredPosition = Vector2.zero;
         cardBorder.gameObject.SetActive(false);
 
-        // CardFace — the surface the player sees
+        // CardFace: the surface the player sees
         var cardFace = UIConstants.MakeImage(root.transform, "CardFace", s_UISprite, UIConstants.ColSurface);
         cardFace.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardFace.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(150, 210));
         cardFace.rectTransform.anchoredPosition = Vector2.zero;
         cardButton.targetGraphic = cardFace;
 
-        // Type icon background — small rounded-square chip, colored by type
+        // Type icon background: small rounded-square chip, coloured by type
         var typeIconBg = UIConstants.MakeImage(cardFace.transform, "TypeIconBg", s_UISprite, Color.white);
         typeIconBg.type = Image.Type.Sliced;
         UIConstants.SetAnchored(typeIconBg.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(23, 23));
         typeIconBg.rectTransform.anchoredPosition = new Vector2(16, -15);
 
-        // Type icon — top-left corner of the card face
+        // Type icon: top-left corner of the card face
         var typeIcon = UIConstants.MakeImage(cardFace.transform, "TypeIcon", null, Color.white);
         typeIcon.preserveAspect = true;
         UIConstants.SetAnchored(typeIcon.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(15, 15));
         typeIcon.rectTransform.anchoredPosition = new Vector2(16, -15);
 
-        // Count badge — top-right corner, hidden by InventoryCardDisplay.Setup() when count == 1
+        // Count badge: top-right corner, hidden by InventoryCardDisplay.Setup() when count == 1
         var countBadgeBg = UIConstants.MakeImage(cardFace.transform, "CountBadge", s_UISprite, UIConstants.ColBg);
         countBadgeBg.type = Image.Type.Sliced;
         UIConstants.SetAnchored(countBadgeBg.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(34, 20));
