@@ -1,3 +1,6 @@
+// index.js: the Express entry point. Configures the Supabase clients, wires up JWT
+// verification, and mounts the gacha/auth/inventory/quiz routers under /api/*.
+
 import dotenv from 'dotenv';
 import express from 'express';
 import { createClient } from '@supabase/supabase-js';
@@ -23,7 +26,7 @@ const supabase = createClient(
 
 // Separate client for verifying player logins. signInWithPassword() attaches the
 // signed-in player's session to whichever client it's called on, so it must never
-// run on the service-role `supabase` client above — that would silently swap every
+// run on the service-role `supabase` client above. Doing so would silently swap every
 // later admin-level query (gacha pulls, inventory) onto that player's own permissions.
 const supabaseAuth = createClient(
   process.env.SUPABASE_URL,
@@ -32,13 +35,11 @@ const supabaseAuth = createClient(
 
 const requireAuth = createAuthMiddleware(supabaseAuth);
 
-// =====================================
-// MOUNT ROUTERS
-// =====================================
-app.use('/api/gacha', gachaRouter(supabase, requireAuth)); // Mounts gacha routes under /api/gacha
-app.use('/api/auth', authRouter(supabase, supabaseAuth)); // Mounts auth routes under /api/auth
-app.use('/api/inventory', inventoryRouter(supabase, requireAuth)); // Mounts inventory routes under /api/inventory
-app.use('/api/quiz', quizRouter(supabase, requireAuth)); // Mounts quiz routes under /api/quiz
+// --- Mount Routers ---
+app.use('/api/gacha', gachaRouter(supabase, requireAuth));
+app.use('/api/auth', authRouter(supabase, supabaseAuth));
+app.use('/api/inventory', inventoryRouter(supabase, requireAuth));
+app.use('/api/quiz', quizRouter(supabase, requireAuth));
 
 // Optional base fallback route for checking server status in a browser
 app.get('/', (req, res) => {

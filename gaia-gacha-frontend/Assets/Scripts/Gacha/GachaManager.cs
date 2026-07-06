@@ -1,3 +1,6 @@
+// GachaManager.cs: drives the gacha pull screen. Sends the authenticated pull
+// request to the backend and hands the result to GachaCardDisplay to render.
+
 using System;
 using System.Collections;
 using System.Text;
@@ -60,6 +63,7 @@ public class GachaManager : MonoBehaviour
 
     private IEnumerator SendPullRequest()
     {
+        // 1. Lock the UI
         isPulling = true;
         SetUIInteractivity(false);
         if (statusText != null) statusText.text = "Connecting to nature registry...";
@@ -71,8 +75,10 @@ public class GachaManager : MonoBehaviour
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
 
+            // 2. Send the Authenticated Pull Request
             yield return request.SendWebRequest();
 
+            // 3. Show an Error on Failure, Render the Result on Success
             if (request.result == UnityWebRequest.Result.ConnectionError ||
                 request.result == UnityWebRequest.Result.ProtocolError)
             {
@@ -86,6 +92,7 @@ public class GachaManager : MonoBehaviour
             }
         }
 
+        // 4. Unlock the UI
         isPulling = false;
         SetUIInteractivity(true);
     }

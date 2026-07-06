@@ -1,12 +1,12 @@
+// auth.js: handles player registration and login against Supabase, issuing the
+// session JWT that AuthManager.cs stores and every other route now requires.
+
 import express from 'express';
 
 export default function (supabase, supabaseAuth) {
   const router = express.Router();
 
-  // =====================================
-  // ROUTE: REGISTER A NEW PLAYER
-  // URL: http://localhost:3000/api/auth/register
-  // =====================================
+  // --- Register a New Player ---
   router.post('/register', async (req, res) => {
     const { email, password } = req.body;
     console.log(`[register] email: ${email}`);
@@ -32,17 +32,13 @@ export default function (supabase, supabaseAuth) {
     }
   });
 
-  // =====================================
-  // ROUTE: LOGIN A PLAYER
-  // URL: http://localhost:3000/api/auth/login
-  // =====================================
+  // --- Log In a Player ---
   router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-      // Ask Supabase to verify the email and password. This must run on the anon-key
-      // client, not the service-role `supabase` client — signInWithPassword() attaches
-      // the resulting session to whichever client it's called on.
+      // Must run on the anon-key client, not the service-role `supabase` client:
+      // signInWithPassword() attaches the resulting session to whichever client it's called on.
       const { data, error } = await supabaseAuth.auth.signInWithPassword({
         email: email,
         password: password
@@ -50,23 +46,20 @@ export default function (supabase, supabaseAuth) {
 
       if (error) throw error;
 
-      // Fetch player's coin balance from profiles table
       const { data: profile } = await supabase
         .from('profiles')
         .select('coins')
         .eq('id', data.user.id)
         .single();
 
-      // If successful, hand the secure session Token (JWT) back to Unity
       return res.status(200).json({
         message: 'Login successful!',
-        token: data.session.access_token, // The digital key Unity must save
-        userId: data.user.id,             // The player's unique ID
-        coins: profile?.coins ?? 0        // The player's Eco-Coins balance
+        token: data.session.access_token,
+        userId: data.user.id,
+        coins: profile?.coins ?? 0
       });
 
     } catch (error) {
-      // If password or email is incorrect, return a clean error message
       return res.status(400).json({ error: error.message });
     }
   });

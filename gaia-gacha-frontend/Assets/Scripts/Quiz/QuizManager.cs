@@ -1,3 +1,6 @@
+// QuizManager.cs: drives the quiz screen. Fetches questions, grades submitted answers,
+// and shows the results modal. Wires each QuizAnswerOptionDisplay row's click event.
+
 using System;
 using System.Collections;
 using System.Text;
@@ -74,17 +77,21 @@ public class QuizManager : MonoBehaviour
     {
         using (UnityWebRequest request = UnityWebRequest.Get(questionsUrl))
         {
+            // 1. Send the Request
             yield return request.SendWebRequest();
 
+            // 2. Bail Out Early on a Network-Level Failure
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError($"[QuizManager] Failed to load questions: {request.error}");
                 yield break;
             }
 
+            // 3. Parse the Response
             questions = JsonUtility.FromJson<QuizQuestionsResponse>(request.downloadHandler.text).questions;
         }
 
+        // 4. Reset for a New Attempt
         currentIndex = 0;
         score = 0;
         coinsEarnedThisRun = 0;
@@ -125,6 +132,7 @@ public class QuizManager : MonoBehaviour
 
     private IEnumerator SubmitAnswer(int key)
     {
+        // 1. Build the Request Payload
         string jsonPayload = JsonUtility.ToJson(new QuizAnswerRequest
         {
             questionId    = questions[currentIndex].id,
@@ -138,8 +146,10 @@ public class QuizManager : MonoBehaviour
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Authorization", "Bearer " + AuthManager.Token);
 
+            // 2. Send the Authenticated Request
             yield return request.SendWebRequest();
 
+            // 3. Re-Enable the Rows on Failure, Apply the Result on Success
             if (request.result == UnityWebRequest.Result.ConnectionError ||
                 request.result == UnityWebRequest.Result.ProtocolError)
             {

@@ -1,3 +1,6 @@
+// requireAuth.js: verifies the session JWT from the Authorization header against
+// Supabase and attaches the resulting player id as req.userId for downstream routes.
+
 export default function createAuthMiddleware(supabaseAuth) {
   return async function requireAuth(req, res, next) {
     const header = req.headers.authorization || '';

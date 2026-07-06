@@ -1,3 +1,6 @@
+// CreateItemAssets.cs: builds/updates the ItemDefinition, ItemRegistry, and TypeVisuals
+// ScriptableObject assets from the hardcoded Items list below.
+
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;

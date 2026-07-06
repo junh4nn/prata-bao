@@ -1,3 +1,6 @@
+// GachaCardBuilder.cs: builds the GachaCard prefab used by GachaLayoutBuilder.cs.
+// The GachaCardDisplay component wired here does the actual runtime rendering.
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,33 +32,33 @@ public static class GachaCardBuilder
 
     public static GameObject BuildGachaCard(Transform parent)
     {
-        // Root — GachaCardDisplay lives here, sized to match the full card visual
+        // Root: GachaCardDisplay lives here, sized to match the full card visual
         var root = UIConstants.MakeRect(parent, "GachaCard");
         UIConstants.SetAnchored(root, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(302, 402));
         root.anchoredPosition = new Vector2(0, -340);
         var display = root.gameObject.AddComponent<GachaCardDisplay>();
 
-        // CardGlow — 8px bleed on each side, behind everything
+        // CardGlow: 8px bleed on each side, behind everything
         var cardGlow = UIConstants.MakeImage(root.transform, "CardGlow", s_UISprite, UIConstants.ColGold);
         cardGlow.color = new Color(UIConstants.ColGold.r, UIConstants.ColGold.g, UIConstants.ColGold.b, 0.30f);
         cardGlow.type  = Image.Type.Sliced;
         UIConstants.Stretch(cardGlow.rectTransform);
         cardGlow.gameObject.SetActive(false);
 
-        // CardBorder — 9px border, sits between glow and face
+        // CardBorder: 9px border, sits between glow and face
         var cardBorder = UIConstants.MakeImage(root.transform, "CardBorder", s_UISprite, UIConstants.ColSurface);
         cardBorder.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(292, 392));
         cardBorder.rectTransform.anchoredPosition = Vector2.zero;
         cardBorder.gameObject.SetActive(false);
 
-        // CardFace — the white rounded rectangle the player sees
+        // CardFace: the white rounded rectangle the player sees
         var cardFace = UIConstants.MakeImage(root.transform, "CardFace", s_UISprite, UIConstants.ColSurface);
         cardFace.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardFace.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(280, 380));
         cardFace.rectTransform.anchoredPosition = Vector2.zero;
 
-        // DefaultState — "?" placeholder shown before any pull
+        // DefaultState: "?" placeholder shown before any pull
         var defaultState = UIConstants.MakeRect(cardFace.transform, "DefaultState");
         UIConstants.Stretch(defaultState);
 
@@ -70,7 +73,7 @@ public static class GachaCardBuilder
         readyTmp.alignment = TextAlignmentOptions.Center;
         readyTmp.textWrappingMode = TextWrappingModes.Normal;
 
-        // RevealedState — populated by GachaCardDisplay.Setup()
+        // RevealedState: populated by GachaCardDisplay.Setup()
         var revealedState = UIConstants.MakeRect(cardFace.transform, "RevealedState");
         UIConstants.Stretch(revealedState);
         revealedState.gameObject.SetActive(false);
@@ -95,13 +98,13 @@ public static class GachaCardBuilder
         star3.rectTransform.anchoredPosition = new Vector2(28, 0);
         star3.rectTransform.localRotation = Quaternion.Euler(0, 0, 45);
 
-        // Type icon background — rounded-square chip behind the icon, colored by type
+        // Type icon background: rounded-square chip behind the icon, coloured by type
         var typeIconBg = UIConstants.MakeImage(revealedState.transform, "TypeIconBg", s_UISprite, Color.white);
         typeIconBg.type = Image.Type.Sliced;
         UIConstants.SetAnchored(typeIconBg.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(30, 30));
         typeIconBg.rectTransform.anchoredPosition = new Vector2(25, -25);
 
-        // Type icon — top-left corner of the card face
+        // Type icon: top-left corner of the card face
         var typeIcon = UIConstants.MakeImage(revealedState.transform, "TypeIcon", null, Color.white);
         typeIcon.preserveAspect = true;
         UIConstants.SetAnchored(typeIcon.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(20, 20));

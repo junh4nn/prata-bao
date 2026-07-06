@@ -1,4 +1,4 @@
-// AuthUIManager.cs — controls what the login/register screen looks like and responds to.
+// AuthUIManager.cs: controls what the login/register screen looks like and responds to.
 // Sits alongside AuthManager.cs on the same GameObject.
 // AuthManager handles the actual API calls; this script handles the UI reactions.
 
@@ -8,11 +8,11 @@ using TMPro;
 
 public class AuthUIManager : MonoBehaviour
 {
-    // ── Inspector references ─────────────────────────────────────────────────
-    // These are wired automatically by SceneBuilder.cs — no manual dragging needed.
+    // --- Inspector References ---
+    // These are wired automatically by SceneBuilder.cs, so no manual dragging is needed.
 
     [Header("Dependencies")]
-    [SerializeField] private AuthManager authManager; // handles the actual login/register API calls
+    [SerializeField] private AuthManager authManager;
 
     [Header("UI Pages / Panels")]
     [SerializeField] private GameObject authPanel; // the login screen (shown at start)
@@ -34,30 +34,26 @@ public class AuthUIManager : MonoBehaviour
     // Tracks whether we're in login mode (true) or register mode (false).
     private bool isLoginMode = true;
 
-    // ── Unity lifecycle ──────────────────────────────────────────────────────
+    // --- Unity Lifecycle ---
 
     void Start()
     {
-        // If AuthManager wasn't wired, try to find it automatically in the scene.
         if (authManager == null)
         {
             authManager = FindAnyObjectByType<AuthManager>();
             if (authManager == null) Debug.LogError("[AuthUIManager] AuthManager not found in scene!");
         }
 
-        // Register button click listeners.
         if (actionButton != null) actionButton.onClick.AddListener(OnActionClicked);
         if (toggleModeButton != null) toggleModeButton.onClick.AddListener(OnToggleModeClicked);
 
-        // Start on the auth screen with the hub panel hidden.
         if (authPanel != null) authPanel.SetActive(true);
         if (hubPanel  != null) hubPanel.SetActive(false);
 
-        // Set the initial button/link text to match login mode.
         UpdateModeUI();
     }
 
-    // ── Button handlers ──────────────────────────────────────────────────────
+    // --- Button Handlers ---
 
     // Called when the player taps the main action button ("Sign In" or "Create Account").
     private void OnActionClicked()
@@ -65,7 +61,6 @@ public class AuthUIManager : MonoBehaviour
         string email    = emailInputField    != null ? emailInputField.text.Trim() : "";
         string password = passwordInputField != null ? passwordInputField.text     : "";
 
-        // Don't attempt an API call if the inputs are invalid.
         if (!ValidateInputs(email, password)) return;
 
         if (isLoginMode)
@@ -89,9 +84,8 @@ public class AuthUIManager : MonoBehaviour
         UpdateModeUI();
     }
 
-    // ── UI state ─────────────────────────────────────────────────────────────
+    // --- UI State ---
 
-    // Updates the button label and toggle link text to match the current mode.
     private void UpdateModeUI()
     {
         if (actionButtonText != null)
@@ -103,7 +97,7 @@ public class AuthUIManager : MonoBehaviour
                 : "Already have an account?\n<b>Sign In</b>";
     }
 
-    // Called after successful registration — switches to login mode with a confirmation message.
+    // Called after successful registration. Switches to login mode with a confirmation message.
     private void OnRegisterSuccess()
     {
         isLoginMode = true;
@@ -111,7 +105,7 @@ public class AuthUIManager : MonoBehaviour
         if (statusText != null) statusText.text = "<color=#57C278>Account created! Please sign in.</color>";
     }
 
-    // Clears the form fields and status text — called on logout.
+    // Clears the form fields and status text. Called on logout.
     public void ClearForm()
     {
         if (emailInputField    != null) emailInputField.text    = "";
@@ -127,7 +121,7 @@ public class AuthUIManager : MonoBehaviour
         if (hubPanel  != null) hubPanel.SetActive(true);
     }
 
-    // ── Input validation ─────────────────────────────────────────────────────
+    // --- Input Validation ---
 
     // Returns true if the inputs are acceptable, false + shows an error if not.
     private bool ValidateInputs(string email, string password)

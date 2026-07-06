@@ -1,3 +1,14 @@
+// InventoryLayoutBuilder.cs: builds the InventoryPanel prefab (the collection-browsing
+// screen reached from the Hub's Inventory tile). Layout (top to bottom):
+//   HeaderBar: "GaiaGacha" title + Eco-Coins balance, same as every other panel
+//   FilterRow: category dropdown (left), sort dropdown + direction button (right)
+//   CollectedCountText: "COLLECTED · N CARDS"
+//   InventoryScrollRect: vertical-only scroll, GridLayoutGroup content, empty until
+//     InventoryManager populates it at runtime
+//   FooterBar: back button
+//   DetailModal: dim backdrop + centred card, parented last so it draws on top;
+//     SetActive(false) by default
+
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,18 +22,6 @@ public static class InventoryLayoutBuilder
     static TMP_FontAsset s_CinzelSemiBold;
     static Sprite        s_BackIcon;
     static Sprite        s_UISprite;
-
-    // ── Inventory Panel ──────────────────────────────────────────────────────
-    // Builds the collection-browsing screen reached from the Hub's Inventory tile.
-    // Layout (top to bottom):
-    //   HeaderBar         — "GaiaGacha" title + Eco-Coins balance, same as every other panel
-    //   FilterRow         — category dropdown (left), sort dropdown + direction button (right)
-    //   CollectedCountText— "COLLECTED · N CARDS"
-    //   InventoryScrollRect — vertical-only scroll, GridLayoutGroup content, empty until
-    //                         InventoryManager populates it at runtime
-    //   FooterBar         — back button
-    //   DetailModal       — dim backdrop + centered card, parented last so it draws on top;
-    //                       SetActive(false) by default
 
     [MenuItem("GaiaGacha/LayoutBuilders/Build Inventory Panel", priority = 203)]
     static void Build()
@@ -48,7 +47,7 @@ public static class InventoryLayoutBuilder
         var panel = UIConstants.MakeRect(parent, "InventoryPanel");
         UIConstants.Stretch(panel);
 
-        // ── Header bar (matches every other panel) ──────────────────────────
+        // --- Header Bar (matches every other panel) ---
         var header = UIConstants.MakeImage(panel.transform, "HeaderBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(header.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 64));
         header.rectTransform.anchoredPosition = new Vector2(0, -32);
@@ -63,7 +62,7 @@ public static class InventoryLayoutBuilder
         coinsTmp.rectTransform.anchoredPosition = new Vector2(-20, 0);
         coinsTmp.alignment = TextAlignmentOptions.MidlineRight;
 
-        // ── Filter row — category dropdown (left), sort dropdown + direction (right) ──
+        // --- Filter Row (category dropdown left, sort dropdown + direction right) ---
         var filterRow = UIConstants.MakeRect(panel.transform, "FilterRow");
         UIConstants.SetAnchored(filterRow, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0, 44));
         filterRow.anchoredPosition = new Vector2(0, -90);
@@ -80,7 +79,7 @@ public static class InventoryLayoutBuilder
         UIConstants.SetAnchored(sortDirGo.GetComponent<RectTransform>(), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(36, 36));
         sortDirGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(361, 0);
 
-        // ── Collected count label ────────────────────────────────────────────
+        // --- Collected Count Label ---
         var collectedTmp = UIConstants.MakeTMP(panel.transform, "CollectedCountText", "COLLECTED · 0 CARDS", 12, UIConstants.ColTextMuted, FontStyles.Bold, s_PoppinsSemiBold);
         collectedTmp.rectTransform.anchorMin = new Vector2(0f, 1f);
         collectedTmp.rectTransform.anchorMax = new Vector2(1f, 1f);
@@ -90,7 +89,7 @@ public static class InventoryLayoutBuilder
         collectedTmp.alignment = TextAlignmentOptions.MidlineLeft;
         collectedTmp.characterSpacing = 2;
 
-        // ── Scrollable grid — vertical-only, GridLayoutGroup auto-fills columns ──
+        // --- Scrollable Grid (vertical-only, GridLayoutGroup auto-fills columns) ---
         var scrollRt = UIConstants.MakeRect(panel.transform, "InventoryScrollRect");
         scrollRt.anchorMin = new Vector2(0f, 0f);
         scrollRt.anchorMax = new Vector2(1f, 1f);
@@ -126,7 +125,7 @@ public static class InventoryLayoutBuilder
         scrollRect.viewport = viewport;
         scrollRect.content  = content;
 
-        // ── Footer bar (back button, matches every other panel) ─────────────
+        // --- Footer Bar (back button, matches every other panel) ---
         var footer = UIConstants.MakeImage(panel.transform, "FooterBar", null, UIConstants.ColSurface);
         UIConstants.SetAnchored(footer.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0, 56));
         footer.rectTransform.anchoredPosition = new Vector2(0, 28);
@@ -144,7 +143,7 @@ public static class InventoryLayoutBuilder
         UIConstants.SetAnchored(backIconImg.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(20, 20));
         backIconImg.rectTransform.anchoredPosition = Vector2.zero;
 
-        // ── Detail modal — parented last so it draws on top; hidden by default ──
+        // --- Detail Modal (parented last so it draws on top; hidden by default) ---
         BuildDetailModal(panel.transform);
 
         return panel.gameObject;
@@ -160,24 +159,24 @@ public static class InventoryLayoutBuilder
         var backdrop = UIConstants.MakeImage(modalRoot, "Backdrop", null, new Color(0f, 0f, 0f, 0.6f));
         UIConstants.Stretch(backdrop.rectTransform);
 
-        // DetailCard — outer root for the layered card chrome, sized to fit all 3 info sections
+        // DetailCard: outer root for the layered card chrome, sized to fit all 3 info sections
         var detailCard = UIConstants.MakeRect(modalRoot, "DetailCard");
         UIConstants.SetAnchored(detailCard, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(322, 642));
 
-        // CardGlow — bleeds beyond CardBorder, behind everything; shown for Legendary only
+        // CardGlow: bleeds beyond CardBorder, behind everything; shown for Legendary only
         var cardGlow = UIConstants.MakeImage(detailCard, "CardGlow", s_UISprite, UIConstants.ColGold);
         cardGlow.color = new Color(UIConstants.ColGold.r, UIConstants.ColGold.g, UIConstants.ColGold.b, 0.30f);
         cardGlow.type  = Image.Type.Sliced;
         UIConstants.Stretch(cardGlow.rectTransform);
         cardGlow.gameObject.SetActive(false);
 
-        // CardBorder — colored by rarity at runtime, sits behind CardFace as a peeking outline
+        // CardBorder: coloured by rarity at runtime, sits behind CardFace as a peeking outline
         var cardBorder = UIConstants.MakeImage(detailCard, "CardBorder", s_UISprite, UIConstants.ColSurface);
         cardBorder.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardBorder.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(312, 632));
         cardBorder.gameObject.SetActive(false);
 
-        // CardFace — the surface the player sees, same look as the mini/pull card
+        // CardFace: the surface the player sees, same look as the mini/pull card
         var cardFace = UIConstants.MakeImage(detailCard, "CardFace", s_UISprite, UIConstants.ColSurface);
         cardFace.type = Image.Type.Sliced;
         UIConstants.SetAnchored(cardFace.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(300, 620));
@@ -186,7 +185,7 @@ public static class InventoryLayoutBuilder
         UIConstants.SetAnchored(closeBtnGo.GetComponent<RectTransform>(), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(32, 32));
         closeBtnGo.GetComponent<RectTransform>().anchoredPosition = new Vector2(-18, -18);
 
-        // ── Section 1 — normal card stuff: item sprite, name, stars, rarity badge ──────
+        // --- Section 1: Item Sprite, Name, Stars, Rarity Badge ---
         var itemImg = UIConstants.MakeImage(cardFace.transform, "ItemImage", null, Color.white);
         itemImg.preserveAspect = true;
         UIConstants.SetAnchored(itemImg.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(140, 140));
@@ -240,7 +239,7 @@ public static class InventoryLayoutBuilder
         UIConstants.SetAnchored(divider1.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(252, 1.5f));
         divider1.rectTransform.anchoredPosition = new Vector2(0, -323);
 
-        // ── Section 2 — type (colored text) and first-obtained date, label left / value right ──
+        // --- Section 2: Type (coloured text) and First-Obtained Date (label left, value right) ---
         var typeLabelTmp = UIConstants.MakeTMP(cardFace.transform, "TypeLabelText", "Type", 13, UIConstants.ColTextMuted, FontStyles.Normal, s_PoppinsSemiBold);
         UIConstants.SetAnchored(typeLabelTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(120, 22));
         typeLabelTmp.rectTransform.anchoredPosition = new Vector2(-66, -350);
@@ -265,7 +264,7 @@ public static class InventoryLayoutBuilder
         UIConstants.SetAnchored(divider2.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(252, 1.5f));
         divider2.rectTransform.anchoredPosition = new Vector2(0, -418);
 
-        // ── Section 3 — ability caption + body text ────────────────────────────────────
+        // --- Section 3: Ability Caption and Body Text ---
         var abilityLabelTmp = UIConstants.MakeTMP(cardFace.transform, "AbilityLabelText", "ABILITY", 11, UIConstants.ColTextMuted, FontStyles.Bold, s_PoppinsSemiBold);
         UIConstants.SetAnchored(abilityLabelTmp.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(252, 18));
         abilityLabelTmp.rectTransform.anchoredPosition = new Vector2(0, -440);
