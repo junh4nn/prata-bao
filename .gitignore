@@ -1,12 +1,8 @@
-# =====================================
-# Node.js Backend (gaia-gacha-backend)
-# =====================================
+# --- Node.js Backend (gaia-gacha-backend) ---
 /gaia-gacha-backend/node_modules/
 /gaia-gacha-backend/.env
 
-# =====================================
-# Unity Frontend (gaia-gacha-frontend)
-# =====================================
+# --- Unity Frontend (gaia-gacha-frontend) ---
 /gaia-gacha-frontend/[Ll]ibrary/
 /gaia-gacha-frontend/[Tt]emp/
 /gaia-gacha-frontend/[Oo]bj/
@@ -14,31 +10,27 @@
 /gaia-gacha-frontend/[Ll]ogs/
 /gaia-gacha-frontend/[Uu]serSettings/
 
-# --- TEXTMESH PRO LOCAL CONFIGS ---
+# --- TextMesh Pro Local Configs ---
 /gaia-gacha-frontend/Assets/TextMesh Pro.meta
 
-# Supabase
-.branches
-.temp
+# --- Supabase (supabase) ---
+/supabase/.branches
+/supabase/.temp
+/supabase/.env.keys
+/supabase/.env.local
+/supabase/.env.*.local
 
-# dotenvx
-.env.keys
-.env.local
-.env.*.local
-
-# --- IDE & VISUAL STUDIO JUNK ---
+# --- IDE & Visual Studio Junk ---
 **/*.csproj
 **/*.sln
 **/*.slnx
 **/.vs/
 
-# Ignore local VS Code workspaces, but DO NOT ignore team settings files
+# Ignore local VS Code workspaces, but DO NOT ignore team settings 
 .vscode/*
 !.vscode/settings.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# =====================================
-# macOS junk
-# =====================================
+# --- macOS junk ---
 **/.DS_Store
