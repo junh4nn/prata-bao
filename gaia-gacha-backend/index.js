@@ -41,9 +41,15 @@ app.use('/api/auth', authRouter(supabase, supabaseAuth));
 app.use('/api/inventory', inventoryRouter(supabase, requireAuth));
 app.use('/api/quiz', quizRouter(supabase, requireAuth));
 
+// --- Status Routes ---
 // Optional base fallback route for checking server status in a browser
 app.get('/', (req, res) => {
   res.send('GaiaGacha secure backend API running.');
+});
+
+// Health check for Fly's bluegreen deploy strategy, confirms the new machine is ready before traffic switches over
+app.get('/health', (req, res) => {
+  res.sendStatus(200);
 });
 
 const PORT = process.env.PORT || 3000;
