@@ -6,14 +6,17 @@ using UnityEngine;
 public class BackendConfig : ScriptableObject
 {
     [SerializeField] private string localBaseUrl = "http://localhost:3000";
+    [SerializeField] private string stagingBaseUrl = "https://gaia-gacha-backend-staging.fly.dev";
     [SerializeField] private string productionBaseUrl = "https://gaia-gacha-backend.fly.dev";
 
     public string baseUrl =>
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         localBaseUrl;
-#else
+    #elif STAGING_BUILD
+        stagingBaseUrl;
+    #else
         productionBaseUrl;
-#endif
+    #endif
 
     private static BackendConfig _instance;
     public static BackendConfig Instance => _instance ??= Resources.Load<BackendConfig>("BackendConfig");
