@@ -69,12 +69,9 @@ enabled = true
 # Specifies an ordered list of seed files to load during db reset.
 # Supports glob patterns relative to supabase directory: "./seeds/*.sql"
 sql_paths = ["./seed.sql"]
-# seed.sql dumps all public-schema data except tables excluded below.
-# Static tables currently captured in seed.sql: items, quiz_questions.
-# Excluded tables (live player data, not static): profiles, inventory.
-# Adding a new static table? No changes needed, it's included automatically.
-# Adding a new live/dynamic table instead? Add -x public.<table> to
-# supabase db dump --data-only -x public.profiles > supabase/seed.sql and regenerate seed.sql.
+# seed.sql holds only static reference data (items, quiz_questions); 
+# live player data (profiles, inventory) is excluded. 
+# See seed-regen.md for how to regenerate it.
 
 [db.network_restrictions]
 # Enable management of network restrictions.
