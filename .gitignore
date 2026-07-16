@@ -15,12 +15,12 @@
 # --- TextMesh Pro Local Configs ---
 /gaia-gacha-frontend/Assets/TextMesh Pro.meta
 
-# --- Supabase (supabase) ---
-/supabase/.branches
-/supabase/.temp
-/supabase/.env.keys
-/supabase/.env.local
-/supabase/.env.*.local
+# --- Supabase (gaia-gacha-db) ---
+/gaia-gacha-db/.branches
+/gaia-gacha-db/.temp
+/gaia-gacha-db/.env.keys
+/gaia-gacha-db/.env.local
+/gaia-gacha-db/.env.*.local
 
 # --- IDE & Visual Studio Junk ---
 **/*.csproj
