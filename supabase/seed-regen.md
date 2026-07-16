@@ -6,7 +6,7 @@ How to regenerate `supabase/seed.sql`, which holds only static reference data (`
 
 Requires the Supabase CLI to be linked to the source project (usually prod):
 
-    supabase db dump --data-only -s public -x public.profiles -x public.inventory > supabase/seed.sql
+    supabase db dump --data-only -s public -x public.profiles -x public.inventory --file supabase/seed.sql
 
 - `-s public` scopes the dump to the `public` schema only, so `auth.*` data (user accounts, sessions, tokens) is never captured.
 - `-x public.profiles -x public.inventory` excludes live player data, which changes constantly and should not be checked into version control.
