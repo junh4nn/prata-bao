@@ -3,17 +3,19 @@
 
 import express from 'express';
 
+// Fisher-Yates shuffle. Exported at module level so that unit tests can verify
+// shuffled output directly, without spinning up the router.
+export function shuffle(array) {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export default function (supabase, requireAuth) {
   const router = express.Router();
-
-  function shuffle(array) {
-    const result = [...array];
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-    return result;
-  }
 
   // --- Fetch a Random Batch of Questions ---
   router.get('/questions', async (req, res) => {
