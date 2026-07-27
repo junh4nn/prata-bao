@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "vitest run test/unit",
+    "pretest:integration": "node --env-file=.env.test test/reset-local-db.js",
+    "test:integration": "node --env-file=.env.test node_modules/.bin/vitest run test/integration",
     "test:watch": "vitest",
     "start": "node index.js",
     "dev": "nodemon index.js"

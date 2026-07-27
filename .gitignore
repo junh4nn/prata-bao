@@ -1,6 +1,7 @@
 # --- Node.js Backend (gaia-gacha-backend) ---
 /gaia-gacha-backend/node_modules/
 /gaia-gacha-backend/.env
+/gaia-gacha-backend/.env.test
 
 # --- Unity Frontend (gaia-gacha-frontend) ---
 /gaia-gacha-frontend/[Ll]ibrary/
