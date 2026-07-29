@@ -1,6 +1,7 @@
 # --- Node.js Backend (gaia-gacha-backend) ---
 /gaia-gacha-backend/node_modules/
 /gaia-gacha-backend/.env
+/gaia-gacha-backend/.env.test
 
 # --- Unity Frontend (gaia-gacha-frontend) ---
 /gaia-gacha-frontend/[Ll]ibrary/
@@ -16,11 +17,11 @@
 /gaia-gacha-frontend/Assets/TextMesh Pro.meta
 
 # --- Supabase (gaia-gacha-db) ---
-/gaia-gacha-db/.branches
-/gaia-gacha-db/.temp
-/gaia-gacha-db/.env.keys
-/gaia-gacha-db/.env.local
-/gaia-gacha-db/.env.*.local
+/supabase/.branches
+/supabase/.temp
+/supabase/.env.keys
+/supabase/.env.local
+/supabase/.env.*.local
 
 # --- IDE & Visual Studio Junk ---
 **/*.csproj

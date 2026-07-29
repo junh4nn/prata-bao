@@ -3,6 +3,26 @@
 
 import express from 'express';
 
+// Selects an item at random, weighted by each item's `weight` field, using a
+// cumulative-weight roll. Exported at module level so that unit tests can
+// exercise it directly (empty pool, single item, zero-weight items) without a real
+// Supabase call.
+export function selectWeightedRandomItem(items) {
+  const roll = Math.random() * 100;
+  let selectedItem = items[0];
+  let cumulativeWeight = 0;
+
+  for (const item of items) {
+    cumulativeWeight += item.weight;
+    if (roll < cumulativeWeight) {
+      selectedItem = item;
+      break;
+    }
+  }
+
+  return selectedItem;
+}
+
 export default function (supabase, requireAuth) {
   const router = express.Router();
 
@@ -41,17 +61,7 @@ export default function (supabase, requireAuth) {
         return res.status(500).json({ error: "Failed to load items" });
       }
 
-      const roll = Math.random() * 100;
-      let selectedItem = items[0];
-      let cumulativeWeight = 0;
-
-      for (const item of items) {
-        cumulativeWeight += item.weight;
-        if (roll < cumulativeWeight) {
-          selectedItem = item;
-          break;
-        }
-      }
+      const selectedItem = selectWeightedRandomItem(items);
 
       const newBalance = player.coins - GACHA_COST;
 

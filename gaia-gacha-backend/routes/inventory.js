@@ -3,6 +3,22 @@
 
 import express from 'express';
 
+// Groups raw per-pull inventory rows into one entry per item, counting duplicates and
+// tracking the earliest obtained date. Exported at module level so that unit tests can
+// exercise it directly (empty inventory, duplicates, out-of-order rows).
+export function groupInventoryByItem(rows) {
+  const grouped = {};
+  for (const row of rows) {
+    const g = grouped[row.item_id] ??= {
+      itemId: row.item_id, name: row.items.name, rarity: row.items.rarity, type: row.items.type,
+      count: 0, firstObtainedAt: row.created_at
+    };
+    g.count += 1;
+    if (row.created_at < g.firstObtainedAt) g.firstObtainedAt = row.created_at;
+  }
+  return Object.values(grouped);
+}
+
 export default function (supabase, requireAuth) {
   const router = express.Router();
 
@@ -15,19 +31,8 @@ export default function (supabase, requireAuth) {
 
     if (error) return res.status(500).json({ error: 'Failed to load inventory' });
 
-    // 2. Group Rows by Item (counting duplicates and tracking the earliest obtained date)
-    const grouped = {};
-    for (const row of data) {
-      const g = grouped[row.item_id] ??= {
-        itemId: row.item_id, name: row.items.name, rarity: row.items.rarity, type: row.items.type,
-        count: 0, firstObtainedAt: row.created_at
-      };
-      g.count += 1;
-      if (row.created_at < g.firstObtainedAt) g.firstObtainedAt = row.created_at;
-    }
-
-    // 3. Send Grouped Inventory back to Unity
-    res.json({ items: Object.values(grouped) });
+    // 2. Send Grouped Inventory back to Unity
+    res.json({ items: groupInventoryByItem(data) });
   });
 
   return router;
